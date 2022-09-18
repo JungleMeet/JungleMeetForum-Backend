@@ -1,0 +1,16 @@
+{
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "extends": ["eslint:recommended", "airbnb-base", "prettier", "plugin:jest/recommended"],
+  "plugins": ["prettier", "jest"],
+  "rules": {
+    "no-console": "warn",
+    "require-jsdoc": "off",
+    "no-multi-spaces": ["error"],
+    "no-useless-constructor": "off",
+    "import/no-unresolved": "warn",
+    "no-underscore-dangle": "off"
+  }
+}
