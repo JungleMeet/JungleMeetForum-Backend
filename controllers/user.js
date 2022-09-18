@@ -6,9 +6,8 @@ const getUserById = async (req, res) => {
 
   try {
     const user = await User.findById(id);
-    const { password, ...others } = user._doc;
 
-    return res.status(StatusCodes.OK).json(others);
+    return res.status(StatusCodes.OK).json(user);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
