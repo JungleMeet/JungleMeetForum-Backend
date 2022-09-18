@@ -6,10 +6,6 @@ module.exports = swaggerJsDoc({
     info: {
       title: 'Jungle Meet Apis Documentation',
       version: '1.0.0',
-      contact: {
-        name: 'Roy',
-        email: 'wanyansuroy@gmail.com',
-      },
       description: 'This is the API documentation for JungleMeet Queuing',
     },
   },
