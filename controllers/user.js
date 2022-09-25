@@ -27,26 +27,19 @@ const createUser = async (req, res) => {
   }
 };
 
-// patch user
-// update database and respond to user
 const patchUser = async (req, res) => {
-  // get id by params
   const { id } = req.params;
-  // get data from request body
   const { userName, password, email, avatar, bgImg } = req.body;
-  const userUpCon = { userName, password, email, avatar, bgImg };
+  const modifiedUser = { userName, password, email, avatar, bgImg };
 
-  // find id by params and update database from request body
   User.findOneAndUpdate(
     { _id: id },
-    userUpCon,
+    modifiedUser,
     { runValidator: true, useFindAndModify: false, new: true },
     (err, result) => {
-      // error handling
       if (err) {
         return res.status(StatusCodes.NOT_FOUND).json(err);
       }
-      // respond to user
       return res.status(StatusCodes.OK).json(result);
     }
   );
