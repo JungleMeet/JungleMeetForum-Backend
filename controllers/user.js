@@ -27,7 +27,23 @@ const createUser = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { id, newPassword, oldPassword } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (user.password === oldPassword) {
+      console.log('cor');
+      user.update({ $set: { password: newPassword } }, { runValidators: true }).save();
+    }
+    return res.status(StatusCodes.OK).json(user);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 module.exports = {
   getUserById,
   createUser,
+  resetPassword,
 };
