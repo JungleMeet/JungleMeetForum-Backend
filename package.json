@@ -29,6 +29,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "mongoose": "^6.3.2",
+    "morgan": "^1.10.0",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.3.0",
     "twilio": "^3.77.2",
