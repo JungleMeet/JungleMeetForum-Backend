@@ -16,13 +16,13 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, 'Please provide email'],
-    match: [/^.+@(?:[\w-]+\.)+\w+$/, 'Please fill a valid email address']
+    match: [/^.+@(?:[\w-]+\.)+\w+$/, 'Please fill a valid email address'],
   },
   avatar: {
     type: String
   },
   createTime: {
-    type: Date
+    type: Date,
   },
   bgImg: {
     type: String
@@ -31,11 +31,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: ['user', 'admin'],
-    default: 'user'
+    default: 'user',
   },
-  follower: [{type: mongoose.Types.ObjectId, ref: 'User'}],
-  following: [{type: mongoose.Types.ObjectId, ref: 'User'}],
-  followingPost: [{type: mongoose.Types.ObjectId, ref: 'Comment'}]
+  follower: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+  following: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+  followingPost: [{ type: mongoose.Types.ObjectId, ref: 'Comment' }],
 });
 
 module.exports = mongoose.model('User', UserSchema);
