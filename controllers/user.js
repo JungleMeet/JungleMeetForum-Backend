@@ -33,7 +33,6 @@ const resetPassword = async (req, res) => {
   try {
     const user = await User.findById(id);
     if (user.password === oldPassword) {
-      console.log('cor');
       user.update({ $set: { password: newPassword } }, { runValidators: true }).save();
     }
     return res.status(StatusCodes.OK).json(user);
