@@ -6,7 +6,7 @@ const getUserById = async (req, res) => {
 
   try {
     const user = await User.findById(id);
-
+    
     return res.status(StatusCodes.OK).json(user);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
@@ -27,6 +27,16 @@ const createUser = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const user = await User.find();
+
+    return res.status(StatusCodes.OK).json(user);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 const resetPassword = async (req, res) => {
   const { id, newPassword, oldPassword } = req.body;
 
@@ -41,8 +51,29 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const patchUser = async (req, res) => {
+  const { id } = req.params;
+  const { userName, password, email, avatar, bgImg } = req.body;
+  const modifiedUser = { userName, password, email, avatar, bgImg };
+
+  User.findOneAndUpdate(
+    { _id: id },
+    modifiedUser,
+    { runValidator: true, useFindAndModify: false, new: true },
+    (err, result) => {
+      if (err) {
+        return res.status(StatusCodes.NOT_FOUND).json(err);
+      }
+      return res.status(StatusCodes.OK).json(result);
+    }
+  );
+};
+
 module.exports = {
+  resetPassword,
   getUserById,
   createUser,
+  getAllUsers,
   resetPassword,
+  patchUser,
 };
