@@ -1,4 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
+const { default: mongoose } = require('mongoose');
 const User = require('../models/User');
 
 const getUserById = async (req, res) => {
@@ -26,21 +27,25 @@ const createUser = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
-
+// TODO: multipule time wrong& how to deal with error?
 const resetPassword = async (req, res) => {
   const { id, newPassword, oldPassword } = req.body;
 
   try {
-    const user = await User.findById(id);
+    const user = await User.findOne({ _id: id });
     if (user.password === oldPassword) {
-      user.update({ $set: { password: newPassword } }, { runValidators: true }).save();
-    }
-    return res.status(StatusCodes.OK).json(user);
+      await user.updateOne({ $set: { password: newPassword } }, { new: true, runValidators: true });
+      return res.status(StatusCodes.OK).send('Password changed successfully!');
+    } 
+      return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
+    
   } catch (err) {
+    if (err instanceof mongoose.Error.ValidationError) {
+      return res.status(StatusCodes.UNAUTHORIZED).send('Password should be 6 digits at least!');
+    }
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
-
 module.exports = {
   getUserById,
   createUser,

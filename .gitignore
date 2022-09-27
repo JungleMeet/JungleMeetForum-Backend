@@ -170,3 +170,4 @@ yarn-error.log*
 
 #.history directory
 .history
+package-lock.json
