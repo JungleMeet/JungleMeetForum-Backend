@@ -19,13 +19,13 @@ const UserSchema = new mongoose.Schema({
     match: [/^.+@(?:[\w-]+\.)+\w+$/, 'Please fill a valid email address'],
   },
   avatar: {
-    type: String
+    type: String,
   },
   createTime: {
     type: Date,
   },
   bgImg: {
-    type: String
+    type: String,
   },
   role: {
     type: String,
