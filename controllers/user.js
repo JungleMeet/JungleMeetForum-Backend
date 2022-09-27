@@ -27,13 +27,22 @@ const createUser = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const user = await User.find();
+
+    return res.status(StatusCodes.OK).json(user);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 const resetPassword = async (req, res) => {
   const { id, newPassword, oldPassword } = req.body;
 
   try {
     const user = await User.findById(id);
     if (user.password === oldPassword) {
-      console.log('cor');
       user.update({ $set: { password: newPassword } }, { runValidators: true }).save();
     }
     return res.status(StatusCodes.OK).json(user);
@@ -61,9 +70,10 @@ const patchUser = async (req, res) => {
 };
 
 module.exports = {
+  resetPassword,
   getUserById,
-
   createUser,
+  getAllUsers,
   resetPassword,
   patchUser,
 };
