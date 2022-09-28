@@ -56,10 +56,12 @@ const patchUser = async (req, res) => {
   const { name, password, email, avatar, bgImg } = req.body;
   const modifiedUser = { name, password, email, avatar, bgImg };
   try {
-    const user = await User.findOneAndUpdate({ _id: id }, modifiedUser, {
+    const user = await User.findByIdAndUpdate({ _id: id }, modifiedUser, {
       runValidator: true,
       new: true,
+      returnOriginal: false,
     });
+    await user.save();
     return res.status(StatusCodes.OK).json(user);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
