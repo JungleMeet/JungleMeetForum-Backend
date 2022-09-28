@@ -27,7 +27,7 @@ const createUser = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
-// TODO: multipule time wrong& how to deal with error?
+
 const resetPassword = async (req, res) => {
   const { id, newPassword, oldPassword } = req.body;
 
