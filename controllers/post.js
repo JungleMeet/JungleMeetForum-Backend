@@ -43,8 +43,28 @@ const updatePost = async (req, res) => {
   }
 };
 
+const getPostById = async (req, res) => {
+  const { id } = req.params;
+  const post = req.body;
+
+  try {
+    await Post.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: req.body,
+      },
+      { runValidator: true, useFindAndModify: true, new: true }
+    );
+
+    return res.status(StatusCodes.OK).json(post);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 module.exports = {
   createPost,
   updatePost,
   getAllPosts,
+  getPostById,
 };
