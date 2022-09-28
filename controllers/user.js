@@ -78,20 +78,19 @@ const updateUser = async (req, res) => {
 
 const patchUser = async (req, res) => {
   const { id } = req.params;
-  const { userName, password, email, avatar, bgImg } = req.body;
-  const modifiedUser = { userName, password, email, avatar, bgImg };
-
-  User.findOneAndUpdate(
-    { _id: id },
-    modifiedUser,
-    { runValidator: true, useFindAndModify: false, new: true },
-    (err, result) => {
-      if (err) {
-        return res.status(StatusCodes.NOT_FOUND).json(err);
-      }
-      return res.status(StatusCodes.OK).json(result);
-    }
-  );
+  const { name, password, email, avatar, bgImg } = req.body;
+  const modifiedUser = { name, password, email, avatar, bgImg };
+  try {
+    const user = await User.findByIdAndUpdate({ _id: id }, modifiedUser, {
+      runValidator: true,
+      new: true,
+      returnOriginal: false,
+    });
+    await user.save();
+    return res.status(StatusCodes.OK).json(user);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
 };
 
 module.exports = {
