@@ -1,5 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const User = require('../models/User');
 
 const getUserById = async (req, res) => {
@@ -32,16 +32,17 @@ const resetPassword = async (req, res) => {
   const { id, newPassword, oldPassword } = req.body;
 
   try {
-    const user = await User.findOne({ _id: id });
+    const user = await User.findById(id);
     if (user.password === oldPassword) {
       await user.updateOne({ $set: { password: newPassword } }, { new: true, runValidators: true });
       return res.status(StatusCodes.OK).send('Password changed successfully!');
-    } 
-      return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
-    
+    }
+    return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
-      return res.status(StatusCodes.UNAUTHORIZED).send('Password should be 6 digits at least!');
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .send('Password should be 6 characters at least, try again');
     }
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
