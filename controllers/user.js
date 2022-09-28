@@ -6,7 +6,7 @@ const getUserById = async (req, res) => {
 
   try {
     const user = await User.findById(id);
-    
+
     return res.status(StatusCodes.OK).json(user);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
@@ -70,7 +70,6 @@ const patchUser = async (req, res) => {
 };
 
 module.exports = {
-  resetPassword,
   getUserById,
   createUser,
   getAllUsers,
