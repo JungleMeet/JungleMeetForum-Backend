@@ -33,7 +33,6 @@ const resetPassword = async (req, res) => {
   try {
     const user = await User.findById(id);
     if (user.password === oldPassword) {
-      console.log('cor');
       user.update({ $set: { password: newPassword } }, { runValidators: true }).save();
     }
     return res.status(StatusCodes.OK).json(user);
@@ -42,8 +41,47 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { name, email, avatar, bgImg } = req.body;
+
+  try {
+    const oldUser = await User.findById(id);
+    await User.updateOne(
+      { _id: id },
+      {
+        _id: id,
+        name: name || oldUser.name,
+        email: email || oldUser.name,
+        avatar: avatar || oldUser.avatar,
+        bgImg: bgImg || oldUser.bgImg,
+      },
+      { runValidators: true }
+    );
+    const newUser = await User.findById(id);
+
+    return res.status(StatusCodes.OK).json(newUser);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
+//   const { id } = req.params;
+//   const { name, password, email, avatar, bgImg } = req.body;
+
+//   try {
+//     const user = await User.findByIdAndUpdate(id);
+//     if (!user) return res.status(400).send({ error: 'User not found' });
+//     Object.assign(user, req.body);
+//     user.save();
+//     res.send({ data: user });
+//   } catch (error) {
+//     res.status(500).send({ error: 'Server Error' });
+//   }
+
 module.exports = {
   getUserById,
   createUser,
   resetPassword,
+  updateUser,
 };
