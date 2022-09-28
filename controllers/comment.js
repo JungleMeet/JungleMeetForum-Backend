@@ -15,9 +15,9 @@ const createComment = async (req, res) => {
 
 const getAllComments = async (req, res) => {
   try {
-    const comment = await Comment.find();
+    const comments = await Comment.find();
 
-    return res.status(StatusCodes.OK).json(comment);
+    return res.status(StatusCodes.OK).json(comments);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
