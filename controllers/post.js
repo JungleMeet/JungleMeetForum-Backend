@@ -16,6 +16,20 @@ const createPost = async (req, res) => {
   }
 };
 
+const patchPost = async (req, res) => {
+  const {id} = req.params;
+  console.log(id);
+  try {
+    const {title, content, hashtag, bgImg} = req.body;
+    const post = await Post.findOneAndUpdate({_id: id}, {title, content, hashtag, bgImg},{new: true});
+
+    return res.status(StatusCodes.OK).json(post);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 module.exports = {
-  createPost
+  createPost,
+  patchPost
 };
