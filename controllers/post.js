@@ -17,10 +17,11 @@ const createPost = async (req, res) => {
 
 const patchPost = async (req, res) => {
   const {id} = req.params;
-  
+
   try {
     const {title, content, hashtag, bgImg} = req.body;
-    const post = await Post.findOneAndUpdate({_id: id}, {title, content, hashtag, bgImg},{new: true});
+    const now = new Date();
+    const post = await Post.findOneAndUpdate({_id: id}, {title, content, hashtag, bgImg, updateTime: now},{new: true});
 
     return res.status(StatusCodes.OK).json(post);
   } catch (err) {
