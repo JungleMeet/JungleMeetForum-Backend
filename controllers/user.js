@@ -53,8 +53,8 @@ const resetPassword = async (req, res) => {
 
 const patchUser = async (req, res) => {
   const { id } = req.params;
-  const { userName, password, email, avatar, bgImg } = req.body;
-  const modifiedUser = { userName, password, email, avatar, bgImg };
+  const { name, password, email, avatar, bgImg } = req.body;
+  const modifiedUser = { name, password, email, avatar, bgImg };
 
   User.findOneAndUpdate(
     { _id: id },

@@ -17,7 +17,7 @@ const createPost = async (req, res) => {
 
 const patchPost = async (req, res) => {
   const {id} = req.params;
-  console.log(id);
+  
   try {
     const {title, content, hashtag, bgImg} = req.body;
     const post = await Post.findOneAndUpdate({_id: id}, {title, content, hashtag, bgImg},{new: true});
