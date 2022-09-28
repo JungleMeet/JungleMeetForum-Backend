@@ -21,8 +21,7 @@ const patchPost = async (req, res) => {
   try {
     const {title, content, hashtag, bgImg} = req.body;
     const now = new Date();
-    const post = await Post.findOneAndUpdate({_id: id}, {title, content, hashtag, bgImg, updateTime: now},{new: true});
-
+    const post = await Post.findOneAndUpdate({_id: id}, {title, content, hashtag, bgImg, updatedTime: now},{runValidators: true, new: true});
     return res.status(StatusCodes.OK).json(post);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
