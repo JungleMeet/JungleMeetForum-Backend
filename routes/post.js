@@ -1,9 +1,10 @@
 const { Router } = require('express');
 const auth = require('../middleware/auth');
-const { createPost, updatePost, getAllPosts } = require('../controllers/post');
+const { createPost, updatePost, getAllPosts, createMoviePost } = require('../controllers/post');
 
 const postRouter = Router();
 
+postRouter.post('/', auth, createMoviePost);
 postRouter.post('/', auth, createPost);
 
 
