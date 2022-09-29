@@ -59,10 +59,24 @@ const deletePost = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
+const createMoviePost = async (req, res) => {
+  const { resourceId } = req.body;
+
+  try {
+    const now = new Date();
+    const post = new Post({ resourceId , postType: 'moviePost', createTime: now });
+    const result = await post.save();
+
+    return res.status(StatusCodes.OK).json(result);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+}
 
 module.exports = {
   createPost,
   updatePost,
   getAllPosts,
   deletePost,
+  createMoviePost,
 };
