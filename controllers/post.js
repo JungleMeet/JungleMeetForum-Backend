@@ -48,18 +48,31 @@ const createMoviePost = async (req, res) => {
 
   try {
     const now = new Date();
-    const post = new Post({ resourceId , postType: 'moviePost', createTime: now });
+    const post = new Post({ resourceId, postType: 'moviePost', createTime: now });
     const result = await post.save();
 
     return res.status(StatusCodes.OK).json(result);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
-}
+};
+const likePost = async (req, res) => {
+  const { resourceId } = req.params;
+  const { userId } = req.body;
+
+  try {
+    const post = await Post.findById(resourceId);
+    await post.updateOne({ $push: { like: userId } }, { new: true, runValidators: true });
+    return res.status(StatusCodes.OK).send('Liked');
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
 
 module.exports = {
   createPost,
   updatePost,
   getAllPosts,
   createMoviePost,
+  likePost,
 };
