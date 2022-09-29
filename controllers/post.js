@@ -43,8 +43,26 @@ const updatePost = async (req, res) => {
   }
 };
 
+const deletePost = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const post = await Post.findOneAndUpdate(
+      { _id: id },
+      {
+        visible: false
+      },
+      { runValidator: true, new: true }
+    );
+    return res.status(StatusCodes.OK).json(post);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 module.exports = {
   createPost,
   updatePost,
   getAllPosts,
+  deletePost,
 };
