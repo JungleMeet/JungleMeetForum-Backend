@@ -51,22 +51,46 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { name, email, avatar, bgImg } = req.body;
+
+  try {
+    const oldUser = await User.findById(id);
+    await User.updateOne(
+      { _id: id },
+      {
+        _id: id,
+        name: name || oldUser.name,
+        email: email || oldUser.name,
+        avatar: avatar || oldUser.avatar,
+        bgImg: bgImg || oldUser.bgImg,
+      },
+      { runValidators: true }
+    );
+    const newUser = await User.findById(id);
+
+    return res.status(StatusCodes.OK).json(newUser);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 const patchUser = async (req, res) => {
   const { id } = req.params;
   const { name, password, email, avatar, bgImg } = req.body;
   const modifiedUser = { name, password, email, avatar, bgImg };
-
-  User.findOneAndUpdate(
-    { _id: id },
-    modifiedUser,
-    { runValidator: true, useFindAndModify: false, new: true },
-    (err, result) => {
-      if (err) {
-        return res.status(StatusCodes.NOT_FOUND).json(err);
-      }
-      return res.status(StatusCodes.OK).json(result);
-    }
-  );
+  try {
+    const user = await User.findByIdAndUpdate({ _id: id }, modifiedUser, {
+      runValidator: true,
+      new: true,
+      returnOriginal: false,
+    });
+    await user.save();
+    return res.status(StatusCodes.OK).json(user);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
 };
 
 module.exports = {
@@ -74,5 +98,6 @@ module.exports = {
   createUser,
   getAllUsers,
   resetPassword,
+  updateUser,
   patchUser,
 };

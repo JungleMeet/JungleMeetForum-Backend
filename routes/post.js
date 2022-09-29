@@ -4,8 +4,10 @@ const { createPost, updatePost, getAllPosts, patchPost } = require('../controlle
 
 const postRouter = Router();
 
-postRouter.post('/', createPost);
 postRouter.patch('/:id', auth, patchPost);
+postRouter.post('/', auth, createPost);
+
+
 postRouter.get('/', getAllPosts);
 
 postRouter.put('/:id', auth, updatePost);
