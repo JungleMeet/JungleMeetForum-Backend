@@ -56,6 +56,22 @@ const updatePost = async (req, res) => {
   }
 };
 
+const deletePost = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const post = await Post.findOneAndUpdate(
+      { _id: id },
+      {
+        visible: false
+      },
+      { runValidator: true, new: true }
+    );
+    return res.status(StatusCodes.OK).json(post);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
 const createMoviePost = async (req, res) => {
   const { resourceId } = req.body;
 
@@ -75,5 +91,6 @@ module.exports = {
   patchPost,
   updatePost,
   getAllPosts,
+  deletePost,
   createMoviePost,
 };
