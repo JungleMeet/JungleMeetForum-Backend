@@ -77,7 +77,6 @@ const User = require('../models/User');
  *         - name: id
  *           in: path
  *           description: ID of user to return 
- *           
  *           schema: 
  *             type: string
  *       responses:
@@ -89,7 +88,29 @@ const User = require('../models/User');
  *                 $ref: '#/components/schemas/User'
  *         '404':
  *           description: User not found
- *
+ *   /users:
+ *     post:
+ *       tags: 
+ *         - user
+ *       summary: Add a new user 
+ *       description: Return created user
+ *       operationId: createUser
+ *       requestBody:
+ *         description:
+ *           Add a new user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User{name, password, email, avatar, bgImg}'
+ *       responses:
+ *         '200':
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/User'
+ *         '404':
+ *           description: Not found
  */
 const getUserById = async (req, res) => {
   const { id } = req.params;
