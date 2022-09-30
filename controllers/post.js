@@ -15,6 +15,19 @@ const createPost = async (req, res) => {
   }
 };
 
+const patchPost = async (req, res) => {
+  const {id} = req.params;
+
+  try {
+    const {title, content, hashtag, bgImg} = req.body;
+    const now = new Date();
+    const post = await Post.findOneAndUpdate({_id: id}, {title, content, hashtag, bgImg, updatedTime: now},{runValidators: true, new: true});
+    return res.status(StatusCodes.OK).json(post);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 const getAllPosts = async (req, res) => {
   try {
     const allPosts = await Post.find();
@@ -59,6 +72,7 @@ const createMoviePost = async (req, res) => {
 
 module.exports = {
   createPost,
+  patchPost,
   updatePost,
   getAllPosts,
   createMoviePost,
