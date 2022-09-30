@@ -1,6 +1,96 @@
 const { StatusCodes } = require('http-status-codes');
 const User = require('../models/User');
 
+
+/**
+ * @swagger 
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - name
+ *         - password
+ *         - email
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: The Auto-generated id of a post
+ *         name:
+ *           type: string
+ *           description: name of the user
+ *         password:
+ *           type: string
+ *           description: password of the user
+ *         email:
+ *           type: string
+ *           description: email of the user
+ *         avatar:
+ *           type: string
+ *           description: avatar of the user
+ *         createTime:
+ *           type: string
+ *           description: the time of creating the user
+ *         bgImg:
+ *           type: string
+ *           description: background image of the user profile
+ *         role:
+ *           type: string
+ *           description: role of the user
+ *         follower:
+ *           type: array
+ *           items: 
+ *             type: string
+ *           description: follower of the user
+ *         following:
+ *           type: array
+ *           items: 
+ *             type: string
+ *           description: the following user of the user
+ *         followingPost:
+ *           type: array
+ *           items: 
+ *             type: string
+ *           description: followingPost of the user
+ *       example:
+ *         _id: 6332d81195b55eda2a612059
+ *         name: Rachel
+ *         password: abcd1234
+ *         email: example@example.com
+ *         avatar: xxxxx
+ *         createTime: 2022-09-27T11:01:37.487Z
+ *         bgImg: xxxxx
+ *         role: admin
+ *         follower: [6332d81195b55eda2a612058, 6332d81195b55eda2a612057]
+ *         following: [6332d81195b55eda2a612053, 6332d81195b55eda2a612052]
+ *         followingPost: [6332d81195b55eda2a612153, 6332d81195b55eda2a612058, 6332d81195b55eda2a602057]
+ *
+ * paths:
+ *   /users/{id}:
+ *     get:
+ *       tags: 
+ *         - user
+ *       summary: Find user by id
+ *       description: Return a single user
+ *       operationId: getUserById
+ *       parameters:
+ *         - name: id
+ *           in: path
+ *           description: ID of user to return 
+ *           
+ *           schema: 
+ *             type: string
+ *       responses:
+ *         '200':
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/User'
+ *         '404':
+ *           description: User not found
+ *
+ */
 const getUserById = async (req, res) => {
   const { id } = req.params;
 
