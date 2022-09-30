@@ -5,6 +5,7 @@ const {
   createUser,
   resetPassword,
   getAllUsers,
+  updateUser,
   patchUser,
 } = require('../controllers/user');
 
@@ -19,6 +20,8 @@ userRouter.post('/', createUser);
 userRouter.post('/reset/', resetPassword);
 
 userRouter.get('/', getAllUsers);
+
+userRouter.put('/:id', updateUser);
 
 
 module.exports = userRouter;
