@@ -56,14 +56,52 @@ const createMoviePost = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
+
+const checkLike = async (req, res) => {
+  const { id, userId } = req.params;
+  try {
+    const post = await Post.findOne({ _id: id, like: { $eq: userId } });
+    if (post) {
+      return res.status(StatusCodes.OK).send('true');
+    }
+    return res.status(StatusCodes.OK).send('false');
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
+const getAllLikes = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const post = await Post.findById(id);
+    return res.status(StatusCodes.OK).json(post.like);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 const likePost = async (req, res) => {
-  const { resourceId } = req.params;
+  const { id } = req.params;
   const { userId } = req.body;
 
   try {
-    const post = await Post.findById(resourceId);
+    const post = await Post.findById(id);
     await post.updateOne({ $push: { like: userId } }, { new: true, runValidators: true });
     return res.status(StatusCodes.OK).send('Liked');
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
+// Makee sure to use with checkLike in front end to ensure the existence
+const unlikePost = async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.body;
+
+  try {
+    const post = await Post.findById(id);
+    await post.updateOne({ $pull: { like: userId } }, { new: true, runValidators: true });
+    return res.status(StatusCodes.OK).send('Unliked');
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -75,4 +113,7 @@ module.exports = {
   getAllPosts,
   createMoviePost,
   likePost,
+  checkLike,
+  getAllLikes,
+  unlikePost,
 };
