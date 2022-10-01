@@ -6,6 +6,7 @@ const {
   getCommentById,
   deleteCommentById,
   updateComment,
+  toggleLikeOnComment,
 } = require('../controllers/comment');
 
 const commentRouter = Router();
@@ -21,5 +22,6 @@ commentRouter.post('/', createComment);
 commentRouter.put('/:id', updateComment);
 // Wd don't delete comment but update "visible" value to false and then the comment won't show anymore.
 commentRouter.put('/delete/:id', deleteCommentById);
+commentRouter.put('/:commentId/like', toggleLikeOnComment);
 
 module.exports = commentRouter;
