@@ -2,9 +2,8 @@ const { StatusCodes } = require('http-status-codes');
 const mongoose = require('mongoose');
 const User = require('../models/User');
 
-
 /**
- * @swagger 
+ * @swagger
  * components:
  *   schemas:
  *     User:
@@ -40,17 +39,17 @@ const User = require('../models/User');
  *           description: role of the user
  *         follower:
  *           type: array
- *           items: 
+ *           items:
  *             type: string
  *           description: follower of the user
  *         following:
  *           type: array
- *           items: 
+ *           items:
  *             type: string
  *           description: the following user of the user
  *         followingPost:
  *           type: array
- *           items: 
+ *           items:
  *             type: string
  *           description: followingPost of the user
  *       example:
@@ -69,7 +68,7 @@ const User = require('../models/User');
  * paths:
  *   /users/{id}:
  *     get:
- *       tags: 
+ *       tags:
  *         - user
  *       summary: Find user by id
  *       description: Return a single user
@@ -77,8 +76,8 @@ const User = require('../models/User');
  *       parameters:
  *         - name: id
  *           in: path
- *           description: ID of user to return 
- *           schema: 
+ *           description: ID of user to return
+ *           schema:
  *             type: string
  *       responses:
  *         '200':
@@ -91,9 +90,9 @@ const User = require('../models/User');
  *           description: User not found
  *   /users:
  *     post:
- *       tags: 
+ *       tags:
  *         - user
- *       summary: Add a new user 
+ *       summary: Add a new user
  *       description: Return created user
  *       operationId: createUser
  *       requestBody:

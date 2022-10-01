@@ -55,10 +55,7 @@ const updateComment = async (req, res) => {
   const { text, mentionUserId } = req.body;
   try {
     const comment = Comment.findById(id);
-    await comment.updateOne(
-      { $set: { text, mentionUserId } },
-      { runValidator: true, new: true }
-    );
+    await comment.updateOne({ $set: { text, mentionUserId } }, { runValidator: true, new: true });
     return res.status(StatusCodes.OK).json('updated');
   } catch (err) {
     return res.status(StatusCodes.err).json(err);
