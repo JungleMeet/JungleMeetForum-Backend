@@ -10,15 +10,16 @@ const {
 } = require('../controllers/post');
 
 const postRouter = Router();
-
-postRouter.patch('/:id', auth, patchPost);
-
-postRouter.post('/', auth, createMoviePost);
-postRouter.post('/', auth, createPost);
-postRouter.patch('/:id', auth, deletePost);
-
 postRouter.get('/', getAllPosts);
 
-postRouter.put('/:id', auth, updatePost);
+// endpoints before this line is open to everyone
+postRouter.use(auth);
+// endpoints after this line require valid token to access
+
+postRouter.patch('/:id', patchPost);
+postRouter.post('/', createMoviePost);
+postRouter.post('/', createPost);
+postRouter.patch('/:id', deletePost);
+postRouter.put('/:id', updatePost);
 
 module.exports = postRouter;
