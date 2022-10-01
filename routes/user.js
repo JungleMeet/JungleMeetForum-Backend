@@ -18,6 +18,7 @@ userRouter.patch('/:id', patchUser);
 
 userRouter.post('/', createUser);
 userRouter.post('/reset/', resetPassword);
+
 userRouter.get('/', getAllUsers);
 
 userRouter.put('/:id', updateUser);
