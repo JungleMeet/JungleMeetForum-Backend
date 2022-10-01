@@ -44,7 +44,6 @@ const resetPassword = async (req, res) => {
   try {
     const user = await User.findById(id);
     if (user.password === oldPassword) {
-
       await user.updateOne({ $set: { password: newPassword } }, { new: true, runValidators: true });
       return res.status(StatusCodes.OK).send('Password changed successfully!');
     }
@@ -100,7 +99,6 @@ const patchUser = async (req, res) => {
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
-
 };
 
 module.exports = {

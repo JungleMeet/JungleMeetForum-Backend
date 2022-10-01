@@ -50,10 +50,25 @@ const deleteCommentById = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
+const updateComment = async (req, res) => {
+  const { id } = req.params;
+  const { text, mentionUserId } = req.body;
+  try {
+    const comment = Comment.findById(id);
+    await comment.updateOne(
+      { $set: { text, mentionUserId } },
+      { runValidator: true, new: true }
+    );
+    return res.status(StatusCodes.OK).json('updated');
+  } catch (err) {
+    return res.status(StatusCodes.err).json(err);
+  }
+};
 
 module.exports = {
   createComment,
   getAllComments,
   getCommentById,
   deleteCommentById,
+  updateComment,
 };

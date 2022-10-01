@@ -23,5 +23,4 @@ userRouter.get('/', getAllUsers);
 
 userRouter.put('/:id', updateUser);
 
-
 module.exports = userRouter;
