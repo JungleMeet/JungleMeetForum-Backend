@@ -6,11 +6,11 @@ const CommentSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please enter your comment'],
     },
-    createTime: {
+    createdTime: {
       type: Date,
       default: Date.now,
     },
-    updateTime: {
+    updatedTime: {
       type: Date,
       default: Date.now,
     },
@@ -19,7 +19,7 @@ const CommentSchema = new mongoose.Schema(
       default: true,
     },
     author: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
-    mentionUserId: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+    mentionedUserId: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     postId: { type: mongoose.Types.ObjectId, ref: 'Post' },
     parentCommentId: { type: mongoose.Types.ObjectId, ref: 'Comment' },
     like: [{ type: mongoose.Types.ObjectId, ref: 'User', default: 0 }],
