@@ -67,7 +67,7 @@ const getPostById = async (req, res) => {
     const post = await Post.findByIdAndUpdate(
       { _id: id },
       {
-        $inc: { viewNumber: 1 },
+        $inc: { viewCount: 1 },
       },
       { runValidator: true, useFindAndModify: true, new: true }
     );
