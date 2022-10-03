@@ -25,6 +25,6 @@ commentRouter.put('/:id', updateComment);
 // Wd don't delete comment but update "visible" value to false and then the comment won't show anymore.
 // only admin can delete a comment
 commentRouter.put('/delete/:id', adminGuard, deleteCommentById);
-commentRouter.put('/:commentId/like', toggleLikeOnComment);
+commentRouter.patch('/like/:commentId', toggleLikeOnComment);
 
 module.exports = commentRouter;

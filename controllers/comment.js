@@ -66,15 +66,22 @@ const toggleLikeOnComment = async (req, res) => {
   const { commentId } = req.params;
   const { userId } = req;
   const comment = await Comment.findById(commentId).exec();
-  if (!comment) return res.status(StatusCodes.NOT_FOUND);
+  if (!comment) return res.sendStatus(StatusCodes.NOT_FOUND);
   // the types are not correct, one is object id the other is string, but it works in mongoose
-  if (comment.like.includes(userId)) {
+  const userLikedThis = comment.like.includes(userId);
+  if (userLikedThis) {
     comment.like.pull(userId);
   } else {
     comment.like.push(userId);
   }
   await comment.save();
-  return res.status(StatusCodes.OK).json({ like: comment.like });
+
+  return res.status(StatusCodes.OK).json({
+    commentId,
+    likeCount: comment.likeCount,
+    userId,
+    userLikedThis: !userLikedThis,
+  });
 };
 
 module.exports = {
