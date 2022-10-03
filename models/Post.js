@@ -3,33 +3,32 @@ const mongoose = require('mongoose');
 const PostSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, 'Title is empty'],
+    // required: [true, 'Title is empty'],
   },
   content: {
     type: String,
-    required: [true, 'Content is empty'],
+    // required: [true, 'Content is empty'],
   },
   hashtag: {
     type: String,
   },
-  createTime: {
+  createdTime: {
     type: Date,
     default: Date.now,
   },
-  updateTime: {
+  updatedTime: {
     type: Date,
-    default: Date.now,
   },
   bgImg: {
     type: String,
-    required: [true, 'Please provide background image'],
+    // required: [true, 'Please provide background image'],
   },
   visible: {
     type: Boolean,
     default: true,
   },
   resourceId: { type: String },
-  viewNumber: { type: Number, default: 0 },
+  viewCount: { type: Number, default: 0 },
   postType: { type: String, required: true, enum: ['userPost', 'moviePost'], default: 'userPost' },
   author: {
     type: mongoose.Types.ObjectId,
