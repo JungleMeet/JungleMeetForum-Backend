@@ -6,7 +6,7 @@ const createPost = async (req, res) => {
 
   try {
     const now = new Date();
-    const post = new Post({ title, author, content, hashtag, bgImg, createTime: now });
+    const post = new Post({ title, author, content, hashtag, bgImg, createdTime: now });
     const thePost = await post.save();
 
     return res.status(StatusCodes.OK).json(thePost);
@@ -81,7 +81,7 @@ const createMoviePost = async (req, res) => {
 
   try {
     const now = new Date();
-    const post = new Post({ resourceId, postType: 'moviePost', createTime: now });
+    const post = new Post({ resourceId, postType: 'moviePost', createdTime: now });
     const result = await post.save();
 
     return res.status(StatusCodes.OK).json(result);

@@ -28,7 +28,7 @@ const User = require('../models/User');
  *         avatar:
  *           type: string
  *           description: avatar of the user
- *         createTime:
+ *         createdTime:
  *           type: string
  *           description: the time of creating the user
  *         bgImg:
@@ -129,7 +129,7 @@ const createUser = async (req, res) => {
 
   try {
     const now = new Date();
-    const user = new User({ name, password, email, avatar, bgImg, createTime: now });
+    const user = new User({ name, password, email, avatar, bgImg, createdTime: now });
     const ret = await user.save();
 
     return res.status(StatusCodes.OK).json(ret);
