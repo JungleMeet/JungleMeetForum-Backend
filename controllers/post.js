@@ -45,13 +45,12 @@ const updatePost = async (req, res) => {
 
 const getPostById = async (req, res) => {
   const { id } = req.params;
-  const post = req.body;
 
   try {
-    await Post.findByIdAndUpdate(
+    const post = await Post.findByIdAndUpdate(
       { _id: id },
       {
-        $set: req.body,
+        $inc: { viewNumber: 1 },
       },
       { runValidator: true, useFindAndModify: true, new: true }
     );

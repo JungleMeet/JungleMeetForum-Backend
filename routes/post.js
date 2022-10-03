@@ -6,7 +6,7 @@ const postRouter = Router();
 
 postRouter.post('/', createPost);
 postRouter.get('/', getAllPosts);
-postRouter.get('/', getPostById);
+postRouter.get('/:id', getPostById);
 
 postRouter.put('/:id', auth, updatePost);
 
