@@ -9,12 +9,14 @@ const {
   getAllLikes,
   unlikePost,
   deletePost,
+  getPostById,
   createMoviePost,
   patchPost,
 } = require('../controllers/post');
 
 const postRouter = Router();
 postRouter.get('/', getAllPosts);
+postRouter.get('/:id', getPostById);
 
 // endpoints before this line is open to everyone
 postRouter.use(auth);
