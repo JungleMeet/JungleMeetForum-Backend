@@ -67,6 +67,24 @@ const updatePost = async (req, res) => {
   }
 };
 
+const getPostById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const post = await Post.findByIdAndUpdate(
+      { _id: id },
+      {
+        $inc: { viewCount: 1 },
+      },
+      { runValidator: true, useFindAndModify: true, new: true }
+    );
+
+    return res.status(StatusCodes.OK).json(post);
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 const deletePost = async (req, res) => {
   const { id } = req.params;
 
@@ -152,6 +170,7 @@ module.exports = {
   patchPost,
   updatePost,
   getAllPosts,
+  getPostById,
   deletePost,
   createMoviePost,
   likePost,
