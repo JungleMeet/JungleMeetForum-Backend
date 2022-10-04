@@ -28,7 +28,7 @@ const PostSchema = new mongoose.Schema({
     default: true,
   },
   resourceId: { type: String },
-  viewNumber: { type: Number, default: 0 },
+  viewCount: { type: Number, default: 0 },
   postType: { type: String, required: true, enum: ['userPost', 'moviePost'], default: 'userPost' },
   author: {
     type: mongoose.Types.ObjectId,
