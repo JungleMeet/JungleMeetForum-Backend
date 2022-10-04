@@ -1,10 +1,10 @@
 const { StatusCodes } = require('http-status-codes');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-
 /**
- * @swagger 
+ * @swagger
  * components:
  *   schemas:
  *     User:
@@ -40,17 +40,17 @@ const User = require('../models/User');
  *           description: role of the user
  *         follower:
  *           type: array
- *           items: 
+ *           items:
  *             type: string
  *           description: follower of the user
  *         following:
  *           type: array
- *           items: 
+ *           items:
  *             type: string
  *           description: the following user of the user
  *         followingPost:
  *           type: array
- *           items: 
+ *           items:
  *             type: string
  *           description: followingPost of the user
  *       example:
@@ -69,7 +69,7 @@ const User = require('../models/User');
  * paths:
  *   /users/{id}:
  *     get:
- *       tags: 
+ *       tags:
  *         - user
  *       summary: Find user by id
  *       description: Return a single user
@@ -77,8 +77,8 @@ const User = require('../models/User');
  *       parameters:
  *         - name: id
  *           in: path
- *           description: ID of user to return 
- *           schema: 
+ *           description: ID of user to return
+ *           schema:
  *             type: string
  *       responses:
  *         '200':
@@ -91,9 +91,9 @@ const User = require('../models/User');
  *           description: User not found
  *   /users:
  *     post:
- *       tags: 
+ *       tags:
  *         - user
- *       summary: Add a new user 
+ *       summary: Add a new user
  *       description: Return created user
  *       operationId: createUser
  *       requestBody:
@@ -113,6 +113,7 @@ const User = require('../models/User');
  *         '404':
  *           description: Not found
  */
+
 const getUserById = async (req, res) => {
   const { id } = req.params;
 
@@ -135,6 +136,14 @@ const createUser = async (req, res) => {
 
     return res.status(StatusCodes.OK).json(ret);
   } catch (err) {
+    if (err.code === 11000) {
+      if (Object.keys(err.keyValue).includes('name')) {
+        return res.status(StatusCodes.CONFLICT).send('Name existed');
+      }
+      if (Object.keys(err.keyValue).includes('email')) {
+        return res.status(StatusCodes.CONFLICT).send('Email registered');
+      }
+    }
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
@@ -150,7 +159,8 @@ const getAllUsers = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  const { id, newPassword, oldPassword } = req.body;
+  const id = req.userId;
+  const { newPassword, oldPassword } = req.body;
 
   try {
     const user = await User.findById(id);
@@ -212,6 +222,25 @@ const patchUser = async (req, res) => {
   }
 };
 
+const userLogIn = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user.password === password) {
+      const data = { userId: user._id };
+      const token = jwt.sign(data, process.env.JWT_SECRET, {
+        algorithm: 'HS256',
+        expiresIn: process.env.JWT_EXPIRE_TIME,
+      });
+      res.cookie('token', token);
+      return res.status(StatusCodes.OK).send('Successfully logged in');
+    }
+    return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 module.exports = {
   getUserById,
   createUser,
@@ -219,4 +248,5 @@ module.exports = {
   resetPassword,
   updateUser,
   patchUser,
+  userLogIn,
 };
