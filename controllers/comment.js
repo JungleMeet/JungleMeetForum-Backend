@@ -1,6 +1,90 @@
 const { StatusCodes } = require('http-status-codes');
 const Comment = require('../models/Comment');
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Comment:
+ *       type: object
+ *       required:
+ *         - text
+ *         - author
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: The Auto-generated id of a post
+ *         text:
+ *           type: string
+ *           description: text of the user
+ *         author:
+ *           type: string
+ *           description: author of the user
+ *         createdTime:
+ *           type: string
+ *           description: the time of creating the user
+ *         updatedTime:
+ *           type: string
+ *           description: the time of updating the user
+ *         visible:
+ *           type: boolean
+ *           description: role of the user
+ *         mentionedUserId:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: mentioned UserId of the user
+ *         postId:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: the post Id of the user
+ *         parentCommentId:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: parent Comment Id of the user
+ *         like:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: the like of the user
+ *       example:
+ *         _id: 6333bac93edc0fe86c036b16
+ *         mentionedUserId: []
+ *         text:
+ *         author: []
+ *         visible: null
+ *         createTime: 2022-09-27T11:01:37.487Z
+ *         updateTime: 2022-09-30T14:26:18.296Z
+ *         __v: 24
+ *         createdTime: 2022-10-03T06:40:03.763Z
+ *         updatedTime: 2022-10-03T06:40:03.763Z
+ *         like: []
+ * paths:
+ *   /comments/{id}:
+ *     get:
+ *       tags:
+ *         - comment
+ *       summary: Find comment by id
+ *       description: Return a single comment
+ *       operationId: getCommentById
+ *       parameters:
+ *         - name: id
+ *           in: path
+ *           description: ID of comment to return
+ *           schema:
+ *             type: string
+ *       responses:
+ *         '200':
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Comment'
+ *         '404':
+ *           description: Comment not found
+ */
 const createComment = async (req, res) => {
   const { text, author, postId } = req.body;
   try {
