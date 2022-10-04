@@ -35,7 +35,7 @@ const patchPost = async (req, res) => {
     }
     return res.status(StatusCodes.BAD_REQUEST).json('Title and content cannot be empty!'); 
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err);
+    return res.status(StatusCodes.NOT_FOUND).json(err.message);
   }
 };
 
@@ -98,7 +98,7 @@ const deletePost = async (req, res) => {
     );
     return res.status(StatusCodes.OK).json('Successfully deleted');
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err);
+    return res.status(StatusCodes.NOT_FOUND).json(err.message);
   }
 };
 const createMoviePost = async (req, res) => {
@@ -111,7 +111,7 @@ const createMoviePost = async (req, res) => {
 
     return res.status(StatusCodes.OK).json(result);
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err);
+    return res.status(StatusCodes.NOT_FOUND).json(err.message);
   }
 };
 
