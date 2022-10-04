@@ -108,7 +108,6 @@ const createMoviePost = async (req, res) => {
     const now = new Date();
     const post = new Post({ resourceId, postType: 'moviePost', createdTime: now });
     const result = await post.save();
-
     return res.status(StatusCodes.OK).json(result);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err.message);
