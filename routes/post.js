@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const auth = require('../middleware/auth');
+const adminGuard = require('../middleware/adminGuard');
 const {
   createPost,
   updatePost,
@@ -23,7 +24,7 @@ postRouter.use(auth);
 postRouter.patch('/:id', patchPost);
 postRouter.post('/', createMoviePost);
 postRouter.post('/', createPost);
-postRouter.patch('/:id', deletePost);
+postRouter.patch('/delete/:id', adminGuard, deletePost);
 postRouter.put('/:id', updatePost);
 
 postRouter.patch('/:id', auth, likePost);

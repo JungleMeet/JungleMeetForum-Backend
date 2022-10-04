@@ -17,16 +17,23 @@ const createPost = async (req, res) => {
 
 const patchPost = async (req, res) => {
   const { id } = req.params;
+  const {userId} = req;
 
   try {
     const { title, content, hashtag, bgImg } = req.body;
-    const now = new Date();
-    const post = await Post.findOneAndUpdate(
-      { _id: id },
-      { title, content, hashtag, bgImg, updatedTime: now },
-      { runValidators: true, new: true }
-    );
-    return res.status(StatusCodes.OK).json(post);
+    if (title && content){
+      const now = new Date();
+      const post = await Post.findOneAndUpdate(
+        { _id: id, author: userId},
+        { title, content, hashtag, bgImg, updatedTime: now },
+        { runValidators: true, new: true }
+      );
+      if (post) {
+        return res.status(StatusCodes.OK).json(post)
+      }
+      return res.status(StatusCodes.BAD_REQUEST).json('Only author can update post!');
+    }
+    return res.status(StatusCodes.BAD_REQUEST).json('Title and content cannot be empty!'); 
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -64,14 +71,14 @@ const deletePost = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const post = await Post.findOneAndUpdate(
+    await Post.findOneAndUpdate(
       { _id: id },
       {
         visible: false,
       },
       { runValidator: true, new: true }
     );
-    return res.status(StatusCodes.OK).json(post);
+    return res.status(StatusCodes.OK).json('Successfully deleted');
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
