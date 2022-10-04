@@ -24,12 +24,12 @@ postRouter.use(auth);
 // endpoints after this line require valid token to access
 
 postRouter.patch('/:id', patchPost);
-postRouter.post('/', createMoviePost);
+postRouter.post('/movie', createMoviePost);
 postRouter.post('/', createPost);
 postRouter.patch('/delete/:id', adminGuard, deletePost);
 postRouter.put('/:id', updatePost);
 
-postRouter.patch('/:id', auth, likePost);
+postRouter.patch('/like/:id', auth, likePost);
 postRouter.patch('/unlike/:id', auth, unlikePost);
 
 postRouter.get('/:id/likes/', auth, getAllLikes);

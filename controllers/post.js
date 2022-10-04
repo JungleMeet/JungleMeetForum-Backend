@@ -31,7 +31,7 @@ const patchPost = async (req, res) => {
       if (post) {
         return res.status(StatusCodes.OK).json(post)
       }
-      return res.status(StatusCodes.BAD_REQUEST).json('Only author can update post!');
+      return res.status(StatusCodes.UNAUTHORIZED).json('Only author can update post!');
     }
     return res.status(StatusCodes.BAD_REQUEST).json('Title and content cannot be empty!'); 
   } catch (err) {
