@@ -140,18 +140,25 @@ const getAllPosts = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
-  const { id } = req.params;
+  const { postId } = req.params;
+  const { title, content, hashtag, bgImg } = req.body;
+  const { userId } = req;
 
-  const post = await Post.findById(id).exec();
-  if (!post) return res.sendStatus(StatusCodes.NOT_FOUND);
+  if (!title || !content)
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Title and content cannot be empty!' });
 
   try {
-    const { title, content, hashtag, bgImg } = req.body;
     const updatedPost = await Post.findOneAndUpdate(
-      { _id: id },
-      { title, content, hashtag, bgImg },
-      { runValidator: true, useFindAndModify: true, new: true }
+      { _id: postId, author: userId },
+      { $set: { title, content, hashtag, bgImg } },
+      { runValidator: true, new: true }
     );
+
+    if (updatedPost === null)
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Cannot find the authro!' });
+
     return res.status(StatusCodes.OK).json(updatedPost);
   } catch (err) {
     return res.status(StatusCodes.BAD_REQUEST).json(err);
