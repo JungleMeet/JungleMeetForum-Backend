@@ -156,10 +156,10 @@ const updatePost = async (req, res) => {
       { runValidator: true, new: true }
     );
 
-    if (updatedPost === null)
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Cannot find the authro!' });
-
-    return res.status(StatusCodes.OK).json(updatedPost);
+    if (updatedPost) {
+      return res.status(StatusCodes.OK).json(updatedPost);
+    }
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Cannot find the authro!' });
   } catch (err) {
     return res.status(StatusCodes.BAD_REQUEST).json(err);
   }
