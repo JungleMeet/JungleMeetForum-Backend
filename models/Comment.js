@@ -16,7 +16,6 @@ const CommentSchema = new mongoose.Schema(
     parentCommentId: { type: mongoose.Types.ObjectId, ref: 'Comment' },
     like: [{ type: mongoose.Types.ObjectId, ref: 'User', default: 0 }],
   },
-  { timestamps: true },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
