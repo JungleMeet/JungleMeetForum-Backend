@@ -144,10 +144,11 @@ const updatePost = async (req, res) => {
   const { title, content, hashtag, bgImg } = req.body;
   const { userId } = req;
 
-  if (!title || !content)
+  if (!title || !content) {
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: 'Title and content cannot be empty!' });
+  }
 
   try {
     const updatedPost = await Post.findOneAndUpdate(
