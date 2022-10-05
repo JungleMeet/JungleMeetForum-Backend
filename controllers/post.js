@@ -104,7 +104,6 @@ const deletePost = async (req, res) => {
 
 const createMoviePost = async (req, res) => {
   const { resourceId } = req.body;
-
   try {
     const now = new Date();
     const post = new Post({ resourceId, postType: 'moviePost', createdTime: now });
