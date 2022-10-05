@@ -102,7 +102,7 @@ const createPost = async (req, res) => {
   const { title, author, content, hashtag, bgImg } = req.body;
 
   try {
-    if(title & content){
+    if(title && content){
     const now = new Date();
     const post = new Post({ title, author, content, hashtag, bgImg, createdTime: now });
     const result = await post.save();
@@ -114,7 +114,7 @@ const createPost = async (req, res) => {
   }
   return res.status(StatusCodes.BAD_REQUEST).json({message:'Title and content cannot be empty!'}); 
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err.message);
+    return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
 
