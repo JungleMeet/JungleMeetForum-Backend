@@ -17,7 +17,7 @@ const {
 
 const postRouter = Router();
 postRouter.get('/', getAllPosts);
-postRouter.get('/:id', getPostById);
+postRouter.get('/:postId', getPostById);
 
 // endpoints before this line is open to everyone
 postRouter.use(auth);
