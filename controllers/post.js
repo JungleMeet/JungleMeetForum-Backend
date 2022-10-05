@@ -104,11 +104,11 @@ const createPost = async (req, res) => {
   try {
     const now = new Date();
     const post = new Post({ title, author, content, hashtag, bgImg, createdTime: now });
-    const thePost = await post.save();
+    const result = await post.save();
 
-    return res.status(StatusCodes.OK).json(thePost);
+    return res.status(StatusCodes.OK).json(result);
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err);
+    return res.status(StatusCodes.NOT_FOUND).json(err.message);
   }
 };
 

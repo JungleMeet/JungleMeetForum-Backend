@@ -24,7 +24,7 @@ postRouter.use(auth);
 
 postRouter.patch('/:id', patchPost);
 postRouter.post('/', createMoviePost);
-postRouter.post('/', createPost);
+postRouter.post('/post', createPost);
 postRouter.patch('/:id', deletePost);
 postRouter.put('/:id', updatePost);
 
