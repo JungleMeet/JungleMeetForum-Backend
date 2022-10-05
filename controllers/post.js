@@ -102,11 +102,17 @@ const createPost = async (req, res) => {
   const { title, author, content, hashtag, bgImg } = req.body;
 
   try {
+    if(title & content){
     const now = new Date();
     const post = new Post({ title, author, content, hashtag, bgImg, createdTime: now });
     const result = await post.save();
-
+    
+    if(result){
     return res.status(StatusCodes.OK).json(result);
+    }
+    return res.status(StatusCodes.NOT_FOUND).json({message:'Result not found'});
+  }
+  return res.status(StatusCodes.BAD_REQUEST).json({message:'Title and content cannot be empty!'}); 
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err.message);
   }
@@ -241,7 +247,7 @@ const likePost = async (req, res) => {
   }
 };
 
-// Makee sure to use with checkLike in front end to ensure the existence
+// Make sure to use with checkLike in front end to ensure the existence
 const unlikePost = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;
