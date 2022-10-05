@@ -31,11 +31,11 @@ const patchPost = async (req, res) => {
       if (post) {
         return res.status(StatusCodes.OK).json(post)
       }
-      return res.status(StatusCodes.UNAUTHORIZED).json('Only author can update post!');
+      return res.status(StatusCodes.UNAUTHORIZED).json({message: 'Only author can update post!'});
     }
-    return res.status(StatusCodes.BAD_REQUEST).json('Title and content cannot be empty!'); 
+    return res.status(StatusCodes.BAD_REQUEST).json({message:'Title and content cannot be empty!'}); 
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err.message);
+    return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
 
@@ -96,9 +96,9 @@ const deletePost = async (req, res) => {
       },
       { runValidator: true, new: true }
     );
-    return res.status(StatusCodes.OK).json('Successfully deleted');
+    return res.status(StatusCodes.OK).json({message: 'Successfully deleted'});
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err.message);
+    return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
 const createMoviePost = async (req, res) => {
@@ -110,7 +110,7 @@ const createMoviePost = async (req, res) => {
     const result = await post.save();
     return res.status(StatusCodes.OK).json(result);
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err.message);
+    return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
 
