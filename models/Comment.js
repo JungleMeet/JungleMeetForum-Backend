@@ -6,14 +6,6 @@ const CommentSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please enter your comment'],
     },
-    createdTime: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedTime: {
-      type: Date,
-      default: Date.now,
-    },
     visible: {
       type: Boolean,
       default: true,
@@ -24,6 +16,7 @@ const CommentSchema = new mongoose.Schema(
     parentCommentId: { type: mongoose.Types.ObjectId, ref: 'Comment' },
     like: [{ type: mongoose.Types.ObjectId, ref: 'User', default: 0 }],
   },
+  { timestamps: true },
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 

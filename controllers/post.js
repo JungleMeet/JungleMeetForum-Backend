@@ -141,19 +141,20 @@ const getAllPosts = async (req, res) => {
 
 const updatePost = async (req, res) => {
   const { id } = req.params;
-  const post = req.body;
+
+  const post = await Post.findById(id).exec();
+  if (!post) return res.sendStatus(StatusCodes.NOT_FOUND);
 
   try {
-    await Post.findByIdAndUpdate(
+    const { title, content, hashtag, bgImg } = req.body;
+    const updatedPost = await Post.findOneAndUpdate(
       { _id: id },
-      {
-        $set: post,
-      },
+      { title, content, hashtag, bgImg },
       { runValidator: true, useFindAndModify: true, new: true }
     );
-    return res.status(StatusCodes.OK).json(post);
+    return res.status(StatusCodes.OK).json(updatedPost);
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err);
+    return res.status(StatusCodes.BAD_REQUEST).json(err);
   }
 };
 
