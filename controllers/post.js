@@ -101,6 +101,7 @@ const deletePost = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
+
 const createMoviePost = async (req, res) => {
   const { resourceId } = req.body;
 
