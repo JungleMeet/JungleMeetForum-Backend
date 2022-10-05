@@ -68,11 +68,11 @@ const updatePost = async (req, res) => {
 };
 
 const getPostById = async (req, res) => {
-  const { id } = req.params;
+  const { postId } = req.params;
 
   try {
     const post = await Post.findByIdAndUpdate(
-      { _id: id },
+      { _id: postId },
       {
         $inc: { viewCount: 1 },
       },
