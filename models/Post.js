@@ -12,6 +12,13 @@ const PostSchema = new mongoose.Schema({
   hashtag: {
     type: String,
   },
+  createdTime: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedTime: {
+    type: Date,
+  },
   bgImg: {
     type: String,
     // required: [true, 'Please provide background image'],
@@ -22,12 +29,7 @@ const PostSchema = new mongoose.Schema({
   },
   resourceId: { type: String },
   viewCount: { type: Number, default: 0 },
-  postType: {
-    type: String,
-    required: true,
-    enum: ['userPost', 'moviePost'],
-    default: 'userPost',
-  },
+  postType: { type: String, required: true, enum: ['userPost', 'moviePost'], default: 'userPost' },
   author: {
     type: mongoose.Types.ObjectId,
     // required: [true, 'Author is empty'],

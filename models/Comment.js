@@ -6,6 +6,14 @@ const CommentSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please enter your comment'],
     },
+    createdTime: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedTime: {
+      type: Date,
+      default: Date.now,
+    },
     visible: {
       type: Boolean,
       default: true,
