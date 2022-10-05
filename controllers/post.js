@@ -114,16 +114,23 @@ const createPost = async (req, res) => {
 
 const patchPost = async (req, res) => {
   const { id } = req.params;
+  const {userId} = req;
 
   try {
     const { title, content, hashtag, bgImg } = req.body;
-    const now = new Date();
-    const post = await Post.findOneAndUpdate(
-      { _id: id },
-      { title, content, hashtag, bgImg, updatedTime: now },
-      { runValidators: true, new: true }
-    );
-    return res.status(StatusCodes.OK).json(post);
+    if (title && content){
+      const now = new Date();
+      const post = await Post.findOneAndUpdate(
+        { _id: id, author: userId},
+        { title, content, hashtag, bgImg, updatedTime: now },
+        { runValidators: true, new: true }
+      );
+      if (post) {
+        return res.status(StatusCodes.OK).json(post)
+      }
+      return res.status(StatusCodes.UNAUTHORIZED).json({message: 'Only author can update post!'});
+    }
+    return res.status(StatusCodes.BAD_REQUEST).json({message:'Title and content cannot be empty!'}); 
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -158,11 +165,11 @@ const updatePost = async (req, res) => {
 };
 
 const getPostById = async (req, res) => {
-  const { id } = req.params;
+  const { postId } = req.params;
 
   try {
     const post = await Post.findByIdAndUpdate(
-      { _id: id },
+      { _id: postId },
       {
         $inc: { viewCount: 1 },
       },
@@ -179,26 +186,25 @@ const deletePost = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const post = await Post.findOneAndUpdate(
+    await Post.findOneAndUpdate(
       { _id: id },
       {
         visible: false,
       },
       { runValidator: true, new: true }
     );
-    return res.status(StatusCodes.OK).json(post);
+    return res.status(StatusCodes.OK).json({message: 'Successfully deleted'});
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
+
 const createMoviePost = async (req, res) => {
   const { resourceId } = req.body;
-
   try {
     const now = new Date();
     const post = new Post({ resourceId, postType: 'moviePost', createdTime: now });
     const result = await post.save();
-
     return res.status(StatusCodes.OK).json(result);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
