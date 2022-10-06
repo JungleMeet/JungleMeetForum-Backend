@@ -192,12 +192,14 @@ const getAllPosts = async (req, res) => {
 /**
  * @swagger
  *   /posts/{postId}:
- *     post:
+ *     put:
  *       tags:
  *         - post
  *       summary: Update an existing post
  *       description: Update an existing post by Id
  *       operationId: updatePost
+ *       security:
+ *         - bearerAuth: []
  *       parameters:
  *         - name: postId
  *           in: path
@@ -211,7 +213,27 @@ const getAllPosts = async (req, res) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Post/{title, content, hashtag, bgImg}'
+ *               type: object
+ *               required:
+ *                 - title
+ *                 - content
+ *               properties:
+ *                 title:
+ *                   type: string
+ *                   description: title of the post
+ *                   example: Matrix
+ *                 content:
+ *                   type: string
+ *                   description: content of the post
+ *                   example: Great movie!
+ *                 bgImg:
+ *                   type: string
+ *                   description: background image of the the post
+ *                   example: xxxx
+ *                 hashtag:
+ *                   type: string
+ *                   description: tag post
+ *                   example: Sci-fi
  *       responses:
  *         '200':
  *           description: Successful operation
