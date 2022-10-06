@@ -23,8 +23,8 @@ postRouter.use(auth);
 // endpoints after this line require valid token to access
 
 postRouter.patch('/:id', patchPost);
-postRouter.post('/moviepost', createMoviePost);
-postRouter.post('/', createPost);
+postRouter.post('/movie', createMoviePost);
+postRouter.post('/delete/:id', createPost);
 postRouter.patch('/:id', deletePost);
 postRouter.put('/:postId', updatePost);
 
