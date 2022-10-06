@@ -102,17 +102,19 @@ const createPost = async (req, res) => {
   const { title, author, content, hashtag, bgImg } = req.body;
 
   try {
-    if(title && content){
-    const now = new Date();
-    const post = new Post({ title, author, content, hashtag, bgImg, createdTime: now });
-    const result = await post.save();
-    
-    if(result){
-    return res.status(StatusCodes.OK).json(result);
+    if (title && content) {
+      const now = new Date();
+      const post = new Post({ title, author, content, hashtag, bgImg, createdTime: now });
+      const result = await post.save();
+
+      if (result) {
+        return res.status(StatusCodes.OK).json(result);
+      }
+      return res.status(StatusCodes.NOT_FOUND).json({ message: 'Result not found' });
     }
-    return res.status(StatusCodes.NOT_FOUND).json({message:'Result not found'});
-  }
-  return res.status(StatusCodes.BAD_REQUEST).json({message:'Title and content cannot be empty!'}); 
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Title and content cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -120,23 +122,25 @@ const createPost = async (req, res) => {
 
 const patchPost = async (req, res) => {
   const { id } = req.params;
-  const {userId} = req;
+  const { userId } = req;
 
   try {
     const { title, content, hashtag, bgImg } = req.body;
-    if (title && content){
+    if (title && content) {
       const now = new Date();
       const post = await Post.findOneAndUpdate(
-        { _id: id, author: userId},
+        { _id: id, author: userId },
         { title, content, hashtag, bgImg, updatedTime: now },
         { runValidators: true, new: true }
       );
       if (post) {
-        return res.status(StatusCodes.OK).json(post)
+        return res.status(StatusCodes.OK).json(post);
       }
-      return res.status(StatusCodes.UNAUTHORIZED).json({message: 'Only author can update post!'});
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Only author can update post!' });
     }
-    return res.status(StatusCodes.BAD_REQUEST).json({message:'Title and content cannot be empty!'}); 
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Title and content cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -199,7 +203,7 @@ const deletePost = async (req, res) => {
       },
       { runValidator: true, new: true }
     );
-    return res.status(StatusCodes.OK).json({message: 'Successfully deleted'});
+    return res.status(StatusCodes.OK).json({ message: 'Successfully deleted' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
