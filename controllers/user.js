@@ -220,16 +220,20 @@ const updateUser = async (req, res) => {
 
 const patchUser = async (req, res) => {
   const { id } = req.params;
-  const { name, password, email, avatar, bgImg } = req.body;
-  const modifiedUser = { name, password, email, avatar, bgImg };
+  const { userId } = req;
+  const { name, email, avatar, bgImg } = req.body;
+  const modifiedUser = { name, email, avatar, bgImg };
   try {
-    const user = await User.findByIdAndUpdate({ _id: id }, modifiedUser, {
-      runValidator: true,
-      new: true,
-      returnOriginal: false,
-    });
-    await user.save();
-    return res.status(StatusCodes.OK).json(user);
+    if (userId === id) {
+      const user = await User.findByIdAndUpdate({ _id: userId }, modifiedUser, {
+        runValidator: true,
+        new: true,
+        returnOriginal: false,
+      });
+      await user.save();
+      return res.status(StatusCodes.OK).json(user);
+    }
+    return res.status(StatusCodes.UNAUTHORIZED).json('wrong user id, please try again');
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
