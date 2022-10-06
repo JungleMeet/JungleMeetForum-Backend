@@ -64,7 +64,7 @@ const Post = require('../models/Post');
  *         title: abd
  *         content: 1234
  *         createdTime: 2022-10-03T01:33:24.275Z
- *         bgImg: xxxxx
+ *         bgImg: xxxx
  *         visible: true
  *         updatedTime: 2022-09-30T06:01:26.183Z
  *         viewCount: 111
