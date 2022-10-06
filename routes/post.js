@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const auth = require('../middleware/auth');
+const adminGuard = require('../middleware/adminGuard');
 const {
   createPost,
   updatePost,
@@ -16,7 +17,7 @@ const {
 
 const postRouter = Router();
 postRouter.get('/', getAllPosts);
-postRouter.get('/:id', getPostById);
+postRouter.get('/:postId', getPostById);
 
 // endpoints before this line is open to everyone
 postRouter.use(auth);
@@ -24,11 +25,11 @@ postRouter.use(auth);
 
 postRouter.patch('/:id', patchPost);
 postRouter.post('/movie', createMoviePost);
-postRouter.post('/delete/:id', createPost);
-postRouter.patch('/:id', deletePost);
+postRouter.post('/post', createPost);
+postRouter.patch('/delete/:id', adminGuard, deletePost);
 postRouter.put('/:postId', updatePost);
 
-postRouter.patch('/:id', auth, likePost);
+postRouter.patch('/like/:id', auth, likePost);
 postRouter.patch('/unlike/:id', auth, unlikePost);
 
 postRouter.get('/:id/likes/', auth, getAllLikes);
