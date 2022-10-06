@@ -233,6 +233,7 @@ const userLogIn = async (req, res) => {
         expiresIn: process.env.JWT_EXPIRE_TIME,
       });
       res.cookie('token', token);
+      console.log(token);
       return res.status(StatusCodes.OK).send('Successfully logged in');
     }
     return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
