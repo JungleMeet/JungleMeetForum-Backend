@@ -160,7 +160,7 @@ const updatePost = async (req, res) => {
     if (updatedPost) {
       return res.status(StatusCodes.OK).json(updatedPost);
     }
-    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Cannot find the authro!' });
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Only author can update post!' });
   } catch (err) {
     return res.status(StatusCodes.BAD_REQUEST).json(err);
   }
