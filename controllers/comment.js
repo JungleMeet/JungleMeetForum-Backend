@@ -33,7 +33,7 @@ const Comment = require('../models/Comment');
  *           example: 2022-09-28T03:08:57.470Z
  *         visible:
  *           type: boolean
- *           description: role of the user
+ *           description: visible of the user
  *           example: true
  *         mentionedUserId:
  *           type: array
