@@ -76,12 +76,11 @@ const Post = require('../models/Post');
  *   securitySchemes:
  *     bearerAuth:
  *       type: http
- *       schema: bearer
+ *       scheme: bearer
  *       bearerFormat: JWT
- *       in: header
  *     
  * paths:
- *   /posts:
+ *   /posts/post:
  *     post:
  *       tags:
  *         - post
@@ -91,10 +90,11 @@ const Post = require('../models/Post');
  *       security:
  *         - bearerAuth: []
  *       parameters:
- *         - name: token
+ *         - name: Authorization
  *           in: header
  *           schema:
- *             $ref: '#/components/securitySchemes/bearerAuth'
+ *             type:
+ *               string
  *       requestBody:
  *         description:
  *           Add a new post
@@ -139,6 +139,7 @@ const Post = require('../models/Post');
 const createPost = async (req, res) => {
   const { title, content, hashtag, bgImg } = req.body;
   const { userId } = req;
+  
 
   try {
     if (title && content) {
