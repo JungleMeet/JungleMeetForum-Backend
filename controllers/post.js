@@ -178,7 +178,7 @@ const getAllPosts = async (req, res) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Post'
+ *               $ref: '#/components/schemas/Post/{title, content, hashtag, bgImg}'
  *       responses:
  *         '200':
  *           description: Successful operation
