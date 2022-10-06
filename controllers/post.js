@@ -89,12 +89,6 @@ const Post = require('../models/Post');
  *       operationId: createPost
  *       security:
  *         - bearerAuth: []
- *       parameters:
- *         - name: Authorization
- *           in: header
- *           schema:
- *             type:
- *               string
  *       requestBody:
  *         description:
  *           Add a new post
@@ -140,7 +134,6 @@ const createPost = async (req, res) => {
   const { title, content, hashtag, bgImg } = req.body;
   const { userId } = req;
   
-
   try {
     if (title && content) {
       const now = new Date();
