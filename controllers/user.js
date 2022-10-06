@@ -134,7 +134,7 @@ const createUser = async (req, res) => {
 
     return res.status(StatusCodes.OK).json(ret);
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err);
+    return res.status(StatusCodes.BAD_REQUEST).json(err);
   }
 };
 
