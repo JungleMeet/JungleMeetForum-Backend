@@ -27,7 +27,7 @@ postRouter.patch('/:id', patchPost);
 postRouter.post('/movie', createMoviePost);
 postRouter.post('/post', createPost);
 postRouter.patch('/delete/:id', adminGuard, deletePost);
-postRouter.put('/:id', updatePost);
+postRouter.put('/:postId', updatePost);
 
 postRouter.patch('/like/:id', auth, likePost);
 postRouter.patch('/unlike/:id', auth, unlikePost);
