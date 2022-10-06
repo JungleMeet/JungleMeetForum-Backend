@@ -78,7 +78,7 @@ const Post = require('../models/Post');
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
- *     
+ *
  * paths:
  *   /posts/post:
  *     post:
@@ -116,7 +116,7 @@ const Post = require('../models/Post');
  *                   type: string
  *                   description: tag post
  *                   example: horror
- *               
+ *
  *       responses:
  *         '200':
  *           description: successful operation
@@ -133,7 +133,7 @@ const Post = require('../models/Post');
 const createPost = async (req, res) => {
   const { title, content, hashtag, bgImg } = req.body;
   const { userId } = req;
-  
+
   try {
     if (title && content) {
       const now = new Date();
@@ -145,7 +145,9 @@ const createPost = async (req, res) => {
       }
       return res.status(StatusCodes.NOT_FOUND).json({ message: 'Result not found' });
     }
-    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Title and content cannot be empty!' });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Title and content cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -169,7 +171,9 @@ const patchPost = async (req, res) => {
       }
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Only author can update post!' });
     }
-    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Title and content cannot be empty!' });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Title and content cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
