@@ -129,7 +129,7 @@ const deleteCommentById = async (req, res) => {
       useFindAndModify: true,
       new: true,
     });
-    return res.status(StatusCodes.OK).json('Your comment has already been deleted!');
+    return res.status(StatusCodes.OK).json({ message: 'Your comment has already been deleted!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
