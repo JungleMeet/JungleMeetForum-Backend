@@ -73,7 +73,13 @@ const Post = require('../models/Post');
  *             type: string
  *           description: the userId of users who like post
  *           example: [6332d81195b55eda2a612058, 6332d81195b55eda2a612057]
- * 
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       schema: bearer
+ *       bearerFormat: JWT
+ *       in: header
+ *     
  * paths:
  *   /posts:
  *     post:
@@ -82,13 +88,41 @@ const Post = require('../models/Post');
  *       summary: Add a new post
  *       description: Return created post
  *       operationId: createPost
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - name: token
+ *           in: header
+ *           schema:
+ *             $ref: '#/components/securitySchemes/bearerAuth'
  *       requestBody:
  *         description:
  *           Add a new post
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Post{title, content, author, bgImg}'
+ *               type: object
+ *               required:
+ *                 - title
+ *                 - content
+ *               properties:
+ *                 title:
+ *                   type: string
+ *                   description: title of the post
+ *                   example: abd
+ *                 content:
+ *                   type: string
+ *                   description: content of the post
+ *                   example: 1234
+ *                 bgImg:
+ *                   type: string
+ *                   description: background image of the the post
+ *                   example: xxxx
+ *                 hashtag:
+ *                   type: string
+ *                   description: tag post
+ *                   example: horror
+ *               
  *       responses:
  *         '200':
  *           description: successful operation
@@ -97,24 +131,27 @@ const Post = require('../models/Post');
  *               schema:
  *                 $ref: '#/components/schemas/Post'
  *         '404':
- *           description: Not found
+ *           description: Not Found
+ *         '400':
+ *           description: Title and content cannot be empty!
  */
 
 const createPost = async (req, res) => {
-  const { title, author, content, hashtag, bgImg } = req.body;
+  const { title, content, hashtag, bgImg } = req.body;
+  const { userId } = req;
 
   try {
-    if(title && content){
-    const now = new Date();
-    const post = new Post({ title, author, content, hashtag, bgImg, createdTime: now });
-    const result = await post.save();
-    
-    if(result){
-    return res.status(StatusCodes.OK).json(result);
+    if (title && content) {
+      const now = new Date();
+      const post = new Post({ title, author: userId, content, hashtag, bgImg, createdTime: now });
+      const result = await post.save();
+
+      if (result) {
+        return res.status(StatusCodes.OK).json(result);
+      }
+      return res.status(StatusCodes.NOT_FOUND).json({ message: 'Result not found' });
     }
-    return res.status(StatusCodes.NOT_FOUND).json({message:'Result not found'});
-  }
-  return res.status(StatusCodes.BAD_REQUEST).json({message:'Title and content cannot be empty!'}); 
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Title and content cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -122,23 +159,23 @@ const createPost = async (req, res) => {
 
 const patchPost = async (req, res) => {
   const { id } = req.params;
-  const {userId} = req;
+  const { userId } = req;
 
   try {
     const { title, content, hashtag, bgImg } = req.body;
-    if (title && content){
+    if (title && content) {
       const now = new Date();
       const post = await Post.findOneAndUpdate(
-        { _id: id, author: userId},
+        { _id: id, author: userId },
         { title, content, hashtag, bgImg, updatedTime: now },
         { runValidators: true, new: true }
       );
       if (post) {
         return res.status(StatusCodes.OK).json(post)
       }
-      return res.status(StatusCodes.UNAUTHORIZED).json({message: 'Only author can update post!'});
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Only author can update post!' });
     }
-    return res.status(StatusCodes.BAD_REQUEST).json({message:'Title and content cannot be empty!'}); 
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Title and content cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -201,7 +238,7 @@ const deletePost = async (req, res) => {
       },
       { runValidator: true, new: true }
     );
-    return res.status(StatusCodes.OK).json({message: 'Successfully deleted'});
+    return res.status(StatusCodes.OK).json({ message: 'Successfully deleted' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
