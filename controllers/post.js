@@ -86,7 +86,7 @@ const Post = require('../models/Post');
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Post{title, content, author, bgImg}'
+ *               $ref: '#/components/schemas/Post'
  *       responses:
  *         '200':
  *           description: successful operation
@@ -139,6 +139,57 @@ const getAllPosts = async (req, res) => {
   }
 };
 
+/**
+ * @swagger
+ *   /posts/{postId}:
+ *     post:
+ *       tags:
+ *         - post
+ *       summary: Update an existing post
+ *       description: Update an existing post by Id
+ *       operationId: updatePost
+ *       parameters:
+ *         - name: postId
+ *           in: path
+ *           description: ID of post to return
+ *           schema:
+ *             type: string
+ *           required: true
+ *       requestBody:
+ *         description:
+ *           Update an existent post on the forum
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ *       responses:
+ *         '200':
+ *           description: Successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Post'
+ *         '400':
+ *           description: Invalid request.
+ *           content:
+ *             application/json:
+ *               examples:
+ *                 Error:
+ *                   description: Invalid request.
+ *                   value:
+ *                     message: Title and content cannot be empty!
+ *         '401':
+ *           description: Unauthorized author.
+ *           content:
+ *             application/json:
+ *               examples:
+ *                 Error:
+ *                   description: Unauthorized author.
+ *                   value:
+ *                     message: Only author can update the post!
+ *         '404':
+ *           description: Not Found.
+ */
 const updatePost = async (req, res) => {
   const { postId } = req.params;
   const { title, content, hashtag, bgImg } = req.body;
@@ -160,9 +211,11 @@ const updatePost = async (req, res) => {
     if (updatedPost) {
       return res.status(StatusCodes.OK).json(updatedPost);
     }
-    return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Only author can update post!' });
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: 'Only author can update the post!' });
   } catch (err) {
-    return res.status(StatusCodes.BAD_REQUEST).json(err);
+    return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
 
