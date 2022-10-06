@@ -118,31 +118,7 @@ const getCommentById = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
-/**
- * @swagger
- *   /comments/delete/{id}:
- *     get:
- *       tags:
- *         - comment
- *       summary: Delete comment by id
- *       description: Return a single comment
- *       operationId: getCommentById
- *       parameters:
- *         - name: id
- *           in: path
- *           description: ID of comment to return
- *           schema:
- *             type: string
- *       responses:
- *         '200':
- *           description: successful operation
- *           content:
- *             application/json:
- *               schema:
- *                 $ref: '#/components/schemas/Comment'
- *         '404':
- *           description: Comment not found
- */
+
 const deleteCommentById = async (req, res) => {
   const { id } = req.params;
   const { visible } = req.body;
