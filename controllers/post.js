@@ -128,6 +128,89 @@ const Post = require('../models/Post');
  *           description: Not Found
  *         '400':
  *           description: Title and content cannot be empty!
+ * 
+ *   /posts/{postId}:
+ *     patch:
+ *       tags: 
+ *         - post
+ *       summary: Patch a post by id
+ *       description: Patch a post
+ *       operationId: patchPost
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - name: postId
+ *           in: path
+ *           description: the id of the post
+ *           schema:
+ *             type: string
+ *       requestBody:
+ *         description:
+ *           patch a post by id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 title:
+ *                   type: string
+ *                   description: title of the post
+ *                   example: abd
+ *                 content:
+ *                   type: string
+ *                   description: content of the post
+ *                   example: 1234
+ *                 bgImg:
+ *                   type: string
+ *                   description: background image of the the post
+ *                   example: xxxx
+ *                 hashtag:
+ *                   type: string
+ *                   description: tag post
+ *                   example: horror
+ *               
+ *       responses:
+ *         '200':
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Post'
+ *         '401':
+ *           description: Only author can update post!
+ *         '400':
+ *           description: Title and content cannot be empty!
+ *         '404':
+ *           description: Not found
+ * 
+ *   /posts/movie:
+ *     post:
+ *       tags: 
+ *         - post
+ *       summary: create a movie post
+ *       description: create a movie post
+ *       operationId: createMoviePost
+ *       requestBody:
+ *         description:
+ *           create a movie post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 resourceId:
+ *                   type: string
+ *                   description: id of the external resource
+ *                   example: xxxx
+ *       responses:
+ *         '200':
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Post'
+ *         '404':
+ *           description: Not found
  */
 
 const createPost = async (req, res) => {
@@ -152,7 +235,7 @@ const createPost = async (req, res) => {
 };
 
 const patchPost = async (req, res) => {
-  const { id } = req.params;
+  const { postId } = req.params;
   const { userId } = req;
 
   try {
@@ -160,7 +243,7 @@ const patchPost = async (req, res) => {
     if (title && content) {
       const now = new Date();
       const post = await Post.findOneAndUpdate(
-        { _id: id, author: userId },
+        { _id: postId, author: userId },
         { title, content, hashtag, bgImg, updatedTime: now },
         { runValidators: true, new: true }
       );
