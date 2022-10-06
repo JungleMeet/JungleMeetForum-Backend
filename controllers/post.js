@@ -165,7 +165,7 @@ const patchPost = async (req, res) => {
         { runValidators: true, new: true }
       );
       if (post) {
-        return res.status(StatusCodes.OK).json(post)
+        return res.status(StatusCodes.OK).json(post);
       }
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Only author can update post!' });
     }
@@ -186,20 +186,29 @@ const getAllPosts = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
-  const { id } = req.params;
-  const post = req.body;
+  const { postId } = req.params;
+  const { title, content, hashtag, bgImg } = req.body;
+  const { userId } = req;
+
+  if (!title || !content) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Title and content cannot be empty!' });
+  }
 
   try {
-    await Post.findByIdAndUpdate(
-      { _id: id },
-      {
-        $set: post,
-      },
-      { runValidator: true, useFindAndModify: true, new: true }
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postId, author: userId },
+      { $set: { title, content, hashtag, bgImg } },
+      { runValidator: true, new: true }
     );
-    return res.status(StatusCodes.OK).json(post);
+
+    if (updatedPost) {
+      return res.status(StatusCodes.OK).json(updatedPost);
+    }
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Only author can update post!' });
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err);
+    return res.status(StatusCodes.BAD_REQUEST).json(err);
   }
 };
 
