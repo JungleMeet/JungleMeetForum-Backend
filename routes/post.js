@@ -18,13 +18,13 @@ const {
 const postRouter = Router();
 postRouter.get('/', getAllPosts);
 postRouter.get('/:postId', getPostById);
-
+postRouter.post('/movie', createMoviePost);
 // endpoints before this line is open to everyone
 postRouter.use(auth);
 // endpoints after this line require valid token to access
 
-postRouter.patch('/:id', patchPost);
-postRouter.post('/movie', createMoviePost);
+postRouter.patch('/:postId', patchPost);
+
 postRouter.post('/post', createPost);
 postRouter.patch('/delete/:id', adminGuard, deletePost);
 postRouter.put('/:postId', updatePost);
