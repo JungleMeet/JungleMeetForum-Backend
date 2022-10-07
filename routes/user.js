@@ -7,6 +7,7 @@ const {
   getAllUsers,
   updateUser,
   patchUser,
+  toggleFollowing,
 } = require('../controllers/user');
 
 const userRouter = Router();
@@ -22,5 +23,6 @@ userRouter.use(auth);
 userRouter.patch('/:id', patchUser);
 userRouter.post('/reset/', resetPassword);
 userRouter.put('/:id', updateUser);
+userRouter.put('/following/:userId', toggleFollowing);
 
 module.exports = userRouter;
