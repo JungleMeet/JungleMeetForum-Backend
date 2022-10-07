@@ -14,53 +14,49 @@ const Comment = require('../models/Comment');
  *         _id:
  *           type: string
  *           description: The Auto-generated id of a post
+ *           example: 6333bac93edc0fe86c036b16
  *         text:
  *           type: string
  *           description: text of the user
+ *           example: text
  *         author:
  *           type: string
  *           description: author of the user
+ *           example: 6332a4603e60205bb0908b28
  *         createdTime:
  *           type: string
  *           description: the time of creating the user
+ *           example: 2022-09-28T03:08:57.470Z
  *         updatedTime:
  *           type: string
  *           description: the time of updating the user
+ *           example: 2022-09-28T03:08:57.470Z
  *         visible:
  *           type: boolean
- *           description: role of the user
+ *           description: visible of the user
+ *           example: true
  *         mentionedUserId:
  *           type: array
  *           items:
  *             type: string
- *           description: mentioned UserId of the user
+ *           description: []
  *         postId:
  *           type: array
  *           items:
  *             type: string
  *           description: the post Id of the user
+ *           example: 6333b653dbf4653be026279b
  *         parentCommentId:
  *           type: array
  *           items:
  *             type: string
  *           description: parent Comment Id of the user
+ *           example:
  *         like:
  *           type: array
  *           items:
  *             type: string
- *           description: the like of the user
- *       example:
- *         _id: 6333bac93edc0fe86c036b16
- *         mentionedUserId: []
- *         text:
- *         author: []
- *         visible: null
- *         createTime: 2022-09-27T11:01:37.487Z
- *         updateTime: 2022-09-30T14:26:18.296Z
- *         __v: 24
- *         createdTime: 2022-10-03T06:40:03.763Z
- *         updatedTime: 2022-10-03T06:40:03.763Z
- *         like: []
+ *           description: 0
  * paths:
  *   /comments/{id}:
  *     get:
@@ -134,6 +130,7 @@ const deleteCommentById = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
+
 const updateComment = async (req, res) => {
   const { id } = req.params;
   const { text, mentionUserId } = req.body;

@@ -239,6 +239,37 @@ const patchUser = async (req, res) => {
   }
 };
 
+const toggleFollowing = async (req, res) => {
+  const { following } = req.body;
+  const { userId } = req;
+
+  const user = await User.findById(userId).exec();
+  const followingAuthor = await User.findById(following).exec();
+
+  if (!followingAuthor) {
+    return res.status(StatusCodes.NOT_FOUND).json({ message: 'Cannot find the following author!' });
+  }
+
+  try {
+    if (!user.following.includes(following)) {
+      await user.updateOne({ $push: { following } }, { new: true, runValidators: true });
+      await followingAuthor.updateOne(
+        { $push: { follower: userId } },
+        { new: true, runValidators: true }
+      );
+      return res.status(StatusCodes.OK).json({ message: 'Add following succeed!' });
+    }
+    await user.updateOne({ $pull: { following } }, { new: true, runValidators: true });
+    await followingAuthor.updateOne(
+      { $pull: { follower: userId } },
+      { new: true, runValidators: true }
+    );
+    return res.status(StatusCodes.OK).json({ message: 'Unfollowing succeed!' });
+  } catch (err) {
+    return res.status(StatusCodes.BAD_REQUEST).json(err);
+  }
+};
+
 module.exports = {
   getUserById,
   createUser,
@@ -246,4 +277,5 @@ module.exports = {
   resetPassword,
   updateUser,
   patchUser,
+  toggleFollowing,
 };
