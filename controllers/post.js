@@ -78,7 +78,7 @@ const Post = require('../models/Post');
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
- *     
+ *
  * paths:
  *   /posts/post:
  *     post:
@@ -116,7 +116,7 @@ const Post = require('../models/Post');
  *                   type: string
  *                   description: tag post
  *                   example: horror
- *               
+ *
  *       responses:
  *         '200':
  *           description: successful operation
@@ -133,7 +133,7 @@ const Post = require('../models/Post');
 const createPost = async (req, res) => {
   const { title, content, hashtag, bgImg } = req.body;
   const { userId } = req;
-  
+
   try {
     if (title && content) {
       const now = new Date();
@@ -145,7 +145,9 @@ const createPost = async (req, res) => {
       }
       return res.status(StatusCodes.NOT_FOUND).json({ message: 'Result not found' });
     }
-    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Title and content cannot be empty!' });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Title and content cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -169,7 +171,9 @@ const patchPost = async (req, res) => {
       }
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Only author can update post!' });
     }
-    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Title and content cannot be empty!' });
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: 'Title and content cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -185,6 +189,79 @@ const getAllPosts = async (req, res) => {
   }
 };
 
+/**
+ * @swagger
+ *   /posts/{postId}:
+ *     put:
+ *       tags:
+ *         - post
+ *       summary: Update an existing post
+ *       description: Update an existing post by Id
+ *       operationId: updatePost
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - name: postId
+ *           in: path
+ *           description: ID of post to return
+ *           schema:
+ *             type: string
+ *           required: true
+ *       requestBody:
+ *         description:
+ *           Update an existent post on the forum
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required:
+ *                 - title
+ *                 - content
+ *               properties:
+ *                 title:
+ *                   type: string
+ *                   description: title of the post
+ *                   example: Matrix
+ *                 content:
+ *                   type: string
+ *                   description: content of the post
+ *                   example: Great movie!
+ *                 bgImg:
+ *                   type: string
+ *                   description: background image of the the post
+ *                   example: xxxx
+ *                 hashtag:
+ *                   type: string
+ *                   description: tag post
+ *                   example: Sci-fi
+ *       responses:
+ *         '200':
+ *           description: Successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Post'
+ *         '400':
+ *           description: Invalid request.
+ *           content:
+ *             application/json:
+ *               examples:
+ *                 Error:
+ *                   description: Invalid request.
+ *                   value:
+ *                     message: Title and content cannot be empty!
+ *         '401':
+ *           description: Unauthorized author.
+ *           content:
+ *             application/json:
+ *               examples:
+ *                 Error:
+ *                   description: Unauthorized author.
+ *                   value:
+ *                     message: Only author can update the post!
+ *         '404':
+ *           description: Not Found.
+ */
 const updatePost = async (req, res) => {
   const { postId } = req.params;
   const { title, content, hashtag, bgImg } = req.body;
@@ -208,7 +285,7 @@ const updatePost = async (req, res) => {
     }
     return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Only author can update post!' });
   } catch (err) {
-    return res.status(StatusCodes.BAD_REQUEST).json(err);
+    return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
 

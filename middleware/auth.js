@@ -3,7 +3,6 @@
 const verify = (token) => token.split(' ')[1];
 
 const auth = (req, res, next) => {
-  console.log(req.headers);
   const token = req.headers.authorization;
   if (!token) return res.status(401).json({ message: 'no token is presented' });
   // verify() is a fake function, replace it with a real jwt function

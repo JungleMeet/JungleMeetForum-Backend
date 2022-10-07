@@ -134,6 +134,7 @@ const deleteCommentById = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
+
 const updateComment = async (req, res) => {
   const { id } = req.params;
   const { text, mentionUserId } = req.body;
