@@ -209,6 +209,8 @@ const Post = require('../models/Post');
  *             application/json:
  *               schema:
  *                 $ref: '#/components/schemas/Post'
+ *         '400':
+ *            description: 'resourceId cannot be empty'
  *         '404':
  *           description: Not found
  */
@@ -332,11 +334,15 @@ const deletePost = async (req, res) => {
 
 const createMoviePost = async (req, res) => {
   const { resourceId } = req.body;
+  
   try {
-    const now = new Date();
-    const post = new Post({ resourceId, postType: 'moviePost', createdTime: now });
-    const result = await post.save();
-    return res.status(StatusCodes.OK).json(result);
+    if (resourceId){
+      const now = new Date();
+      const post = new Post({ resourceId, postType: 'moviePost', createdTime: now });
+      const result = await post.save();
+      return res.status(StatusCodes.OK).json(result);
+    }
+    return res.status(StatusCodes.BAD_REQUEST).json({message: 'resourceId cannot be empty!'});
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
