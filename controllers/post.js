@@ -128,10 +128,10 @@ const Post = require('../models/Post');
  *           description: Not Found
  *         '400':
  *           description: Title and content cannot be empty!
- * 
+ *
  *   /posts/{postId}:
  *     patch:
- *       tags: 
+ *       tags:
  *         - post
  *       summary: Patch a post by id
  *       description: Patch a post
@@ -168,7 +168,7 @@ const Post = require('../models/Post');
  *                   type: string
  *                   description: tag post
  *                   example: horror
- *               
+ *
  *       responses:
  *         '200':
  *           description: successful operation
@@ -182,10 +182,10 @@ const Post = require('../models/Post');
  *           description: Title and content cannot be empty!
  *         '404':
  *           description: Not found
- * 
+ *
  *   /posts/movie:
  *     post:
- *       tags: 
+ *       tags:
  *         - post
  *       summary: create a movie post
  *       description: create a movie post
@@ -392,6 +392,79 @@ const getPostById = async (req, res) => {
   }
 };
 
+/**
+ * @swagger
+ *   /posts/{postId}:
+ *     get:
+ *       tags:
+ *         - post
+ *       summary: Get post by id
+ *       description: Get a post by Id
+ *       operationId: postId
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - name: postId
+ *           in: path
+ *           description: ID of post to return
+ *           schema:
+ *             type: string
+ *           required: true
+ *       requestBody:
+ *         description:
+ *           Update an existent post on the forum
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required:
+ *                 - title
+ *                 - content
+ *               properties:
+ *                 title:
+ *                   type: string
+ *                   description: title of the post
+ *                   example: 'sample article title'
+ *                 content:
+ *                   type: string
+ *                   description: content of the post
+ *                   example: Great movie!
+ *                 bgImg:
+ *                   type: string
+ *                   description: background image of the the post
+ *                   example: xxxx
+ *                 hashtag:
+ *                   type: string
+ *                   description: tag post
+ *                   example: Sci-fi
+ *       responses:
+ *         '200':
+ *           description: Successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Post'
+ *         '400':
+ *           description: Invalid request.
+ *           content:
+ *             application/json:
+ *               examples:
+ *                 Error:
+ *                   description: Invalid request.
+ *                   value:
+ *                     message: Title and content cannot be empty!
+ *         '401':
+ *           description: Unauthorized author.
+ *           content:
+ *             application/json:
+ *               examples:
+ *                 Error:
+ *                   description: Unauthorized author.
+ *                   value:
+ *                     message: Only author can update the post!
+ *         '404':
+ *           description: Not Found.
+ */
 const deletePost = async (req, res) => {
   const { id } = req.params;
 
@@ -411,15 +484,15 @@ const deletePost = async (req, res) => {
 
 const createMoviePost = async (req, res) => {
   const { resourceId } = req.body;
-  
+
   try {
-    if (resourceId){
+    if (resourceId) {
       const now = new Date();
       const post = new Post({ resourceId, postType: 'moviePost', createdTime: now });
       const result = await post.save();
       return res.status(StatusCodes.OK).json(result);
     }
-    return res.status(StatusCodes.BAD_REQUEST).json({message: 'resourceId cannot be empty!'});
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'resourceId cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
