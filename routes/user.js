@@ -23,6 +23,6 @@ userRouter.use(auth);
 userRouter.put('/following/', toggleFollowing);
 userRouter.patch('/:id', patchUser);
 userRouter.post('/reset/', resetPassword);
-userRouter.put('/:id', updateUser);
+userRouter.put('/', updateUser);
 
 module.exports = userRouter;
