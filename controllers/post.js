@@ -239,6 +239,7 @@ const createPost = async (req, res) => {
 };
 
 const patchPost = async (req, res) => {
+
   const { postId } = req.params;
   const { userId } = req;
 
