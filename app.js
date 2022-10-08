@@ -6,6 +6,7 @@ const xss = require('xss-clean');
 const express = require('express');
 const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
+const cookieParser = require('cookie-parser');
 const connectDB = require('./db/connect');
 const swaggerJsDoc = require('./utils/swagger');
 
@@ -19,7 +20,8 @@ app.use(helmet());
 app.use(cors());
 app.use(xss());
 app.use(morgan('dev'));
-
+// cookie package
+app.use(cookieParser());
 // routes
 app.use('/v1', v1Router);
 

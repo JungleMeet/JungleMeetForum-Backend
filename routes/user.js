@@ -7,7 +7,9 @@ const {
   getAllUsers,
   updateUser,
   patchUser,
+  userLogIn,
   toggleFollowing,
+
 } = require('../controllers/user');
 
 const userRouter = Router();
@@ -15,7 +17,7 @@ const userRouter = Router();
 userRouter.get('/:id', getUserById);
 userRouter.post('/', createUser);
 userRouter.get('/', getAllUsers);
-
+userRouter.post('/login', userLogIn);
 // endpoints before this line is open to everyone
 userRouter.use(auth);
 // endpoints after this line require valid token to access

@@ -1,5 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 /**
@@ -136,6 +137,7 @@ const User = require('../models/User');
  *         '400':
  *           description: Bad request
  */
+
 const getUserById = async (req, res) => {
   const { id } = req.params;
 
@@ -158,7 +160,15 @@ const createUser = async (req, res) => {
 
     return res.status(StatusCodes.OK).json(ret);
   } catch (err) {
-    return res.status(StatusCodes.BAD_REQUEST).json(err);
+    if (err.code === 11000) {
+      if (Object.keys(err.keyValue).includes('name')) {
+        return res.status(StatusCodes.CONFLICT).send('Name existed');
+      }
+      if (Object.keys(err.keyValue).includes('email')) {
+        return res.status(StatusCodes.CONFLICT).send('Email registered');
+      }
+    }
+    return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
 
@@ -173,7 +183,8 @@ const getAllUsers = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  const { id, newPassword, oldPassword } = req.body;
+  const id = req.userId;
+  const { newPassword, oldPassword } = req.body;
 
   try {
     const user = await User.findById(id);
@@ -263,6 +274,7 @@ const toggleFollowing = async (req, res) => {
     return res.status(StatusCodes.OK).json({ message: 'Unfollowing succeed!' });
   } catch (err) {
     return res.status(StatusCodes.BAD_REQUEST).json(err);
+
   }
 };
 
@@ -273,5 +285,7 @@ module.exports = {
   resetPassword,
   updateUser,
   patchUser,
+  userLogIn,
   toggleFollowing,
+
 };
