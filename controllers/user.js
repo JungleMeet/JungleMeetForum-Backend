@@ -204,16 +204,15 @@ const resetPassword = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req;
 
   const { name, email, avatar, bgImg } = req.body;
 
   try {
-    const oldUser = await User.findById(id);
+    const oldUser = await User.findById(userId);
     await User.updateOne(
-      { _id: id },
+      { _id: userId },
       {
-        _id: id,
         name: name || oldUser.name,
         email: email || oldUser.name,
         avatar: avatar || oldUser.avatar,
@@ -221,7 +220,7 @@ const updateUser = async (req, res) => {
       },
       { runValidators: true }
     );
-    const newUser = await User.findById(id);
+    const newUser = await User.findById(userId);
 
     return res.status(StatusCodes.OK).json(newUser);
   } catch (err) {
@@ -230,11 +229,11 @@ const updateUser = async (req, res) => {
 };
 
 const patchUser = async (req, res) => {
-  const { id } = req.params;
-  const { name, password, email, avatar, bgImg } = req.body;
-  const modifiedUser = { name, password, email, avatar, bgImg };
+  const { userId } = req;
+  const { name, email, avatar, bgImg } = req.body;
+  const modifiedUser = { name, email, avatar, bgImg };
   try {
-    const user = await User.findByIdAndUpdate({ _id: id }, modifiedUser, {
+    const user = await User.findByIdAndUpdate({ _id: userId }, modifiedUser, {
       runValidator: true,
       new: true,
       returnOriginal: false,
@@ -242,7 +241,7 @@ const patchUser = async (req, res) => {
     await user.save();
     return res.status(StatusCodes.OK).json(user);
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err);
+    return res.status(StatusCodes.NOT_FOUND).json('error', err);
   }
 };
 
@@ -273,6 +272,7 @@ const toggleFollowing = async (req, res) => {
     return res.status(StatusCodes.OK).json({ message: 'Unfollowing succeed!' });
   } catch (err) {
     return res.status(StatusCodes.BAD_REQUEST).json(err);
+
   }
 };
 const userLogIn = async (req, res) => {
@@ -303,4 +303,5 @@ module.exports = {
   patchUser,
   userLogIn,
   toggleFollowing,
+
 };
