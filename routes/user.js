@@ -7,6 +7,7 @@ const {
   getAllUsers,
   updateUser,
   patchUser,
+  toggleFollowing,
 } = require('../controllers/user');
 
 const userRouter = Router();
@@ -19,6 +20,7 @@ userRouter.get('/', getAllUsers);
 userRouter.use(auth);
 // endpoints after this line require valid token to access
 
+userRouter.put('/following/', toggleFollowing);
 userRouter.patch('/:id', patchUser);
 userRouter.post('/reset/', resetPassword);
 userRouter.put('/:id', updateUser);
