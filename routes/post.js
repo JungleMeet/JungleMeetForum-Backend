@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const auth = require('../middleware/auth');
+const adminGuard = require('../middleware/adminGuard');
 const {
   createPost,
   updatePost,
@@ -9,24 +10,26 @@ const {
   getAllLikes,
   unlikePost,
   deletePost,
+  getPostById,
   createMoviePost,
   patchPost,
 } = require('../controllers/post');
 
 const postRouter = Router();
 postRouter.get('/', getAllPosts);
-
+postRouter.get('/:postId', getPostById);
+postRouter.post('/movie', createMoviePost);
 // endpoints before this line is open to everyone
 postRouter.use(auth);
 // endpoints after this line require valid token to access
 
-postRouter.patch('/:id', patchPost);
-postRouter.post('/', createMoviePost);
-postRouter.post('/', createPost);
-postRouter.patch('/:id', deletePost);
-postRouter.put('/:id', updatePost);
+postRouter.patch('/:postId', patchPost);
 
-postRouter.patch('/:id', auth, likePost);
+postRouter.post('/post', createPost);
+postRouter.patch('/delete/:id', adminGuard, deletePost);
+postRouter.put('/:postId', updatePost);
+
+postRouter.patch('/like/:id', auth, likePost);
 postRouter.patch('/unlike/:id', auth, unlikePost);
 
 postRouter.get('/:id/likes/', auth, getAllLikes);

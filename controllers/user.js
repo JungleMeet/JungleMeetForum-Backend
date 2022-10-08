@@ -17,54 +17,53 @@ const User = require('../models/User');
  *         _id:
  *           type: string
  *           description: The Auto-generated id of a post
+ *           example: 6332d81195b55eda2a612059
  *         name:
  *           type: string
  *           description: name of the user
+ *           example: Rachel
  *         password:
  *           type: string
  *           description: password of the user
+ *           example: abcd1234
  *         email:
  *           type: string
  *           description: email of the user
+ *           example: example@example.com
  *         avatar:
  *           type: string
  *           description: avatar of the user
- *         createTime:
+ *           example: xxxxx
+ *         createdTime:
  *           type: string
  *           description: the time of creating the user
+ *           example: 2022-09-27T11:01:37.487Z
  *         bgImg:
  *           type: string
  *           description: background image of the user profile
+ *           example: xxxxx
  *         role:
  *           type: string
  *           description: role of the user
+ *           example: admin
  *         follower:
  *           type: array
  *           items:
  *             type: string
  *           description: follower of the user
+ *           example: [6332d81195b55eda2a612058, 6332d81195b55eda2a612057]
  *         following:
  *           type: array
  *           items:
  *             type: string
  *           description: the following user of the user
+ *           example: [6332d81195b55eda2a612053, 6332d81195b55eda2a612052]
  *         followingPost:
  *           type: array
  *           items:
  *             type: string
  *           description: followingPost of the user
- *       example:
- *         _id: 6332d81195b55eda2a612059
- *         name: Rachel
- *         password: abcd1234
- *         email: example@example.com
- *         avatar: xxxxx
- *         createTime: 2022-09-27T11:01:37.487Z
- *         bgImg: xxxxx
- *         role: admin
- *         follower: [6332d81195b55eda2a612058, 6332d81195b55eda2a612057]
- *         following: [6332d81195b55eda2a612053, 6332d81195b55eda2a612052]
- *         followingPost: [6332d81195b55eda2a612153, 6332d81195b55eda2a612058, 6332d81195b55eda2a602057]
+ *           example: [6332d81195b55eda2a612153, 6332d81195b55eda2a612058, 6332d81195b55eda2a602057]
  *
  * paths:
  *   /users/{id}:
@@ -102,7 +101,32 @@ const User = require('../models/User');
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User{name, password, email, avatar, bgImg}'
+ *               type: object
+ *               required:
+ *                 - name
+ *                 - password
+ *                 - email
+ *               properties:
+ *                 name:
+ *                   type: string
+ *                   description: name of the user
+ *                   example: Rachel
+ *                 password:
+ *                   type: string
+ *                   description: password of the user
+ *                   example: abcd1234
+ *                 email:
+ *                   type: string
+ *                   description: email of the user
+ *                   example: example@example.com
+ *                 avatar:
+ *                   type: string
+ *                   description: avatar of the user
+ *                   example: xxxxx
+ *                 bgImg:
+ *                   type: string
+ *                   description: background image of the user profile
+ *                   example: xxxxx
  *       responses:
  *         '200':
  *           description: successful operation
@@ -110,8 +134,8 @@ const User = require('../models/User');
  *             application/json:
  *               schema:
  *                 $ref: '#/components/schemas/User'
- *         '404':
- *           description: Not found
+ *         '400':
+ *           description: Bad request
  */
 
 const getUserById = async (req, res) => {
@@ -131,7 +155,7 @@ const createUser = async (req, res) => {
 
   try {
     const now = new Date();
-    const user = new User({ name, password, email, avatar, bgImg, createTime: now });
+    const user = new User({ name, password, email, avatar, bgImg, createdTime: now });
     const ret = await user.save();
 
     return res.status(StatusCodes.OK).json(ret);
@@ -166,14 +190,14 @@ const resetPassword = async (req, res) => {
     const user = await User.findById(id);
     if (user.password === oldPassword) {
       await user.updateOne({ $set: { password: newPassword } }, { new: true, runValidators: true });
-      return res.status(StatusCodes.OK).send('Password changed successfully!');
+      return res.status(StatusCodes.OK).json({ message: 'Password changed successfully!' });
     }
-    return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Wrong password, try again' });
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
-        .send('Password should be 6 characters at least, try again');
+        .json({ message: 'Password should be 6 characters at least, try again' });
     }
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -222,23 +246,35 @@ const patchUser = async (req, res) => {
   }
 };
 
-const userLogIn = async (req, res) => {
-  const { email, password } = req.body;
+const toggleFollowing = async (req, res) => {
+  const { following } = req.body;
+  const { userId } = req;
+
+  const user = await User.findById(userId).exec();
+  const followingAuthor = await User.findById(following).exec();
+
+  if (!followingAuthor) {
+    return res.status(StatusCodes.NOT_FOUND).json({ message: 'Cannot find the following author!' });
+  }
+
   try {
-    const user = await User.findOne({ email });
-    if (user.password === password) {
-      const data = { userId: user._id };
-      const token = jwt.sign(data, process.env.JWT_SECRET, {
-        algorithm: 'HS256',
-        expiresIn: process.env.JWT_EXPIRE_TIME,
-      });
-      res.cookie('token', token);
-      console.log(token);
-      return res.status(StatusCodes.OK).send('Successfully logged in');
+    if (!user.following.includes(following)) {
+      await user.updateOne({ $push: { following } }, { new: true, runValidators: true });
+      await followingAuthor.updateOne(
+        { $push: { follower: userId } },
+        { new: true, runValidators: true }
+      );
+      return res.status(StatusCodes.OK).json({ message: 'Add following succeed!' });
     }
-    return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
+    await user.updateOne({ $pull: { following } }, { new: true, runValidators: true });
+    await followingAuthor.updateOne(
+      { $pull: { follower: userId } },
+      { new: true, runValidators: true }
+    );
+    return res.status(StatusCodes.OK).json({ message: 'Unfollowing succeed!' });
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err);
+    return res.status(StatusCodes.BAD_REQUEST).json(err);
+
   }
 };
 
@@ -250,4 +286,6 @@ module.exports = {
   updateUser,
   patchUser,
   userLogIn,
+  toggleFollowing,
+
 };

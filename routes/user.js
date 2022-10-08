@@ -8,6 +8,8 @@ const {
   updateUser,
   patchUser,
   userLogIn,
+  toggleFollowing,
+
 } = require('../controllers/user');
 
 const userRouter = Router();
@@ -20,6 +22,7 @@ userRouter.post('/login', userLogIn);
 userRouter.use(auth);
 // endpoints after this line require valid token to access
 
+userRouter.put('/following/', toggleFollowing);
 userRouter.patch('/:id', patchUser);
 userRouter.post('/reset/', resetPassword);
 userRouter.put('/:id', updateUser);
