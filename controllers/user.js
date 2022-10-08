@@ -204,16 +204,15 @@ const resetPassword = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req;
 
   const { name, email, avatar, bgImg } = req.body;
 
   try {
-    const oldUser = await User.findById(id);
+    const oldUser = await User.findById(userId);
     await User.updateOne(
-      { _id: id },
+      { _id: userId },
       {
-        _id: id,
         name: name || oldUser.name,
         email: email || oldUser.name,
         avatar: avatar || oldUser.avatar,
@@ -221,7 +220,7 @@ const updateUser = async (req, res) => {
       },
       { runValidators: true }
     );
-    const newUser = await User.findById(id);
+    const newUser = await User.findById(userId);
 
     return res.status(StatusCodes.OK).json(newUser);
   } catch (err) {
