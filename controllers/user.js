@@ -274,7 +274,24 @@ const toggleFollowing = async (req, res) => {
     return res.status(StatusCodes.OK).json({ message: 'Unfollowing succeed!' });
   } catch (err) {
     return res.status(StatusCodes.BAD_REQUEST).json(err);
-
+  }
+};
+const userLogIn = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user.password === password) {
+      const data = { userId: user._id };
+      const token = jwt.sign(data, process.env.JWT_SECRET, {
+        algorithm: 'HS256',
+        expiresIn: process.env.JWT_EXPIRE_TIME,
+      });
+      res.cookie('token', token);
+      return res.status(StatusCodes.OK).send('Successfully logged in');
+    }
+    return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
 
@@ -287,5 +304,4 @@ module.exports = {
   patchUser,
   userLogIn,
   toggleFollowing,
-
 };
