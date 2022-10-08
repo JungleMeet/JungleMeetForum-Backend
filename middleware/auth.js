@@ -1,6 +1,6 @@
 // this is a fake function to verify token.
 // later when you have learnt jwt, you use a real function to verify real token
-const verify = (token) => token;
+const verify = (token) => token.split(' ')[1];
 
 const auth = (req, res, next) => {
   const token = req.headers.authorization;
