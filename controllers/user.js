@@ -230,11 +230,11 @@ const updateUser = async (req, res) => {
 };
 
 const patchUser = async (req, res) => {
-  const { id } = req.params;
-  const { name, password, email, avatar, bgImg } = req.body;
-  const modifiedUser = { name, password, email, avatar, bgImg };
+  const { userId } = req;
+  const { name, email, avatar, bgImg } = req.body;
+  const modifiedUser = { name, email, avatar, bgImg };
   try {
-    const user = await User.findByIdAndUpdate({ _id: id }, modifiedUser, {
+    const user = await User.findByIdAndUpdate({ _id: userId }, modifiedUser, {
       runValidator: true,
       new: true,
       returnOriginal: false,
@@ -242,7 +242,7 @@ const patchUser = async (req, res) => {
     await user.save();
     return res.status(StatusCodes.OK).json(user);
   } catch (err) {
-    return res.status(StatusCodes.NOT_FOUND).json(err);
+    return res.status(StatusCodes.NOT_FOUND).json('error', err);
   }
 };
 
