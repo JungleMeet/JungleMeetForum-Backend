@@ -162,10 +162,10 @@ const createUser = async (req, res) => {
   } catch (err) {
     if (err.code === 11000) {
       if (Object.keys(err.keyValue).includes('name')) {
-        return res.status(StatusCodes.CONFLICT).send('Name existed');
+        return res.status(StatusCodes.CONFLICT).json({ message: 'Name existed' });
       }
       if (Object.keys(err.keyValue).includes('email')) {
-        return res.status(StatusCodes.CONFLICT).send('Email registered');
+        return res.status(StatusCodes.CONFLICT).json({ message: 'Email registered' });
       }
     }
     return res.status(StatusCodes.NOT_FOUND).json(err);
@@ -287,9 +287,9 @@ const userLogIn = async (req, res) => {
       });
       res.cookie('token', token);
       console.log(token);
-      return res.status(StatusCodes.OK).send('Successfully logged in');
+      return res.status(StatusCodes.OK).json({ message: 'Successfully logged in' });
     }
-    return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Wrong password, try again' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
