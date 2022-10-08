@@ -256,7 +256,6 @@ const toggleFollowing = async (req, res) => {
   if (!followingAuthor) {
     return res.status(StatusCodes.NOT_FOUND).json({ message: 'Cannot find the following author!' });
   }
-
   try {
     if (!user.following.includes(following)) {
       await user.updateOne({ $push: { following } }, { new: true, runValidators: true });
@@ -287,6 +286,7 @@ const userLogIn = async (req, res) => {
         expiresIn: process.env.JWT_EXPIRE_TIME,
       });
       res.cookie('token', token);
+      console.log(token);
       return res.status(StatusCodes.OK).send('Successfully logged in');
     }
     return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
@@ -294,7 +294,6 @@ const userLogIn = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
-
 module.exports = {
   getUserById,
   createUser,
