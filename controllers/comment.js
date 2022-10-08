@@ -132,10 +132,10 @@ const deleteCommentById = async (req, res) => {
 };
 
 const updateComment = async (req, res) => {
-  const { id } = req.params;
+  const { commentId } = req.params;
   const { text, mentionUserId } = req.body;
   try {
-    const comment = await Comment.findById(id);
+    const comment = await Comment.findById(commentId);
     await comment.updateOne({ $set: { text, mentionUserId } }, { runValidator: true, new: true });
     return res.status(StatusCodes.OK).json('updated');
   } catch (err) {

@@ -162,10 +162,10 @@ const createUser = async (req, res) => {
   } catch (err) {
     if (err.code === 11000) {
       if (Object.keys(err.keyValue).includes('name')) {
-        return res.status(StatusCodes.CONFLICT).send('Name existed');
+        return res.status(StatusCodes.CONFLICT).json({ message: 'Name existed' });
       }
       if (Object.keys(err.keyValue).includes('email')) {
-        return res.status(StatusCodes.CONFLICT).send('Email registered');
+        return res.status(StatusCodes.CONFLICT).json({ message: 'Email registered' });
       }
     }
     return res.status(StatusCodes.NOT_FOUND).json(err);
@@ -255,7 +255,6 @@ const toggleFollowing = async (req, res) => {
   if (!followingAuthor) {
     return res.status(StatusCodes.NOT_FOUND).json({ message: 'Cannot find the following author!' });
   }
-
   try {
     if (!user.following.includes(following)) {
       await user.updateOne({ $push: { following } }, { new: true, runValidators: true });
@@ -276,7 +275,25 @@ const toggleFollowing = async (req, res) => {
 
   }
 };
-
+const userLogIn = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user.password === password) {
+      const data = { userId: user._id };
+      const token = jwt.sign(data, process.env.JWT_SECRET, {
+        algorithm: 'HS256',
+        expiresIn: process.env.JWT_EXPIRE_TIME,
+      });
+      res.cookie('token', token);
+      console.log(token);
+      return res.status(StatusCodes.OK).json({ message: 'Successfully logged in' });
+    }
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Wrong password, try again' });
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
 module.exports = {
   getUserById,
   createUser,

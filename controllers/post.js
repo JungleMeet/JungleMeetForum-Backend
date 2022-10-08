@@ -128,10 +128,10 @@ const Post = require('../models/Post');
  *           description: Not Found
  *         '400':
  *           description: Title and content cannot be empty!
- * 
+ *
  *   /posts/{postId}:
  *     patch:
- *       tags: 
+ *       tags:
  *         - post
  *       summary: Patch a post by id
  *       description: Patch a post
@@ -168,7 +168,7 @@ const Post = require('../models/Post');
  *                   type: string
  *                   description: tag post
  *                   example: horror
- *               
+ *
  *       responses:
  *         '200':
  *           description: successful operation
@@ -182,10 +182,10 @@ const Post = require('../models/Post');
  *           description: Title and content cannot be empty!
  *         '404':
  *           description: Not found
- * 
+ *
  *   /posts/movie:
  *     post:
- *       tags: 
+ *       tags:
  *         - post
  *       summary: create a movie post
  *       description: create a movie post
@@ -239,7 +239,6 @@ const createPost = async (req, res) => {
 };
 
 const patchPost = async (req, res) => {
-
   const { postId } = req.params;
   const { userId } = req;
 
@@ -412,24 +411,24 @@ const deletePost = async (req, res) => {
 
 const createMoviePost = async (req, res) => {
   const { resourceId } = req.body;
-  
+
   try {
-    if (resourceId){
+    if (resourceId) {
       const now = new Date();
       const post = new Post({ resourceId, postType: 'moviePost', createdTime: now });
       const result = await post.save();
       return res.status(StatusCodes.OK).json(result);
     }
-    return res.status(StatusCodes.BAD_REQUEST).json({message: 'resourceId cannot be empty!'});
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'resourceId cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
 
 const checkLike = async (req, res) => {
-  const { id, userId } = req.params;
+  const { postId, userId } = req.params;
   try {
-    const post = await Post.findOne({ _id: id, like: { $eq: userId } });
+    const post = await Post.findOne({ _id: postId, like: { $eq: userId } });
     if (post) {
       return res.status(StatusCodes.OK).json({ message: 'true' });
     }
@@ -440,9 +439,9 @@ const checkLike = async (req, res) => {
 };
 
 const getAllLikes = async (req, res) => {
-  const { id } = req.params;
+  const { postId } = req.params;
   try {
-    const post = await Post.findById(id);
+    const post = await Post.findById(postId);
     return res.status(StatusCodes.OK).json(post.like);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
@@ -450,13 +449,13 @@ const getAllLikes = async (req, res) => {
 };
 
 const likePost = async (req, res) => {
-  const { id } = req.params;
+  const { postId } = req.params;
   const { userId } = req.body;
 
   try {
-    const post = await Post.findById(id);
+    const post = await Post.findById(postId);
     await post.updateOne({ $push: { like: userId } }, { new: true, runValidators: true });
-    return res.status(StatusCodes.OK).send('Liked');
+    return res.status(StatusCodes.OK).json({ message: 'Liked' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -464,11 +463,11 @@ const likePost = async (req, res) => {
 
 // Make sure to use with checkLike in front end to ensure the existence
 const unlikePost = async (req, res) => {
-  const { id } = req.params;
+  const { postId } = req.params;
   const { userId } = req.body;
 
   try {
-    const post = await Post.findById(id);
+    const post = await Post.findById(postId);
     await post.updateOne({ $pull: { like: userId } }, { new: true, runValidators: true });
     return res.status(StatusCodes.OK).json({ message: 'Unliked' });
   } catch (err) {
