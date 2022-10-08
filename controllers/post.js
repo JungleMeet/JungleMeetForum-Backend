@@ -431,9 +431,9 @@ const checkLike = async (req, res) => {
   try {
     const post = await Post.findOne({ _id: id, like: { $eq: userId } });
     if (post) {
-      return res.status(StatusCodes.OK).send('true');
+      return res.status(StatusCodes.OK).json({ message: 'true' });
     }
-    return res.status(StatusCodes.OK).send('false');
+    return res.status(StatusCodes.OK).json({ message: 'false' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -470,7 +470,7 @@ const unlikePost = async (req, res) => {
   try {
     const post = await Post.findById(id);
     await post.updateOne({ $pull: { like: userId } }, { new: true, runValidators: true });
-    return res.status(StatusCodes.OK).send('Unliked');
+    return res.status(StatusCodes.OK).json({ message: 'Unliked' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }

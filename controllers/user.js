@@ -179,14 +179,14 @@ const resetPassword = async (req, res) => {
     const user = await User.findById(id);
     if (user.password === oldPassword) {
       await user.updateOne({ $set: { password: newPassword } }, { new: true, runValidators: true });
-      return res.status(StatusCodes.OK).send('Password changed successfully!');
+      return res.status(StatusCodes.OK).json({ message: 'Password changed successfully!' });
     }
-    return res.status(StatusCodes.UNAUTHORIZED).send('Wrong password, try again');
+    return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Wrong password, try again' });
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
-        .send('Password should be 6 characters at least, try again');
+        .json({ message: 'Password should be 6 characters at least, try again' });
     }
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
