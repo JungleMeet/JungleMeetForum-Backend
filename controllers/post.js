@@ -78,7 +78,7 @@ const Post = require('../models/Post');
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
- *     
+ *
  * paths:
  *   /posts/post:
  *     post:
