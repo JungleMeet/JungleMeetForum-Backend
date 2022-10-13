@@ -1,5 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 /**
@@ -350,5 +351,6 @@ module.exports = {
   resetPassword,
   updateUser,
   patchUser,
+  userLogIn,
   toggleFollowing,
 };
