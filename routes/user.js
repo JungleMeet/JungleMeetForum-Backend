@@ -9,7 +9,6 @@ const {
   patchUser,
   userLogIn,
   toggleFollowing,
-
 } = require('../controllers/user');
 
 const userRouter = Router();

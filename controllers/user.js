@@ -1,6 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 /**
@@ -136,6 +135,57 @@ const User = require('../models/User');
  *                 $ref: '#/components/schemas/User'
  *         '400':
  *           description: Bad request
+ *   /users/login:
+ *      post:
+ *        tags:
+ *          - user
+ *        summary: User Log in and set cookie
+ *        discription: Set cookie to user broswer
+ *        operationId: userLogIn
+ *        requestBody:
+ *          description:
+ *            User log in
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                required:
+ *                  - email
+ *                  - password
+ *                properties:
+ *                   password:
+ *                     type: string
+ *                     description: password of the user
+ *                     example: abcd1234
+ *                   email:
+ *                     type: string
+ *                     description: email of the user
+ *                     example: example@example.com
+ *        responses:
+ *         '200':
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: 'Successfully logged in'
+ *         '401':
+ *           description: login failed
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   message:
+ *                     type: string
+ *                     example: 'Wrong password, try again'
+ *
+ *         '400':
+ *           description: Bad request
+ *
  */
 
 const getUserById = async (req, res) => {
@@ -272,7 +322,6 @@ const toggleFollowing = async (req, res) => {
     return res.status(StatusCodes.OK).json({ message: 'Unfollowing succeed!' });
   } catch (err) {
     return res.status(StatusCodes.BAD_REQUEST).json(err);
-
   }
 };
 const userLogIn = async (req, res) => {
@@ -301,7 +350,5 @@ module.exports = {
   resetPassword,
   updateUser,
   patchUser,
-  userLogIn,
   toggleFollowing,
-
 };
