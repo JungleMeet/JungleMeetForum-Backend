@@ -128,10 +128,10 @@ const Post = require('../models/Post');
  *           description: Not Found
  *         '400':
  *           description: Title and content cannot be empty!
- * 
+ *
  *   /posts/{postId}:
  *     patch:
- *       tags: 
+ *       tags:
  *         - post
  *       summary: Patch a post by id
  *       description: Patch a post
@@ -168,7 +168,7 @@ const Post = require('../models/Post');
  *                   type: string
  *                   description: tag post
  *                   example: horror
- *               
+ *
  *       responses:
  *         '200':
  *           description: successful operation
@@ -182,10 +182,10 @@ const Post = require('../models/Post');
  *           description: Title and content cannot be empty!
  *         '404':
  *           description: Not found
- * 
+ *
  *   /posts/movie:
  *     post:
- *       tags: 
+ *       tags:
  *         - post
  *       summary: create a movie post
  *       description: create a movie post
@@ -239,7 +239,6 @@ const createPost = async (req, res) => {
 };
 
 const patchPost = async (req, res) => {
-
   const { postId } = req.params;
   const { userId } = req;
 
@@ -412,15 +411,15 @@ const deletePost = async (req, res) => {
 
 const createMoviePost = async (req, res) => {
   const { resourceId } = req.body;
-  
+
   try {
-    if (resourceId){
+    if (resourceId) {
       const now = new Date();
       const post = new Post({ resourceId, postType: 'moviePost', createdTime: now });
       const result = await post.save();
       return res.status(StatusCodes.OK).json(result);
     }
-    return res.status(StatusCodes.BAD_REQUEST).json({message: 'resourceId cannot be empty!'});
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'resourceId cannot be empty!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }

@@ -29,10 +29,10 @@ postRouter.post('/post', createPost);
 postRouter.patch('/delete/:id', adminGuard, deletePost);
 postRouter.put('/:postId', updatePost);
 
-postRouter.patch('/like/:id', auth, likePost);
-postRouter.patch('/unlike/:id', auth, unlikePost);
+postRouter.patch('/like/:postId', auth, likePost);
+postRouter.patch('/unlike/:postId', auth, unlikePost);
 
-postRouter.get('/:id/likes/', auth, getAllLikes);
-postRouter.get('/:id/likes/:userId', auth, checkLike);
+postRouter.get('/:postId/likes/', auth, getAllLikes);
+postRouter.get('/:postId/likes/:userId', auth, checkLike);
 
 module.exports = postRouter;
