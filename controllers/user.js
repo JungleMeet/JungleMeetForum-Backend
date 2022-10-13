@@ -184,7 +184,7 @@ const User = require('../models/User');
  *                     type: string
  *                     example: 'Wrong password, try again'
  *
- *         '400':
+ *         '404':
  *           description: Bad request
  *
  */
