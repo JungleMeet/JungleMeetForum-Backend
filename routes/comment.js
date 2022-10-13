@@ -21,7 +21,7 @@ commentRouter.use(auth);
 // endpoints after this line require valid token to access
 
 commentRouter.post('/', createComment);
-commentRouter.put('/:id', updateComment);
+commentRouter.put('/:commentId', updateComment);
 // Wd don't delete comment but update "visible" value to false and then the comment won't show anymore.
 // only admin can delete a comment
 commentRouter.put('/delete/:id', adminGuard, deleteCommentById);
