@@ -163,7 +163,7 @@ const User = require('../models/User');
  *                     description: email of the user
  *                     example: example@example.com
  *        responses:
- *         '200':
+  *         '200':
  *           description: successful operation
  *           content:
  *             application/json:
@@ -186,7 +186,55 @@ const User = require('../models/User');
  *
  *         '404':
  *           description: Bad request
- *
+ *   /users/{userId}:
+ *     patch:
+ *       tags:
+ *         - user
+ *       summary: patch user by id
+ *       description: patch user information
+ *       operationId: patchUser
+ *       security:
+ *         - bearerAuth: []
+ *       parameters:
+ *         - name: userId
+ *           in: path
+ *           description: the id of user
+ *           schema:
+ *             type: string
+ *       requestBody:
+ *         description:
+ *           patch user by id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required:
+ *               properties:
+ *                 name:
+ *                   type: string
+ *                   description: user's name
+ *                   example: Rachel
+ *                 email:
+ *                   type: string
+ *                   description: email of the user
+ *                   example: example@example.com
+ *                 avatar:
+ *                   type: string
+ *                   description: avatar of the user
+ *                   example: xxxxx
+ *                 bgImg:
+ *                   type: string
+ *                   description: background image of the user profile
+ *                   example: xxxxx
+ *       responses:
+ *         '200':
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/User'
+ *         '404':
+ *           description: not found
  */
 
 const getUserById = async (req, res) => {
