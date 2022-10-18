@@ -7,8 +7,8 @@ const express = require('express');
 const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
 const cookieParser = require('cookie-parser');
+const yaml = require('yamljs');
 const connectDB = require('./db/connect');
-const swaggerJsDoc = require('./utils/swagger');
 
 const v1Router = require('./routes');
 
@@ -29,7 +29,8 @@ app.use('/v1', v1Router);
 app.get('/health-check', (request, response) => response.status(200).send({ message: 'healthy' }));
 
 // swagger api docs
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
+const swaggerDoc = yaml.load('./utils/swagger.yaml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 // TODO: error handler
 const port = process.env.PORT || 3000;
