@@ -1,3 +1,4 @@
+const { THUMBNAIL_POSTER_WIDTH } = require('../constants/constans');
 const imagePathGen = require('./imagePathGen');
 
 const formatMovieData = (data) => {
@@ -11,7 +12,7 @@ const formatMovieData = (data) => {
     vote_average,
   } = data;
 
-  const poster = imagePathGen(poster_path, 194);
+  const poster = imagePathGen(poster_path, THUMBNAIL_POSTER_WIDTH);
   const year = release_date.slice(0, 4);
 
   return {

@@ -3,7 +3,7 @@ const formatMovieData = require('../utils/formatMovieData');
 const { getMoviesByCondition, searchMovieByName } = require('../api/axios');
 
 const listMoviesByConditions = async (req, res) => {
-  const acceptedConditions = ['latest', 'popular', 'top_rated', 'now_playing'];
+  const acceptedConditions = ['popular', 'top_rated', 'now_playing'];
   const { condition } = req.query;
   if (!acceptedConditions.includes(condition))
     return res.status(StatusCodes.BAD_REQUEST).json({ message: 'query type is not supported' });
