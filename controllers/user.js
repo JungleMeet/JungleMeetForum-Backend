@@ -163,7 +163,7 @@ const User = require('../models/User');
  *                     description: email of the user
  *                     example: example@example.com
  *        responses:
-  *         '200':
+ *         '200':
  *           description: successful operation
  *           content:
  *             application/json:
