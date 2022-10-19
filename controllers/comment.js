@@ -80,6 +80,28 @@ const Comment = require('../models/Comment');
  *                 $ref: '#/components/schemas/Comment'
  *         '404':
  *           description: Comment not found
+ *   /comments/delete/{id}:
+ *     put:
+ *       tags:
+ *         - comment
+ *       summary: Delete comment by id
+ *       description: Delete a single comment by id
+ *       operationId: deleteCommentById
+ *       parameters:
+ *         - name: id
+ *           in: path
+ *           description: ID of comment to return
+ *           schema:
+ *             type: string
+ *       responses:
+ *         '200':
+ *           description: successful operation
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Comment'
+ *         '404':
+ *           description: Comment not found
  */
 const createComment = async (req, res) => {
   const { text, author, postId } = req.body;
