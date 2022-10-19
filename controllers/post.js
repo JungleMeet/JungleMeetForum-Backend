@@ -264,21 +264,12 @@ const patchPost = async (req, res) => {
   }
 };
 
-const getPosts = async (req, res) => {
+const getAllPosts = async (req, res) => {
   try {
-    const { displayNumber } = req.query;
-    if (req.query.sortBy === 'views') {
-      const top10Posts = (await Post.find().sort({ viewNumber: 'desc' })).slice(0, displayNumber);
-      return res.status(StatusCodes.OK).json(top10Posts);
-    }
-    if (req.query.sortBy === 'createdTime') {
-      const top10Posts = (await Post.find().sort({ createdTime: 'desc' })).slice(0, displayNumber);
-      return res.status(StatusCodes.OK).json(top10Posts);
-    }
     const allPosts = await Post.find();
+
     return res.status(StatusCodes.OK).json(allPosts);
   } catch (err) {
-    console.log(err);
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
@@ -488,7 +479,7 @@ module.exports = {
   createPost,
   patchPost,
   updatePost,
-  getPosts,
+  getAllPosts,
   getPostById,
   deletePost,
   createMoviePost,

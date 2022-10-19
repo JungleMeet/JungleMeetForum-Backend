@@ -4,7 +4,7 @@ const adminGuard = require('../middleware/adminGuard');
 const {
   createPost,
   updatePost,
-  getPosts,
+  getAllPosts,
   likePost,
   checkLike,
   getAllLikes,
@@ -16,7 +16,7 @@ const {
 } = require('../controllers/post');
 
 const postRouter = Router();
-postRouter.get('/', getPosts);
+postRouter.get('/', getAllPosts);
 postRouter.get('/:postId', getPostById);
 postRouter.post('/movie', createMoviePost);
 // endpoints before this line is open to everyone
