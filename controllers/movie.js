@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
-const { getMoviesByCondition } = require('../api/axios');
 const formatMovieData = require('../utils/formatMovieData');
+const { getMoviesByCondition, searchMovieByName } = require('../api/axios');
 
 const listMoviesByConditions = async (req, res) => {
   const acceptedConditions = ['latest', 'popular', 'top_rated', 'now_playing'];
@@ -17,4 +17,18 @@ const listMoviesByConditions = async (req, res) => {
   return res.status(StatusCodes.OK).json(processedResults);
 };
 
-module.exports = { listMoviesByConditions };
+const searchMovieName = async (req, res) => {
+  try {
+    const { name } = req.query;
+    if (!name)
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: 'must provide a key word for searching' });
+    const result = await searchMovieByName(name);
+    return res.json(result);
+  } catch (error) {
+    return res.json(error);
+  }
+};
+
+module.exports = { listMoviesByConditions, searchMovieName };
