@@ -64,7 +64,6 @@ const getPosts = async (req, res) => {
     const allPosts = await Post.find();
     return res.status(StatusCodes.OK).json(allPosts);
   } catch (err) {
-    console.log(err);
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
