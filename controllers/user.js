@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+
 const getUserById = async (req, res) => {
   const { id } = req.params;
 
