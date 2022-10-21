@@ -4,7 +4,7 @@ const adminGuard = require('../middleware/adminGuard');
 
 const {
   createComment,
-  getAllComments,
+  getComments,
   getCommentById,
   deleteCommentById,
   updateComment,
@@ -13,7 +13,7 @@ const {
 
 const commentRouter = Router();
 
-commentRouter.get('/', getAllComments);
+commentRouter.get('/', getComments);
 commentRouter.get('/:id', getCommentById);
 
 // endpoints before this line is open to everyone

@@ -13,10 +13,14 @@ const createComment = async (req, res) => {
   }
 };
 
-const getAllComments = async (req, res) => {
+const getComments = async (req, res) => {
   try {
+    const { postId } = req.query;
+    if (postId) {
+      const comments = await Comment.find({ postId });
+      return res.status(StatusCodes.OK).json(comments);
+    }
     const comments = await Comment.find();
-
     return res.status(StatusCodes.OK).json(comments);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
@@ -87,7 +91,7 @@ const toggleLikeOnComment = async (req, res) => {
 
 module.exports = {
   createComment,
-  getAllComments,
+  getComments,
   getCommentById,
   deleteCommentById,
   updateComment,
