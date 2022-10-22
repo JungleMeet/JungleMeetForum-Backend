@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 
 const auth = (req, res, next) => {
-  const { token } = req.cookies;
+  const { cookie } = req.headers;
+  console.log(req.headers);
+  const token = cookie.split('=')[1];
 
   if (!token) return res.status(401).json({ message: 'no token is presented' });
   // verify() is a fake function, replace it with a real jwt function

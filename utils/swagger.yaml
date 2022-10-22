@@ -186,12 +186,10 @@ components:
             type: string
           description: '0'
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-  
-
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
 paths :
     /users/{id}:
       get:
@@ -313,6 +311,54 @@ paths :
 
             '404':
               description: Bad request
+    /users/following:
+      put:
+        tags:
+          - user
+        summary: Follow or unfollow a user
+        description: Follow or unfollow a user
+        operationId: toggleFollowing
+        security:
+          - cookieAuth: []
+        requestBody:
+          description:
+            Follow or unfollow a user
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - following
+                properties:
+                  following:
+                    type: string
+                    description: id of the following/unfollowing user
+                    example: 6332dxxxxxb55eda2a612057
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          '400':
+            description: Bad request
+    /posts:
+      get:
+        tags:
+          - post
+        summary: get all posts
+        description: get all posts
+        operationId: getPosts
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Post'
+          '404':
+            description: Not found
     /posts/post:
       post:
         tags:
@@ -321,7 +367,7 @@ paths :
         description: Return created post
         operationId: createPost
         security:
-          - bearerAuth: []
+          - cookieAuth: []
         requestBody:
           description:
             Add a new post
@@ -369,7 +415,7 @@ paths :
         description: Patch a post
         operationId: patchPost
         security:
-          - bearerAuth: []
+          - cookieAuth: []
         parameters:
           - name: postId
             required: true
@@ -415,6 +461,76 @@ paths :
             description: Title and content cannot be empty!
           '404':
             description: Not found
+    /posts/put/{postId}:
+      put:
+        tags:
+          - post
+        summary: Update an existing post
+        description: Update an existing post by Id
+        operationId: updatePost
+        security:
+          - cookieAuth: []
+        parameters:
+          - name: postId
+            in: path
+            description: ID of post to return
+            schema:
+              type: string
+            required: true
+        requestBody:
+          description:
+            Update an existent post on the forum
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - title
+                  - content
+                properties:
+                  title:
+                    type: string
+                    description: title of the post
+                    example: Matrix
+                  content:
+                    type: string
+                    description: content of the post
+                    example: Great movie!
+                  bgImg:
+                    type: string
+                    description: background image of the the post
+                    example: xxxx
+                  hashtag:
+                    type: string
+                    description: tag post
+                    example: Sci-fi
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Post'
+          '400':
+            description: Invalid request.
+            content:
+              application/json:
+                examples:
+                  Error:
+                    description: Invalid request.
+                    value:
+                      message: Title and content cannot be empty!
+          '401':
+            description: Unauthorized author.
+            content:
+              application/json:
+                examples:
+                  Error:
+                    description: Unauthorized author.
+                    value:
+                      message: Only author can update the post!
+          '404':
+            description: Not Found.
     /posts/movie:
       post:
         tags:
@@ -445,6 +561,22 @@ paths :
             description: 'resourceId cannot be empty'
           '404':
             description: Not found
+    /comments:
+      get:
+        tags:
+          - comment
+        summary: get all comments
+        description: Return all comments
+        operationId: getAllComments
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Comment'
+          '404':
+            description: Comment not found
     /comments/{id}:
       get:
         tags:
@@ -457,6 +589,31 @@ paths :
             required: true
             in: path
             description: ID of comment to return
+            schema:
+              type: string
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Comment'
+          '404':
+            description: Comment not found
+    /comments/delete/{id}:
+      put:
+        tags:
+          - comment
+        summary: Delete comment by id
+        description: Delete comment by id
+        operationId: deleteCommentById
+        security:
+          - cookieAuth: []
+        parameters:
+          - name: id
+            required: true
+            in: path
+            description: This api is used for admin to delete comment by ID
             schema:
               type: string
         responses:
