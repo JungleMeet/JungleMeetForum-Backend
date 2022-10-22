@@ -27,7 +27,7 @@ postRouter.patch('/:postId', patchPost);
 
 postRouter.post('/post', createPost);
 postRouter.patch('/delete/:id', adminGuard, deletePost);
-postRouter.put('/:postId', updatePost);
+postRouter.put('/put/:postId', updatePost);
 
 postRouter.patch('/like/:postId', auth, likePost);
 postRouter.patch('/unlike/:postId', auth, unlikePost);
