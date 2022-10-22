@@ -11,6 +11,8 @@
     "no-multi-spaces": ["error"],
     "no-useless-constructor": "off",
     "import/no-unresolved": "warn",
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "camelcase":"off",
+    "no-restricted-syntax":"off"
   }
 }

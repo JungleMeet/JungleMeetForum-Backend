@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-
 const getUserById = async (req, res) => {
   const { id } = req.params;
 
@@ -151,7 +150,6 @@ const userLogIn = async (req, res) => {
         expiresIn: process.env.JWT_EXPIRE_TIME,
       });
       res.cookie('token', token);
-      console.log(token);
       return res.status(StatusCodes.OK).json({ message: 'Successfully logged in' });
     }
     return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Wrong password, try again' });
