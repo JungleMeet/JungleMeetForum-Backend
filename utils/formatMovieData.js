@@ -1,4 +1,4 @@
-const { THUMBNAIL_POSTER_WIDTH } = require('../constants/constans');
+const { THUMBNAIL_POSTER_WIDTH } = require('../constants/constants');
 const imagePathGen = require('./imagePathGen');
 
 const formatMovieData = (data) => {

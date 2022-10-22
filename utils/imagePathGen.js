@@ -1,4 +1,4 @@
-const { TMDB_IMAGE_WIDTH_BREAKPOINTS } = require('../constants/constans');
+const { TMDB_IMAGE_WIDTH_BREAKPOINTS } = require('../constants/constants');
 
 const imagePathGen = (imagePath, width) => {
   const baseUrl = 'https://image.tmdb.org/t/p/';
