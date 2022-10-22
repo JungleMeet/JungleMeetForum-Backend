@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Please provide name'],
     minlength: 3,
     maxlength: 50,
+    unique: true,
   },
   password: {
     type: String,
@@ -17,17 +18,16 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide email'],
     match: [/^.+@(?:[\w-]+\.)+\w+$/, 'Please fill a valid email address'],
+    unique: true,
   },
   avatar: {
     type: String,
-    required: [true, 'Please provide avatar'],
   },
-  createTime: {
+  createdTime: {
     type: Date,
   },
   bgImg: {
     type: String,
-    required: [true, 'Please provide background image'],
   },
   role: {
     type: String,
@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema({
   },
   follower: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
   following: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
-  followingPost: [{ type: mongoose.Types.ObjectId, ref: 'Comment' }],
+  followingPost: [{ type: mongoose.Types.ObjectId, ref: 'Post' }],
 });
 
 module.exports = mongoose.model('User', UserSchema);

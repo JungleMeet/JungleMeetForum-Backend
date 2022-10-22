@@ -1,0 +1,470 @@
+openapi :  '3.0.0'
+info : 
+  title :  Jungle Meet Apis Documentation
+  version :  '1.0.0'
+  description :  This is the API documentation for JungleMeet Queuing
+servers :
+  - url :  http://localhost:3000/v1  
+    description :  Local Server
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - name
+        - password
+        - email
+      properties:
+        _id:
+          type: string
+          description: The Auto-generated id of a post
+          example: 6332d81195b55eda2a612059
+        name:
+          type: string
+          description: name of the user
+          example: Rachel
+        password:
+          type: string
+          description: password of the user
+          example: abcd1234
+        email:
+          type: string
+          description: email of the user
+          example: example@example.com
+        avatar:
+          type: string
+          description: avatar of the user
+          example: xxxxx
+        createdTime:
+          type: string
+          description: the time of creating the user
+          example: 2022-09-27T11:01:37.487Z
+        bgImg:
+          type: string
+          description: background image of the user profile
+          example: xxxxx
+        role:
+          type: string
+          description: role of the user
+          example: admin
+        follower:
+          type: array
+          items:
+            type: string
+          description: follower of the user
+          example: [6332d81195b55eda2a612058, 6332d81195b55eda2a612057]
+        following:
+          type: array
+          items:
+            type: string
+          description: the following user of the user
+          example: [6332d81195b55eda2a612053, 6332d81195b55eda2a612052]
+        followingPost:
+          type: array
+          items:
+            type: string
+          description: followingPost of the user
+          example: [6332d81195b55eda2a612153, 6332d81195b55eda2a612058, 6332d81195b55eda2a602057]
+    Post:
+      type: object
+      required:
+        - title
+        - content
+        - bgImg
+        - author
+      properties:
+        _id:
+          type: string
+          description: The Auto-generated id of a post
+          example: 63338ae4d11e553b55138c9e
+        title:
+          type: string
+          description: title of the post
+          example: abd
+        content:
+          type: string
+          description: content of the post
+          example: 1234
+        bgImg:
+          type: string
+          description: background image of the the post
+          example: xxxx
+        hashtag:
+          type: string
+          description: tag post
+          example: horror
+        author:
+          type: string
+          description: author of the post
+          example: 6332d81195b55eda2a612059
+        createdTime:
+          type: string
+          description: the time of creating the post
+          example: 2022-10-03T01:33:24.275Z
+        updatedTime:
+          type: string
+          description: the time of updating the post
+          example: 2022-09-30T06:01:26.183Z
+        visible:
+          type: boolean
+          description: status of deleting the post
+          example: true
+        resourceId:
+          type: string
+          description: resource id of the post
+          example: xxxxxx
+        viewCount:
+          type: number
+          description: the number of the post views
+          example: 11
+        postType:
+          type: string
+          description: the type of the post
+          example: usePost
+        follower:
+          type: array
+          items:
+            type: string
+          description: follower of the user
+          example: [6332d81195b55eda2a612058, 6332d81195b55eda2a612057]
+        like:
+          type: array
+          items:
+            type: string
+          description: the userId of users who like post
+          example: [6332d81195b55eda2a612058, 6332d81195b55eda2a612057]
+    Comment:
+      type: object
+      required:
+        - text
+        - author
+      properties:
+        _id:
+          type: string
+          description: The Auto-generated id of a post
+          example: 6333bac93edc0fe86c036b16
+        text:
+          type: string
+          description: text of the user
+          example: text
+        author:
+          type: string
+          description: author of the user
+          example: 6332a4603e60205bb0908b28
+        createdTime:
+          type: string
+          description: the time of creating the user
+          example: 2022-09-28T03:08:57.470Z
+        updatedTime:
+          type: string
+          description: the time of updating the user
+          example: 2022-09-28T03:08:57.470Z
+        visible:
+          type: boolean
+          description: visible of the user
+          example: true
+        mentionedUserId:
+          type: array
+          items:
+            type: string
+          description: '[]'
+        postId:
+          type: array
+          items:
+            type: string
+          description: the post Id of the user
+          example: 6333b653dbf4653be026279b
+        parentCommentId:
+          type: array
+          items:
+            type: string
+          description: parent Comment Id of the user
+          example:
+        like:
+          type: array
+          items:
+            type: string
+          description: '0'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  
+
+paths :
+    /users/{id}:
+      get:
+        tags:
+          - user
+        summary: Find user by id
+        description: Return a single user
+        operationId: getUserById
+        parameters:
+          - name: id
+            required: true
+            in: path
+            description: ID of user to return
+            schema:
+              type: string
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          '404':
+            description: User not found
+    /users:
+      post:
+        tags:
+          - user
+        summary: Add a new user
+        description: Return created user
+        operationId: createUser
+        requestBody:
+          description:
+            Add a new user
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                  - password
+                  - email
+                properties:
+                  name:
+                    type: string
+                    description: name of the user
+                    example: Rachel
+                  password:
+                    type: string
+                    description: password of the user
+                    example: abcd1234
+                  email:
+                    type: string
+                    description: email of the user
+                    example: example@example.com
+                  avatar:
+                    type: string
+                    description: avatar of the user
+                    example: xxxxx
+                  bgImg:
+                    type: string
+                    description: background image of the user profile
+                    example: xxxxx
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          '400':
+            description: Bad request
+    /users/login:
+        post:
+          tags:
+            - user
+          summary: User Log in and set cookie
+          operationId: userLogIn
+          requestBody:
+            description:
+              User log in
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    - email
+                    - password
+                  properties:
+                    password:
+                      type: string
+                      description: password of the user
+                      example: abcd1234
+                    email:
+                      type: string
+                      description: email of the user
+                      example: example@example.com
+          responses:
+            '200':
+              description: successful operation
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: 'Successfully logged in'
+            '401':
+              description: login failed
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: 'Wrong password, try again'
+
+            '404':
+              description: Bad request
+    /posts/post:
+      post:
+        tags:
+          - post
+        summary: Add a new post
+        description: Return created post
+        operationId: createPost
+        security:
+          - bearerAuth: []
+        requestBody:
+          description:
+            Add a new post
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - title
+                  - content
+                properties:
+                  title:
+                    type: string
+                    description: title of the post
+                    example: abd
+                  content:
+                    type: string
+                    description: content of the post
+                    example: 1234
+                  bgImg:
+                    type: string
+                    description: background image of the the post
+                    example: xxxx
+                  hashtag:
+                    type: string
+                    description: tag post
+                    example: horror
+
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Post'
+          '404':
+            description: Not Found
+          '400':
+            description: Title and content cannot be empty!
+    /posts/{postId}:
+      patch:
+        tags:
+          - post
+        summary: Patch a post by id
+        description: Patch a post
+        operationId: patchPost
+        security:
+          - bearerAuth: []
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: the id of the post
+            schema:
+              type: string
+        requestBody:
+          description:
+            patch a post by id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: title of the post
+                    example: abd
+                  content:
+                    type: string
+                    description: content of the post
+                    example: 1234
+                  bgImg:
+                    type: string
+                    description: background image of the the post
+                    example: xxxx
+                  hashtag:
+                    type: string
+                    description: tag post
+                    example: horror
+
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Post'
+          '401':
+            description: Only author can update post!
+          '400':
+            description: Title and content cannot be empty!
+          '404':
+            description: Not found
+    /posts/movie:
+      post:
+        tags:
+          - post
+        summary: create a movie post
+        description: create a movie post
+        operationId: createMoviePost
+        requestBody:
+          description:
+            create a movie post
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resourceId:
+                    type: string
+                    description: id of the external resource
+                    example: xxxx
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Post'
+          '400':
+            description: 'resourceId cannot be empty'
+          '404':
+            description: Not found
+    /comments/{id}:
+      get:
+        tags:
+          - comment
+        summary: Find comment by id
+        description: Return a single comment
+        operationId: getCommentById
+        parameters:
+          - name: id
+            required: true
+            in: path
+            description: ID of comment to return
+            schema:
+              type: string
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Comment'
+          '404':
+            description: Comment not found
