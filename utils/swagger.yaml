@@ -35,7 +35,7 @@ components:
           type: string
           description: avatar of the user
           example: xxxxx
-        createdTime:
+        createdAt:
           type: string
           description: the time of creating the user
           example: 2022-09-27T11:01:37.487Z
@@ -97,11 +97,11 @@ components:
           type: string
           description: author of the post
           example: 6332d81195b55eda2a612059
-        createdTime:
+        createdAt:
           type: string
           description: the time of creating the post
           example: 2022-10-03T01:33:24.275Z
-        updatedTime:
+        updatedAt:
           type: string
           description: the time of updating the post
           example: 2022-09-30T06:01:26.183Z
@@ -151,11 +151,11 @@ components:
           type: string
           description: author of the user
           example: 6332a4603e60205bb0908b28
-        createdTime:
+        createdAt:
           type: string
           description: the time of creating the user
           example: 2022-09-28T03:08:57.470Z
-        updatedTime:
+        updatedAt:
           type: string
           description: the time of updating the user
           example: 2022-09-28T03:08:57.470Z
@@ -704,6 +704,144 @@ paths :
             description: 'resourceId cannot be empty'
           '404':
             description: Not found
+    /posts/:
+      get:
+        tags:
+          - post
+        summary: Get post according to querry
+        description: displayNumber in querry controls the number of display, return all if not set 
+                     sort by views/create time if  query.sortBy is 'view' or 'createdAt' 
+        operationId: getPosts
+        parameters:
+            - name: sortBy
+              required: false
+              in: query
+              description: sortBy views or createdAt
+              schema: 
+                type: string
+            - name: displayNumber
+              required: false
+              in: query
+              description: the number of display
+              schema: 
+                type: integer
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Post'
+    /posts/like/{postId}:
+      patch:
+        tags:
+          - post
+        summary: Like a post 
+        description: Post like +1
+        operationId: likePost
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: ID of post
+            schema:
+              type: string
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId: 
+                    type: string
+                    description: The ID of the user
+        responses:
+          '200':
+            description: successful operation
+    /posts/unlike/{postId}:
+      patch:
+        tags:
+          - post
+        summary: Unlike a post 
+        description: Post like -1
+        operationId: unlikePost
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: ID of post
+            schema:
+              type: string
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId: 
+                    type: string
+                    description: The ID of the user
+        responses:
+          '200':
+            description: successful operation
+    /posts/delete/{postId}:
+      patch:
+        tags:
+          - post
+        summary: Delete a post 
+        description: Set post to invisible
+        operationId: deletePost
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: ID of post
+            schema:
+              type: string
+        responses:
+          '200':
+            description: successful operation
+    /posts/{postId}/likes/:
+      get:
+        tags:
+          - post
+        summary: Get all likes of the post
+        description: Return the array of the user who like the post
+        operationId: getAllLikes
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: ID of post
+            schema:
+              type: string
+        responses:
+          '200':
+            description: successful operation
+    /posts/{postId}/likes/{userId}:
+      get:
+        tags:
+          - post
+        summary: Check if the user like the post
+        description: Return true or false
+        operationId: checkLike
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: ID of post
+            schema:
+              type: string
+          - name: userId
+            required: true
+            in: path
+            description: ID of user to check
+            schema:
+              type: string
+        responses:
+          '200': 
+            description: successful operation
+    
     /comments:
       get:
         tags:
@@ -877,3 +1015,4 @@ paths :
                   $ref: '#/components/schemas/Comment'
           '404':
             description: Not Found
+

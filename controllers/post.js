@@ -59,10 +59,9 @@ const getPosts = async (req, res) => {
       const top10Posts = (await Post.find().sort({ createdAt: 'desc' })).slice(0, displayNumber);
       return res.status(StatusCodes.OK).json(top10Posts);
     }
-    const allPosts = await Post.find();
+    const allPosts = (await Post.find()).slice(0, displayNumber);
     return res.status(StatusCodes.OK).json(allPosts);
   } catch (err) {
-    console.log(err);
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
@@ -113,11 +112,11 @@ const getPostById = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  const { id } = req.params;
+  const { postId } = req.params;
 
   try {
     await Post.findOneAndUpdate(
-      { _id: id },
+      { _id: postId },
       {
         visible: false,
       },
