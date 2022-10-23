@@ -214,6 +214,52 @@ paths :
                   $ref: '#/components/schemas/User'
           '404':
             description: User not found
+      patch:
+        tags:
+          - user
+        summary: Update user by ID
+        description: ID of user to return
+        operationId: updateUser
+        security:
+          - cookieAuth: []
+        requestBody:
+          description:
+            Add a new user
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                  - email
+                  - avatar
+                  - bgImg
+                properties:
+                  name:
+                    type: string
+                    description: name of the user
+                    example: Rachel
+                  email:
+                    type: string
+                    description: email of the user
+                    example: example@example.com
+                  avatar:
+                    type: string
+                    description: avatar of the user
+                    example: xxxxx
+                  bgImg:
+                    type: string
+                    description: background image of the user profile
+                    example: xxxxx
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          '404':
+            description: Not Found
     /users:
       post:
         tags:
@@ -262,6 +308,67 @@ paths :
                   $ref: '#/components/schemas/User'
           '400':
             description: Bad request
+      get:
+        tags:
+          - user
+        summary: Get all users
+        description: Return all users
+        operationId: getAllUsers
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          '404':
+            description: Not Found
+      put:
+        tags:
+          - user
+        summary: Update user by ID
+        description: ID of user to return
+        operationId: updateUser
+        security:
+          - cookieAuth: []
+        requestBody:
+          description:
+            Add a new user
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                  - email
+                  - avatar
+                  - bgImg
+                properties:
+                  name:
+                    type: string
+                    description: name of the user
+                    example: Rachel
+                  email:
+                    type: string
+                    description: email of the user
+                    example: example@example.com
+                  avatar:
+                    type: string
+                    description: avatar of the user
+                    example: xxxxx
+                  bgImg:
+                    type: string
+                    description: background image of the user profile
+                    example: xxxxx
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          '404':
+            description: Not Found
     /users/login:
         post:
           tags:
@@ -334,6 +441,43 @@ paths :
                     type: string
                     description: id of the following/unfollowing user
                     example: 6332dxxxxxb55eda2a612057
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          '400':
+            description: Bad request
+    /users/reset:
+      post:
+        tags:
+          - user
+        summary: Reset password
+        description: Reset password
+        operationId: resetPassword
+        security:
+          - cookieAuth: []
+        requestBody:
+          description:
+            Follow or unfollow a user
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                    - newPassword
+                    - oldPassword
+                properties:
+                    newPassword:
+                      type: string
+                      description:  new password of the user
+                      example: abcd5678
+                    oldPassword:
+                      type: string
+                      description: old password of the user
+                      example: abcd1234
         responses:
           '200':
             description: successful operation
@@ -461,7 +605,6 @@ paths :
             description: Title and content cannot be empty!
           '404':
             description: Not found
-    /posts/put/{postId}:
       put:
         tags:
           - post
@@ -577,6 +720,47 @@ paths :
                   $ref: '#/components/schemas/Comment'
           '404':
             description: Comment not found
+      post:
+        tags:
+          - comment
+        summary: Create a new comment
+        description: Return created comment
+        operationId: createComment
+        security:
+          - cookieAuth: []
+        requestBody:
+          description:
+            Create a new comment
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - text
+                  - author
+                  - postId
+                properties:
+                  title:
+                    type: string
+                    description: content of the comment
+                    example: abd
+                  author:
+                    type: string
+                    description: author of the comment
+                    example: Rachel
+                  postId:
+                    type: string
+                    description: ID of the post
+                    example: 123456
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Comment'
+          '404':
+            description: Not Found
     /comments/{id}:
       get:
         tags:
@@ -600,6 +784,49 @@ paths :
                   $ref: '#/components/schemas/Comment'
           '404':
             description: Comment not found
+      put:
+        tags:
+          - comment
+        summary: Update a comment
+        description: Return updated comment
+        operationId: updateComment
+        security:
+          - cookieAuth: []
+        parameters:
+          - name: commentId
+            required: true
+            in: path
+            description: Id of the updated comment
+            schema:
+              type: string
+        requestBody:
+          description:
+            Update a comment
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - text
+                  - mentionUserId
+                properties:
+                  title:
+                    type: string
+                    description: content of the comment
+                    example: abd
+                  mentionUserId:
+                    type: string
+                    description: ID of the post
+                    example: 123456
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Comment'
+          '404':
+            description: Not Found
     /comments/delete/{id}:
       put:
         tags:
@@ -625,3 +852,28 @@ paths :
                   $ref: '#/components/schemas/Comment'
           '404':
             description: Comment not found
+    /comments/like/{id}:
+      put:
+        tags:
+          - comment
+        summary: Toggle like/unlike on a comment
+        description: toggle like/unlike on a comment
+        operationId: toggleLikeOnComment
+        security:
+          - cookieAuth: []
+        parameters:
+          - name: commentId
+            required: true
+            in: path
+            description: Id of the like/unlike comment
+            schema:
+              type: string
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Comment'
+          '404':
+            description: Not Found

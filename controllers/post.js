@@ -7,8 +7,7 @@ const createPost = async (req, res) => {
 
   try {
     if (title && content) {
-      const now = new Date();
-      const post = new Post({ title, author: userId, content, hashtag, bgImg, createdTime: now });
+      const post = new Post({ title, author: userId, content, hashtag, bgImg });
       const result = await post.save();
 
       if (result) {
@@ -31,10 +30,9 @@ const patchPost = async (req, res) => {
   try {
     const { title, content, hashtag, bgImg } = req.body;
     if (title && content) {
-      const now = new Date();
       const post = await Post.findOneAndUpdate(
         { _id: postId, author: userId },
-        { title, content, hashtag, bgImg, updatedTime: now },
+        { title, content, hashtag, bgImg },
         { runValidators: true, new: true }
       );
       if (post) {
@@ -57,8 +55,8 @@ const getPosts = async (req, res) => {
       const top10Posts = (await Post.find().sort({ viewNumber: 'desc' })).slice(0, displayNumber);
       return res.status(StatusCodes.OK).json(top10Posts);
     }
-    if (req.query.sortBy === 'createdTime') {
-      const top10Posts = (await Post.find().sort({ createdTime: 'desc' })).slice(0, displayNumber);
+    if (req.query.sortBy === 'createdAt') {
+      const top10Posts = (await Post.find().sort({ createdAt: 'desc' })).slice(0, displayNumber);
       return res.status(StatusCodes.OK).json(top10Posts);
     }
     const allPosts = await Post.find();
@@ -136,8 +134,7 @@ const createMoviePost = async (req, res) => {
 
   try {
     if (resourceId) {
-      const now = new Date();
-      const post = new Post({ resourceId, postType: 'moviePost', createdTime: now });
+      const post = new Post({ resourceId, postType: 'moviePost' });
       const result = await post.save();
       return res.status(StatusCodes.OK).json(result);
     }
