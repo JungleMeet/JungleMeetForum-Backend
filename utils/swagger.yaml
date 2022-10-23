@@ -342,23 +342,7 @@ paths :
                 schema:
                   $ref: '#/components/schemas/User'
           '400':
-            description: Bad request
-    /posts:
-      get:
-        tags:
-          - post
-        summary: get all posts
-        description: get all posts
-        operationId: getPosts
-        responses:
-          '200':
-            description: successful operation
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Post'
-          '404':
-            description: Not found
+            description: Bad reques
     /posts/post:
       post:
         tags:
@@ -461,7 +445,6 @@ paths :
             description: Title and content cannot be empty!
           '404':
             description: Not found
-    /posts/put/{postId}:
       put:
         tags:
           - post
@@ -561,6 +544,144 @@ paths :
             description: 'resourceId cannot be empty'
           '404':
             description: Not found
+    /posts/:
+      get:
+        tags:
+          - post
+        summary: Get post according to querry
+        description: displayNumber in querry controls the number of display, return all if not set 
+                     sort by views/create time if  query.sortBy is 'view' or 'createdTime' 
+        operationId: getPosts
+        parameters:
+            - name: sortBy
+              required: false
+              in: query
+              description: sortBy views or createdTime
+              schema: 
+                type: string
+            - name: displayNumber
+              required: false
+              in: query
+              description: the number of display
+              schema: 
+                type: integer
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Post'
+    /posts/like/{postId}:
+      patch:
+        tags:
+          - post
+        summary: Like a post 
+        description: Post like +1
+        operationId: likePost
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: ID of post
+            schema:
+              type: string
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId: 
+                    type: string
+                    description: The ID of the user
+        responses:
+          '200':
+            description: successful operation
+    /posts/unlike/{postId}:
+      patch:
+        tags:
+          - post
+        summary: Unlike a post 
+        description: Post like -1
+        operationId: unlikePost
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: ID of post
+            schema:
+              type: string
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId: 
+                    type: string
+                    description: The ID of the user
+        responses:
+          '200':
+            description: successful operation
+    /posts/delete/{postId}:
+      patch:
+        tags:
+          - post
+        summary: Delete a post 
+        description: Set post to invisible
+        operationId: deletePost
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: ID of post
+            schema:
+              type: string
+        responses:
+          '200':
+            description: successful operation
+    /posts/{postId}/likes/:
+      get:
+        tags:
+          - post
+        summary: Get all likes of the post
+        description: Return the array of the user who like the post
+        operationId: getAllLikes
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: ID of post
+            schema:
+              type: string
+        responses:
+          '200':
+            description: successful operation
+    /posts/{postId}/likes/{userId}:
+      get:
+        tags:
+          - post
+        summary: Check if the user like the post
+        description: Return true or false
+        operationId: checkLike
+        parameters:
+          - name: postId
+            required: true
+            in: path
+            description: ID of post
+            schema:
+              type: string
+          - name: userId
+            required: true
+            in: path
+            description: ID of user to check
+            schema:
+              type: string
+        responses:
+          '200': 
+            description: successful operation
+    
     /comments:
       get:
         tags:

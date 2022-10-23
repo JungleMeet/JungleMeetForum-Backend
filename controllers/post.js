@@ -56,13 +56,13 @@ const getPosts = async (req, res) => {
     if (req.query.sortBy === 'views') {
       const top10Posts = (await Post.find().sort({ viewNumber: 'desc' })).slice(0, displayNumber);
       return res.status(StatusCodes.OK).json(top10Posts);
-    }
-    if (req.query.sortBy === 'createdTime') {
+    } if (req.query.sortBy === 'createdTime') {
       const top10Posts = (await Post.find().sort({ createdTime: 'desc' })).slice(0, displayNumber);
       return res.status(StatusCodes.OK).json(top10Posts);
-    }
-    const allPosts = await Post.find();
-    return res.status(StatusCodes.OK).json(allPosts);
+    } 
+      const allPosts = (await Post.find()).slice(0, displayNumber);
+      return res.status(StatusCodes.OK).json(allPosts);
+    
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -114,11 +114,11 @@ const getPostById = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  const { id } = req.params;
+  const { postId } = req.params;
 
   try {
     await Post.findOneAndUpdate(
-      { _id: id },
+      { _id: postId },
       {
         visible: false,
       },
