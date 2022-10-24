@@ -14,7 +14,7 @@ const {
 const commentRouter = Router();
 
 commentRouter.get('/', getComments);
-commentRouter.get('/:id', getCommentById);
+commentRouter.get('/:commentId', getCommentById);
 
 // endpoints before this line is open to everyone
 commentRouter.use(auth);
@@ -24,7 +24,7 @@ commentRouter.post('/', createComment);
 commentRouter.put('/:commentId', updateComment);
 // Wd don't delete comment but update "visible" value to false and then the comment won't show anymore.
 // only admin can delete a comment
-commentRouter.put('/delete/:id', adminGuard, deleteCommentById);
+commentRouter.put('/admin/:commentId', adminGuard, deleteCommentById);
 commentRouter.patch('/like/:commentId', toggleLikeOnComment);
 
 module.exports = commentRouter;

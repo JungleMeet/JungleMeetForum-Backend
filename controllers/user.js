@@ -19,8 +19,7 @@ const createUser = async (req, res) => {
   const { name, password, email, avatar, bgImg } = req.body;
 
   try {
-    const now = new Date();
-    const user = new User({ name, password, email, avatar, bgImg, createdTime: now });
+    const user = new User({ name, password, email, avatar, bgImg });
     const ret = await user.save();
 
     return res.status(StatusCodes.OK).json(ret);
@@ -113,7 +112,6 @@ const patchUser = async (req, res) => {
 const toggleFollowing = async (req, res) => {
   const { following } = req.body;
   const { userId } = req;
-  console.log(req.headers);
 
   const user = await User.findById(userId).exec();
   const followingAuthor = await User.findById(following).exec();
