@@ -73,6 +73,7 @@ const formatMovieDetailData = (data) => {
     overview,
     country
   };
+  
 };
 
 const formatMovieCastandCrew = (data) => {
