@@ -1,14 +1,14 @@
 const { StatusCodes } = require('http-status-codes');
-const formatMovieData = require('../utils/formatMovieData');
-const { getMoviesByCondition, searchMovieByName } = require('../api/axios');
+const {formatMovieData, formatMovieDetailData, formatMovieCastandCrew} = require('../utils/formatMovieData');
+const { getMoviesByTag, searchMovieByName, getMovieById, getCastByMovieId } = require('../api/axios');
 
-const listMoviesByConditions = async (req, res) => {
+const listMoviesByTag = async (req, res) => {
   const acceptedConditions = ['popular', 'top_rated', 'now_playing'];
-  const { condition } = req.query;
-  if (!acceptedConditions.includes(condition))
+  const { tag } = req.query;
+  if (!acceptedConditions.includes(tag))
     return res.status(StatusCodes.BAD_REQUEST).json({ message: 'query type is not supported' });
 
-  const { results } = await getMoviesByCondition(condition);
+  const { results } = await getMoviesByTag(tag);
   const processedResults = [];
   for (let i = 0; i < results.length; i += 1) {
     processedResults.push(formatMovieData(results[i]));
@@ -31,4 +31,19 @@ const searchMovieName = async (req, res) => {
   }
 };
 
-module.exports = { listMoviesByConditions, searchMovieName };
+const getMovieDetails = async (req, res) => {
+  try {
+    const { movieId } = req.params;
+    if (!movieId)
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'must provide a valid movie id' });
+    const result = await Promise.all([getMovieById(movieId) ,getCastByMovieId(movieId)]);
+    const details = formatMovieDetailData(result[0]);
+    const castsAndCrews = formatMovieCastandCrew(result[1]);
+    const allMovieDetails = {...details, ...castsAndCrews};
+    return res.json(allMovieDetails);
+  } catch (err) {
+    return res.json(err);
+  }
+};
+
+module.exports = { listMoviesByTag, searchMovieName, getMovieDetails };

@@ -1,9 +1,11 @@
 const { Router } = require('express');
-const { listMoviesByConditions, searchMovieName } = require('../controllers/movie');
+const { listMoviesByTag, searchMovieName, getMovieDetails } = require('../controllers/movie');
 
 const movieRouter = Router();
 
-movieRouter.get('/', listMoviesByConditions);
+movieRouter.get('/list', listMoviesByTag);
 movieRouter.get('/search', searchMovieName);
+movieRouter.get('/details/:movieId', getMovieDetails);
+
 
 module.exports = movieRouter;
