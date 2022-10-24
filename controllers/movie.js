@@ -33,10 +33,10 @@ const searchMovieName = async (req, res) => {
 
 const getMovieDetails = async (req, res) => {
   try {
-    const { movieId } = req.params;
-    if (!movieId)
+    const { resourceId } = req.params;
+    if (!resourceId)
       return res.status(StatusCodes.BAD_REQUEST).json({ message: 'must provide a valid movie id' });
-    const result = await Promise.all([getMovieById(movieId) ,getCastByMovieId(movieId)]);
+    const result = await Promise.all([getMovieById(resourceId) ,getCastByMovieId(resourceId)]);
     const details = formatMovieDetailData(result[0]);
     const castsAndCrews = formatMovieCastandCrew(result[1]);
     const allMovieDetails = {...details, ...castsAndCrews};
