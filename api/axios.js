@@ -11,8 +11,18 @@ const searchMovieByName = async (name) => {
   return response.data;
 };
 
-const getMoviesByCondition = async (condition) => {
+const getMoviesByTag = async (condition) => {
   const response = await tmdbRequest(`/movie/${condition}`);
   return response.data;
 };
-module.exports = { searchMovieByName, getMoviesByCondition };
+
+const getMovieById = async (movieId) => {
+  const response = await tmdbRequest(`/movie/${movieId}`);
+  return response.data;
+}
+
+const getCastByMovieId = async (movieId) => {
+  const response = await tmdbRequest(`/movie/${movieId}/credits`);
+  return response.data;
+}
+module.exports = { searchMovieByName, getMoviesByTag, getMovieById, getCastByMovieId };
