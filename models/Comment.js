@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const CommentSchema = new mongoose.Schema(
   {
-    text: {
+    content: {
       type: String,
       required: [true, 'Please enter your comment'],
     },
@@ -16,8 +16,8 @@ const CommentSchema = new mongoose.Schema(
     parentCommentId: { type: mongoose.Types.ObjectId, ref: 'Comment' },
     like: [{ type: mongoose.Types.ObjectId, ref: 'User', default: 0 }],
   },
-  { toJSON: { virtuals: true }, toObject: { virtuals: true } },
-  { timestamps: true }
+  { timestamps: true },
+  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 CommentSchema.virtual('likeCount').get(function () {

@@ -35,10 +35,6 @@ components:
           type: string
           description: avatar of the user
           example: xxxxx
-        createdAt:
-          type: string
-          description: the time of creating the user
-          example: 2022-09-27T11:01:37.487Z
         bgImg:
           type: string
           description: background image of the user profile
@@ -65,6 +61,14 @@ components:
             type: string
           description: followingPost of the user
           example: [6332d81195b55eda2a612153, 6332d81195b55eda2a612058, 6332d81195b55eda2a602057]
+        createdAt:
+          type: string
+          description: the time of creating the user
+          example: 2022-09-27T11:01:37.487Z
+        updatedAt:
+          type: string
+          description: the time of updating the user
+          example: 2022-10-22T12:16:32.731Z
     Post:
       type: object
       required:
@@ -97,14 +101,6 @@ components:
           type: string
           description: author of the post
           example: 6332d81195b55eda2a612059
-        createdAt:
-          type: string
-          description: the time of creating the post
-          example: 2022-10-03T01:33:24.275Z
-        updatedAt:
-          type: string
-          description: the time of updating the post
-          example: 2022-09-30T06:01:26.183Z
         visible:
           type: boolean
           description: status of deleting the post
@@ -133,32 +129,32 @@ components:
             type: string
           description: the userId of users who like post
           example: [6332d81195b55eda2a612058, 6332d81195b55eda2a612057]
+        createdAt:
+          type: string
+          description: the time of creating the post
+          example: 2022-10-03T01:33:24.275Z
+        updatedAt:
+          type: string
+          description: the time of updating the post
+          example: 2022-09-30T06:01:26.183Z
     Comment:
       type: object
       required:
-        - text
-        - author
+        - content
+        - authorID
       properties:
         _id:
           type: string
           description: The Auto-generated id of a post
           example: 6333bac93edc0fe86c036b16
-        text:
+        content:
           type: string
           description: text of the user
-          example: text
-        author:
+          example: I liked your post!
+        authorID:
           type: string
-          description: author of the user
+          description: author ID of the user
           example: 6332a4603e60205bb0908b28
-        createdAt:
-          type: string
-          description: the time of creating the user
-          example: 2022-09-28T03:08:57.470Z
-        updatedAt:
-          type: string
-          description: the time of updating the user
-          example: 2022-09-28T03:08:57.470Z
         visible:
           type: boolean
           description: visible of the user
@@ -185,40 +181,26 @@ components:
           items:
             type: string
           description: '0'
+        createdAt:
+          type: string
+          description: the time of creating the user
+          example: 2022-09-28T03:08:57.470Z
+        updatedAt:
+          type: string
+          description: the time of updating the user
+          example: 2022-09-28T03:08:57.470Z
   securitySchemes:
     cookieAuth:
       type: apiKey
       in: cookie
       name: token
 paths :
-    /users/{id}:
-      get:
-        tags:
-          - user
-        summary: Find user by id
-        description: Return a single user
-        operationId: getUserById
-        parameters:
-          - name: id
-            required: true
-            in: path
-            description: ID of user to return
-            schema:
-              type: string
-        responses:
-          '200':
-            description: successful operation
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/User'
-          '404':
-            description: User not found
-      patch:
+    /users:
+      put:
         tags:
           - user
         summary: Update user by ID
-        description: ID of user to return
+        description: Update an existing user by Id
         operationId: updateUser
         security:
           - cookieAuth: []
@@ -260,7 +242,52 @@ paths :
                   $ref: '#/components/schemas/User'
           '404':
             description: Not Found
-    /users:
+      patch:
+        tags:
+          - user
+        summary: Update user by ID
+        description: Update an existing user by Id
+        operationId: updateUser
+        security:
+          - cookieAuth: []
+        requestBody:
+          description:
+            Add a new user
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - name
+                  - email
+                  - avatar
+                  - bgImg
+                properties:
+                  name:
+                    type: string
+                    description: name of the user
+                    example: Rachel
+                  email:
+                    type: string
+                    description: email of the user
+                    example: example@example.com
+                  avatar:
+                    type: string
+                    description: avatar of the user
+                    example: xxxxx
+                  bgImg:
+                    type: string
+                    description: background image of the user profile
+                    example: xxxxx
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/User'
+          '404':
+            description: Not Found
       post:
         tags:
           - user
@@ -323,43 +350,20 @@ paths :
                   $ref: '#/components/schemas/User'
           '404':
             description: Not Found
-      put:
+    /users/{id}:
+      get:
         tags:
           - user
-        summary: Update user by ID
-        description: ID of user to return
-        operationId: updateUser
-        security:
-          - cookieAuth: []
-        requestBody:
-          description:
-            Add a new user
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - name
-                  - email
-                  - avatar
-                  - bgImg
-                properties:
-                  name:
-                    type: string
-                    description: name of the user
-                    example: Rachel
-                  email:
-                    type: string
-                    description: email of the user
-                    example: example@example.com
-                  avatar:
-                    type: string
-                    description: avatar of the user
-                    example: xxxxx
-                  bgImg:
-                    type: string
-                    description: background image of the user profile
-                    example: xxxxx
+        summary: Find user by id
+        description: Return a single user
+        operationId: getUserById
+        parameters:
+          - name: id
+            required: true
+            in: path
+            description: ID of user to return
+            schema:
+              type: string
         responses:
           '200':
             description: successful operation
@@ -368,7 +372,7 @@ paths :
                 schema:
                   $ref: '#/components/schemas/User'
           '404':
-            description: Not Found
+            description: User not found
     /users/login:
         post:
           tags:
@@ -784,7 +788,7 @@ paths :
         responses:
           '200':
             description: successful operation
-    /posts/delete/{postId}:
+    /posts/admin/{postId}:
       patch:
         tags:
           - post
@@ -874,22 +878,22 @@ paths :
               schema:
                 type: object
                 required:
-                  - text
+                  - content
                   - author
                   - postId
                 properties:
-                  title:
+                  content:
                     type: string
                     description: content of the comment
-                    example: abd
+                    example: I like your post!
                   author:
                     type: string
-                    description: author of the comment
-                    example: Rachel
+                    description: author ID of the comment
+                    example: afdgbf4557
                   postId:
                     type: string
                     description: ID of the post
-                    example: 123456
+                    example: aht123456
         responses:
           '200':
             description: successful operation
@@ -899,7 +903,7 @@ paths :
                   $ref: '#/components/schemas/Comment'
           '404':
             description: Not Found
-    /comments/{id}:
+    /comments/{commentId}:
       get:
         tags:
           - comment
@@ -965,7 +969,7 @@ paths :
                   $ref: '#/components/schemas/Comment'
           '404':
             description: Not Found
-    /comments/delete/{id}:
+    /comments/admin/{commentId}:
       put:
         tags:
           - comment
@@ -990,8 +994,8 @@ paths :
                   $ref: '#/components/schemas/Comment'
           '404':
             description: Comment not found
-    /comments/like/{id}:
-      put:
+    /comments/like/{commentId}:
+      patch:
         tags:
           - comment
         summary: Toggle like/unlike on a comment
@@ -1015,4 +1019,3 @@ paths :
                   $ref: '#/components/schemas/Comment'
           '404':
             description: Not Found
-

@@ -22,7 +22,7 @@ userRouter.use(auth);
 // endpoints after this line require valid token to access
 
 userRouter.put('/following/', toggleFollowing);
-userRouter.patch('/:id', patchUser);
+userRouter.patch('/', patchUser);
 userRouter.post('/reset/', resetPassword);
 userRouter.put('/', updateUser);
 

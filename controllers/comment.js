@@ -2,9 +2,10 @@ const { StatusCodes } = require('http-status-codes');
 const Comment = require('../models/Comment');
 
 const createComment = async (req, res) => {
-  const { text, author, postId } = req.body;
+  const { content, author, postId } = req.body;
+
   try {
-    const comment = new Comment({ text, author, postId });
+    const comment = new Comment({ content, author, postId });
     const ret = await comment.save();
 
     return res.status(StatusCodes.OK).json(ret);
@@ -28,10 +29,10 @@ const getComments = async (req, res) => {
 };
 
 const getCommentById = async (req, res) => {
-  const { id } = req.params;
+  const { commentId } = req.params;
 
   try {
-    const comment = await Comment.findById(id);
+    const comment = await Comment.findById(commentId);
 
     return res.status(StatusCodes.OK).json(comment);
   } catch (err) {
@@ -40,15 +41,19 @@ const getCommentById = async (req, res) => {
 };
 
 const deleteCommentById = async (req, res) => {
-  const { id } = req.params;
+  const { commentId } = req.params;
   const { visible } = req.body;
 
   try {
-    await Comment.findByIdAndUpdate({ _id: id }, [{ $set: { visible: { $toBool: visible } } }], {
-      runValidator: true,
-      useFindAndModify: true,
-      new: true,
-    });
+    await Comment.findByIdAndUpdate(
+      { _id: commentId },
+      [{ $set: { visible: { $toBool: visible } } }],
+      {
+        runValidator: true,
+        useFindAndModify: true,
+        new: true,
+      }
+    );
     return res.status(StatusCodes.OK).json({ message: 'Your comment has already been deleted!' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
@@ -57,10 +62,13 @@ const deleteCommentById = async (req, res) => {
 
 const updateComment = async (req, res) => {
   const { commentId } = req.params;
-  const { text, mentionUserId } = req.body;
+  const { content, mentionUserId } = req.body;
   try {
     const comment = await Comment.findById(commentId);
-    await comment.updateOne({ $set: { text, mentionUserId } }, { runValidator: true, new: true });
+    await comment.updateOne(
+      { $set: { content, mentionUserId } },
+      { runValidator: true, new: true }
+    );
     return res.status(StatusCodes.OK).json('updated');
   } catch (err) {
     return res.status(StatusCodes.err).json(err);
@@ -70,6 +78,7 @@ const updateComment = async (req, res) => {
 const toggleLikeOnComment = async (req, res) => {
   const { commentId } = req.params;
   const { userId } = req;
+  console.log(userId);
   const comment = await Comment.findById(commentId).exec();
   if (!comment) return res.sendStatus(StatusCodes.NOT_FOUND);
   // the types are not correct, one is object id the other is string, but it works in mongoose
