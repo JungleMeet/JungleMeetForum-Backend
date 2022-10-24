@@ -78,7 +78,7 @@ const updateComment = async (req, res) => {
 const toggleLikeOnComment = async (req, res) => {
   const { commentId } = req.params;
   const { userId } = req;
-  console.log(userId);
+
   const comment = await Comment.findById(commentId).exec();
   if (!comment) return res.sendStatus(StatusCodes.NOT_FOUND);
   // the types are not correct, one is object id the other is string, but it works in mongoose

@@ -112,7 +112,6 @@ const patchUser = async (req, res) => {
 const toggleFollowing = async (req, res) => {
   const { following } = req.body;
   const { userId } = req;
-  console.log(req.headers);
 
   const user = await User.findById(userId).exec();
   const followingAuthor = await User.findById(following).exec();
