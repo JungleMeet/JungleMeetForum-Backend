@@ -20,7 +20,6 @@ const listMoviesByTag = async (req, res) => {
     return res.status(StatusCodes.BAD_REQUEST).json({ message: 'query type is not supported' });
 
   const { results } = await getMoviesByTag(tag);
-  console.log(results);
   const processedResults = [];
   for (let i = 0; i < results.length; i += 1) {
     processedResults.push(formatMovieData(results[i]));
