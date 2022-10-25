@@ -1019,3 +1019,62 @@ paths :
                   $ref: '#/components/schemas/Comment'
           '404':
             description: Not Found
+
+    /movies/list:
+      get:
+        tags:
+          - movie
+        summary: list movies by tag
+        description: list movies by 'popular', 'top_rated' and 'now_playing'
+        operationId: listMoviesByTag
+        parameters:
+            - name: tag
+              required: true
+              in: query
+              description: movie tag
+              schema: 
+                type: string
+        responses:
+          '200':
+            description: successful operation
+          '400':
+            description: query type is not supported
+    /movies/search:
+      get:
+        tags:
+          - movie
+        summary: search movies by name
+        description: list movies by name
+        operationId: searchMovieName
+        parameters:
+            - name: name
+              required: true
+              in: query
+              description: movie name keywords
+              schema: 
+                type: string
+        responses:
+          '200':
+            description: successful operation
+          '400':
+            description: must provide a key word for searching
+    /movies/details/{resourceId}:
+      get:
+        tags:
+          - movie
+        summary: get movie details by resourceId
+        description: list movies by name
+        operationId: searchMovieName
+        parameters:
+            - name: resourceId
+              required: true
+              in: path
+              description: movie id
+              schema: 
+                type: string
+        responses:
+          '200':
+            description: successful operation
+          '400':
+            description: must provide a valid movie id
+

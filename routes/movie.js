@@ -5,7 +5,7 @@ const movieRouter = Router();
 
 movieRouter.get('/list', listMoviesByTag);
 movieRouter.get('/search', searchMovieName);
-movieRouter.get('/details/:movieId', getMovieDetails);
+movieRouter.get('/details/:resourceId', getMovieDetails);
 
 
 module.exports = movieRouter;
