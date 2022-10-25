@@ -95,4 +95,23 @@ const formatMovieCastandCrew = (data) => {
   };
 };
 
-module.exports = { formatMovieData, formatMovieDetailData, formatMovieCastandCrew };
+const formatTopRatedMovie = (data) => {
+  const { id, title, backdrop_path, vote_average, overview } = data;
+
+  const hero_banner = imagePathGen(backdrop_path);
+
+  return {
+    id,
+    title,
+    hero_banner,
+    vote_average,
+    overview,
+  };
+};
+
+module.exports = {
+  formatMovieData,
+  formatMovieDetailData,
+  formatMovieCastandCrew,
+  formatTopRatedMovie,
+};

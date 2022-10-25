@@ -1058,6 +1058,16 @@ paths :
             description: successful operation
           '400':
             description: must provide a key word for searching
+    /movies/tops:
+      get:
+        tags:
+          - movie
+        summary: get top 5 rated movies
+        description: Return top 5 rated movies according to TMDB voteing average
+        operationId: getTopRatedMovies
+        responses:
+          '200':
+            description: successful operation
     /movies/details/{resourceId}:
       get:
         tags:

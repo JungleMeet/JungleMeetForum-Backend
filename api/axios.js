@@ -25,4 +25,16 @@ const getCastByMovieId = async (movieId) => {
   const response = await tmdbRequest(`/movie/${movieId}/credits`);
   return response.data;
 };
-module.exports = { searchMovieByName, getMoviesByTag, getMovieById, getCastByMovieId };
+
+const getMoviesByTopRated = async () => {
+  const response = await tmdbRequest(`/movie/top_rated`);
+  return response.data;
+};
+
+module.exports = {
+  searchMovieByName,
+  getMoviesByTag,
+  getMovieById,
+  getCastByMovieId,
+  getMoviesByTopRated,
+};
