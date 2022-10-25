@@ -3,12 +3,14 @@ const {
   formatMovieData,
   formatMovieDetailData,
   formatMovieCastandCrew,
+  formatTopRatedMovie,
 } = require('../utils/formatMovieData');
 const {
   getMoviesByTag,
   searchMovieByName,
   getMovieById,
   getCastByMovieId,
+  getMoviesByTopRated,
 } = require('../api/axios');
 
 const listMoviesByTag = async (req, res) => {
@@ -18,6 +20,7 @@ const listMoviesByTag = async (req, res) => {
     return res.status(StatusCodes.BAD_REQUEST).json({ message: 'query type is not supported' });
 
   const { results } = await getMoviesByTag(tag);
+  console.log(results);
   const processedResults = [];
   for (let i = 0; i < results.length; i += 1) {
     processedResults.push(formatMovieData(results[i]));
@@ -55,4 +58,19 @@ const getMovieDetails = async (req, res) => {
   }
 };
 
-module.exports = { listMoviesByTag, searchMovieName, getMovieDetails };
+const getTopRatedMovies = async (req, res) => {
+  try {
+    const data = await getMoviesByTopRated();
+    const filteredData = data.results.filter((item) => item.original_language === 'en');
+    const processedResults = [];
+    for (let i = 0; i <= 5; i += 1) {
+      processedResults.push(formatTopRatedMovie(filteredData[i]));
+    }
+
+    return res.status(StatusCodes.OK).json(processedResults);
+  } catch (err) {
+    return res.json(err);
+  }
+};
+
+module.exports = { listMoviesByTag, searchMovieName, getMovieDetails, getTopRatedMovies };
