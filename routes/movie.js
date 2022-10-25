@@ -10,7 +10,7 @@ const movieRouter = Router();
 
 movieRouter.get('/list', listMoviesByTag);
 movieRouter.get('/search', searchMovieName);
-movieRouter.get('/topRated', getTopRatedMovies);
+movieRouter.get('/tops', getTopRatedMovies);
 movieRouter.get('/details/:resourceId', getMovieDetails);
 
 module.exports = movieRouter;
