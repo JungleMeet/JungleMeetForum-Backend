@@ -7,5 +7,4 @@ movieRouter.get('/list', listMoviesByTag);
 movieRouter.get('/search', searchMovieName);
 movieRouter.get('/details/:resourceId', getMovieDetails);
 
-
 module.exports = movieRouter;
