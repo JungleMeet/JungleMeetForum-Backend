@@ -911,7 +911,7 @@ paths :
         description: Return a single comment
         operationId: getCommentById
         parameters:
-          - name: id
+          - name: commentId
             required: true
             in: path
             description: ID of comment to return
@@ -979,7 +979,7 @@ paths :
         security:
           - cookieAuth: []
         parameters:
-          - name: id
+          - name: commentId
             required: true
             in: path
             description: This api is used for admin to delete comment by ID
