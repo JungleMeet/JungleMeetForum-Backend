@@ -34,7 +34,7 @@ const formatMovieDetailData = (data) => {
   const {
     genres,
     id: resourceId,
-    popularity,
+    // popularity,
     poster_path,
     release_date,
     title,
@@ -65,7 +65,7 @@ const formatMovieDetailData = (data) => {
   return {
     genres_name,
     resourceId,
-    popularity,
+    // popularity,
     poster,
     release_date_right_format,
     title,
