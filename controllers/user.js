@@ -2,6 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const createNotification = require('../services/createNotification');
 
 const getUserById = async (req, res) => {
   const { id } = req.params;
@@ -126,6 +127,13 @@ const toggleFollowing = async (req, res) => {
         { $push: { follower: userId } },
         { new: true, runValidators: true }
       );
+      createNotification({
+        actionType: 'follow',
+        payload: {
+          notifiedUserId: followingAuthor._id,
+          triggerUserId: userId,
+        },
+      });
       return res.status(StatusCodes.OK).json({ message: 'Add following succeed!' });
     }
     await user.updateOne({ $pull: { following } }, { new: true, runValidators: true });

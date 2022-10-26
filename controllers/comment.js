@@ -1,12 +1,23 @@
 const { StatusCodes } = require('http-status-codes');
 const Comment = require('../models/Comment');
+const createNotification = require('../services/createNotification');
 
 const createComment = async (req, res) => {
-  const { content, author, postId } = req.body;
+  const { content, author, postId, parentCommentId } = req.body;
 
   try {
-    const comment = new Comment({ content, author, postId });
+    const comment = new Comment({ content, author, postId, parentCommentId });
     const ret = await comment.save();
+    if (ret.isRootComment) {
+      createNotification({
+        actionType: 'comment',
+        payload: {
+          triggerUserId: author,
+          targetPostId: postId,
+          targetCommentId: ret._id,
+        },
+      });
+    }
 
     return res.status(StatusCodes.OK).json(ret);
   } catch (err) {
@@ -89,6 +100,18 @@ const toggleLikeOnComment = async (req, res) => {
     comment.like.push(userId);
   }
   await comment.save();
+  // userLikedThis has changed, if user has not like the post before, now he likes it
+  if (!userLikedThis) {
+    createNotification({
+      actionType: 'likeComment',
+      payload: {
+        notifiedUserId: comment.author,
+        triggerUserId: userId,
+        targetCommentId: commentId,
+        targetPostId: comment.postId,
+      },
+    });
+  }
 
   return res.status(StatusCodes.OK).json({
     commentId,

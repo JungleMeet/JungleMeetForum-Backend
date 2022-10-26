@@ -1,5 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const Post = require('../models/Post');
+const createNotification = require('../services/createNotification');
 
 const createPost = async (req, res) => {
   const { title, content, hashtag, bgImg } = req.body;
@@ -9,7 +10,13 @@ const createPost = async (req, res) => {
     if (title && content) {
       const post = new Post({ title, author: userId, content, hashtag, bgImg });
       const result = await post.save();
-
+      createNotification({
+        actionType: 'createPost',
+        payload: {
+          triggerUserId: userId,
+          targetPostId: result._id,
+        },
+      });
       if (result) {
         return res.status(StatusCodes.OK).json(result);
       }
