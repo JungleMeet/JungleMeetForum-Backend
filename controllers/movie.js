@@ -11,6 +11,7 @@ const {
   getMovieById,
   getCastByMovieId,
   getMoviesByTopRated,
+  getVideoById,
 } = require('../api/axios');
 
 const listMoviesByTag = async (req, res) => {
@@ -72,4 +73,25 @@ const getTopRatedMovies = async (req, res) => {
   }
 };
 
-module.exports = { listMoviesByTag, searchMovieName, getMovieDetails, getTopRatedMovies };
+const getMovidTrailerbyId = async (req, res) => {
+  const { resourceId } = req.params;
+  if (!resourceId)
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'must provide a valid movie id' });
+
+  try {
+    const data = await getVideoById(resourceId);
+    const youtubeId = data.results[0].key;
+
+    return res.status(StatusCodes.OK).json(youtubeId);
+  } catch (err) {
+    return res.json(err);
+  }
+};
+
+module.exports = {
+  listMoviesByTag,
+  searchMovieName,
+  getMovieDetails,
+  getTopRatedMovies,
+  getMovidTrailerbyId,
+};
