@@ -96,7 +96,7 @@ const formatMovieCastandCrew = (data) => {
 };
 
 const formatTopRatedMovie = (data) => {
-  const { id, title, backdrop_path, vote_average, overview } = data;
+  const { id, title, backdrop_path, vote_average, overview, video: trailer } = data;
 
   const hero_banner = imagePathGen(backdrop_path);
 
@@ -106,6 +106,7 @@ const formatTopRatedMovie = (data) => {
     hero_banner,
     vote_average,
     overview,
+    trailer,
   };
 };
 

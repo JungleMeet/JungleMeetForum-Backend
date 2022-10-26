@@ -31,10 +31,16 @@ const getMoviesByTopRated = async () => {
   return response.data;
 };
 
+const getVideoById = async (movieId) => {
+  const response = await tmdbRequest(`/movie/${movieId}/videos`);
+  return response.data;
+};
+
 module.exports = {
   searchMovieByName,
   getMoviesByTag,
   getMovieById,
   getCastByMovieId,
   getMoviesByTopRated,
+  getVideoById,
 };
