@@ -20,8 +20,6 @@ const CommentSchema = new mongoose.Schema(
   { toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-CommentSchema.virtual('likeCount').get(function () {
-  return this.like.length;
-});
+CommentSchema.virtual('likeCount').get(() => this.like.length);
 
 module.exports = mongoose.model('Comment', CommentSchema);
