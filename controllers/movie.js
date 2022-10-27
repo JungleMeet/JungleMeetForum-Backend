@@ -1,6 +1,15 @@
 const { StatusCodes } = require('http-status-codes');
-const {formatMovieData, formatMovieDetailData, formatMovieCastandCrew} = require('../utils/formatMovieData');
-const { getMoviesByTag, searchMovieByName, getMovieById, getCastByMovieId } = require('../api/axios');
+const {
+  formatMovieData,
+  formatMovieDetailData,
+  formatMovieCastandCrew,
+} = require('../utils/formatMovieData');
+const {
+  getMoviesByTag,
+  searchMovieByName,
+  getMovieById,
+  getCastByMovieId,
+} = require('../api/axios');
 
 const listMoviesByTag = async (req, res) => {
   const acceptedConditions = ['popular', 'top_rated', 'now_playing'];
@@ -36,10 +45,10 @@ const getMovieDetails = async (req, res) => {
     const { movieId } = req.params;
     if (!movieId)
       return res.status(StatusCodes.BAD_REQUEST).json({ message: 'must provide a valid movie id' });
-    const result = await Promise.all([getMovieById(movieId) ,getCastByMovieId(movieId)]);
+    const result = await Promise.all([getMovieById(movieId), getCastByMovieId(movieId)]);
     const details = formatMovieDetailData(result[0]);
     const castsAndCrews = formatMovieCastandCrew(result[1]);
-    const allMovieDetails = {...details, ...castsAndCrews};
+    const allMovieDetails = { ...details, ...castsAndCrews };
     return res.json(allMovieDetails);
   } catch (err) {
     return res.json(err);
