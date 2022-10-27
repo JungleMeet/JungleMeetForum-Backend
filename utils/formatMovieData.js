@@ -7,26 +7,26 @@ const imagePathGen = require('./imagePathGen');
 
 const formatMovieData = (data) => {
   const {
-    genre_ids,
+    genre_ids: genreIds,
     id: resourceId,
     popularity,
     poster_path,
     release_date,
     title,
-    vote_average,
+    vote_average: voteAverage,
   } = data;
 
   const poster = imagePathGen(poster_path, THUMBNAIL_POSTER_WIDTH);
   const year = release_date.slice(0, 4);
 
   return {
-    genre_ids,
+    genreIds,
     resourceId,
     popularity,
     poster,
     year,
     title,
-    vote_average,
+    voteAverage,
   };
 };
 
@@ -38,15 +38,15 @@ const formatMovieDetailData = (data) => {
     poster_path,
     release_date,
     title,
-    vote_average,
-    vote_count,
+    vote_average: voteAverage,
+    vote_count: voteCount,
     runtime,
     spoken_languages,
     overview,
     production_countries,
   } = data;
 
-  const genres_name = genres.map((genre) => genre.name);
+  const genresName = genres.map((genre) => genre.name);
   const languages = spoken_languages.map((language) => language.english_name);
   const country = production_countries.map(({ name }) => name);
 
@@ -56,21 +56,21 @@ const formatMovieDetailData = (data) => {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');
-  const release_date_right_format = `${day}/${month}/${year}`;
+  const releaseDateRightFormat = `${day}/${month}/${year}`;
 
   const run_hours = Math.floor(runtime / 60);
   const run_minutes = runtime % 60;
   const length = `${run_hours}h ${run_minutes}m`;
 
   return {
-    genres_name,
+    genresName,
     resourceId,
     popularity,
     poster,
-    release_date_right_format,
+    releaseDateRightFormat,
     title,
-    vote_average,
-    vote_count,
+    voteAverage,
+    voteCount,
     length,
     languages,
     overview,
@@ -96,15 +96,15 @@ const formatMovieCastandCrew = (data) => {
 };
 
 const formatTopRatedMovie = (data) => {
-  const { id, title, backdrop_path, vote_average, overview } = data;
+  const { id, title, backdrop_path, vote_average: voteAverage, overview } = data;
 
-  const hero_banner = imagePathGen(backdrop_path);
+  const heroBanner = imagePathGen(backdrop_path);
 
   return {
     id,
     title,
-    hero_banner,
-    vote_average,
+    heroBanner,
+    voteAverage,
     overview,
   };
 };
