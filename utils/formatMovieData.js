@@ -2,6 +2,7 @@ const {
   THUMBNAIL_POSTER_WIDTH,
   MOVIEDETAIL_POSTER_WIDTH,
   CASTS_PROFILE_WIDTH,
+  MOVIE_GENRES,
 } = require('../constants/constants');
 const imagePathGen = require('./imagePathGen');
 
@@ -9,22 +10,25 @@ const formatMovieData = (data) => {
   const {
     genre_ids: genreIds,
     id: resourceId,
-    popularity,
+    // popularity,
     poster_path,
-    release_date,
+    // release_date,
     title,
     vote_average: voteAverage,
   } = data;
 
   const poster = imagePathGen(poster_path, THUMBNAIL_POSTER_WIDTH);
-  const year = release_date.slice(0, 4);
+  // const year = release_date.slice(0, 4);
+  const genreNames = genreIds.map(
+    (genreId) => MOVIE_GENRES.find((elem) => elem.id === genreId).name
+  );
 
   return {
-    genreIds,
+    genreNames,
     resourceId,
-    popularity,
+    // popularity,
     poster,
-    year,
+    // year,
     title,
     voteAverage,
   };
