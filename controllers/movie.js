@@ -3,16 +3,19 @@ const {
   formatMovieData,
   formatMovieDetailData,
   formatMovieCastandCrew,
+  formatTopRatedMovie,
 } = require('../utils/formatMovieData');
 const {
   getMoviesByTag,
   searchMovieByName,
   getMovieById,
   getCastByMovieId,
+  getMoviesByTopRated,
+  getVideoById,
 } = require('../api/axios');
 
 const listMoviesByTag = async (req, res) => {
-  const acceptedConditions = ['popular', 'top_rated', 'now_playing'];
+  const acceptedConditions = ['popular', 'top_rated', 'now_playing', 'upcoming'];
   const { tag } = req.query;
   if (!acceptedConditions.includes(tag))
     return res.status(StatusCodes.BAD_REQUEST).json({ message: 'query type is not supported' });
@@ -42,10 +45,10 @@ const searchMovieName = async (req, res) => {
 
 const getMovieDetails = async (req, res) => {
   try {
-    const { movieId } = req.params;
-    if (!movieId)
+    const { resourceId } = req.params;
+    if (!resourceId)
       return res.status(StatusCodes.BAD_REQUEST).json({ message: 'must provide a valid movie id' });
-    const result = await Promise.all([getMovieById(movieId), getCastByMovieId(movieId)]);
+    const result = await Promise.all([getMovieById(resourceId), getCastByMovieId(resourceId)]);
     const details = formatMovieDetailData(result[0]);
     const castsAndCrews = formatMovieCastandCrew(result[1]);
     const allMovieDetails = { ...details, ...castsAndCrews };
@@ -55,4 +58,40 @@ const getMovieDetails = async (req, res) => {
   }
 };
 
-module.exports = { listMoviesByTag, searchMovieName, getMovieDetails };
+const getTopRatedMovies = async (req, res) => {
+  try {
+    const data = await getMoviesByTopRated();
+    const filteredData = data.results.filter((item) => item.original_language === 'en');
+    const processedResults = [];
+    for (let i = 0; i <= 5; i += 1) {
+      processedResults.push(formatTopRatedMovie(filteredData[i]));
+    }
+
+    return res.status(StatusCodes.OK).json(processedResults);
+  } catch (err) {
+    return res.json(err);
+  }
+};
+
+const getMovidTrailerbyId = async (req, res) => {
+  const { resourceId } = req.params;
+  if (!resourceId)
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'must provide a valid movie id' });
+
+  try {
+    const data = await getVideoById(resourceId);
+    const youtubeId = data.results[0].key;
+
+    return res.status(StatusCodes.OK).json(youtubeId);
+  } catch (err) {
+    return res.json(err);
+  }
+};
+
+module.exports = {
+  listMoviesByTag,
+  searchMovieName,
+  getMovieDetails,
+  getTopRatedMovies,
+  getMovidTrailerbyId,
+};

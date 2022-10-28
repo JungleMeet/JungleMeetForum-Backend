@@ -951,7 +951,7 @@ paths :
         description: Return a single comment
         operationId: getCommentById
         parameters:
-          - name: id
+          - name: commentId
             required: true
             in: path
             description: ID of comment to return
@@ -1019,7 +1019,7 @@ paths :
         security:
           - cookieAuth: []
         parameters:
-          - name: id
+          - name: commentId
             required: true
             in: path
             description: This api is used for admin to delete comment by ID
@@ -1118,3 +1118,90 @@ paths :
             description: successful operation
           '400':
             description: bad request
+    /movies/list:
+      get:
+        tags:
+          - movie
+        summary: list movies by tag
+        description: list movies by 'popular', 'top_rated' and 'now_playing'
+        operationId: listMoviesByTag
+        parameters:
+            - name: tag
+              required: true
+              in: query
+              description: movie tag
+              schema:
+                type: string
+        responses:
+          '200':
+            description: successful operation
+          '400':
+            description: query type is not supported
+    /movies/search:
+      get:
+        tags:
+          - movie
+        summary: search movies by name
+        description: list movies by name
+        operationId: searchMovieName
+        parameters:
+            - name: name
+              required: true
+              in: query
+              description: movie name keywords
+              schema:
+                type: string
+        responses:
+          '200':
+            description: successful operation
+          '400':
+            description: must provide a key word for searching
+    /movies/tops:
+      get:
+        tags:
+          - movie
+        summary: get top 5 rated movies
+        description: Return top 5 rated movies according to TMDB voteing average
+        operationId: getTopRatedMovies
+        responses:
+          '200':
+            description: successful operation
+    /movies/trailers/{resourceId}:
+      get:
+        tags:
+          - movie
+        summary: get the youTube's key of the movie trailer
+        description: Return the youTube's key of the movie trailer
+        operationId: getMovidTrailerbyId
+        parameters:
+            - name: resourceId
+              required: true
+              in: path
+              description: movie id
+              schema:
+                type: string
+        responses:
+          '200':
+            description: successful operation
+          '400':
+            description: must provide a valid movie id
+    /movies/details/{resourceId}:
+      get:
+        tags:
+          - movie
+        summary: get movie details by resourceId
+        description: list movies by name
+        operationId: searchMovieName
+        parameters:
+            - name: resourceId
+              required: true
+              in: path
+              description: movie id
+              schema:
+                type: string
+        responses:
+          '200':
+            description: successful operation
+          '400':
+            description: must provide a valid movie id
+

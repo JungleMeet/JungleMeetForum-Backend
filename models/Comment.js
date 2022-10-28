@@ -25,9 +25,7 @@ const CommentSchema = new mongoose.Schema(
   options
 );
 
-CommentSchema.virtual('likeCount').get(function () {
-  return this.like.length;
-});
+CommentSchema.virtual('likeCount').get(() => this.like.length);
 
 CommentSchema.virtual('isRootComment').get(function () {
   return !this.parentCommentId;

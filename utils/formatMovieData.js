@@ -2,31 +2,34 @@ const {
   THUMBNAIL_POSTER_WIDTH,
   MOVIEDETAIL_POSTER_WIDTH,
   CASTS_PROFILE_WIDTH,
+  MOVIE_GENRES,
 } = require('../constants/constants');
 const imagePathGen = require('./imagePathGen');
 
 const formatMovieData = (data) => {
   const {
-    genre_ids,
+    genre_ids: genreIds,
     id: resourceId,
-    popularity,
+    // popularity,
     poster_path,
-    release_date,
+    // release_date,
     title,
-    vote_average,
+    vote_average: voteAverage,
   } = data;
 
   const poster = imagePathGen(poster_path, THUMBNAIL_POSTER_WIDTH);
-  const year = release_date.slice(0, 4);
+  // const year = release_date.slice(0, 4);
+  const genreNames = genreIds.map((genreId) => MOVIE_GENRES.find((elem) => elem.id === genreId));
+  // const genres = genreNames.join(' ');
 
   return {
-    genre_ids,
+    genreNames,
     resourceId,
-    popularity,
+    // popularity,
     poster,
-    year,
+    // year,
     title,
-    vote_average,
+    voteAverage,
   };
 };
 
@@ -34,19 +37,19 @@ const formatMovieDetailData = (data) => {
   const {
     genres,
     id: resourceId,
-    popularity,
+    // popularity,
     poster_path,
     release_date,
     title,
-    vote_average,
-    vote_count,
+    vote_average: voteAverage,
+    vote_count: voteCount,
     runtime,
     spoken_languages,
     overview,
     production_countries,
   } = data;
 
-  const genres_name = genres.map((genre) => genre.name);
+  const genresName = genres.map((genre) => genre.name);
   const languages = spoken_languages.map((language) => language.english_name);
   const country = production_countries.map(({ name }) => name);
 
@@ -56,21 +59,21 @@ const formatMovieDetailData = (data) => {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');
-  const release_date_right_format = `${day}/${month}/${year}`;
+  const releaseDateRightFormat = `${day}/${month}/${year}`;
 
   const run_hours = Math.floor(runtime / 60);
   const run_minutes = runtime % 60;
   const length = `${run_hours}h ${run_minutes}m`;
 
   return {
-    genres_name,
+    genresName,
     resourceId,
-    popularity,
+    // popularity,
     poster,
-    release_date_right_format,
+    releaseDateRightFormat,
     title,
-    vote_average,
-    vote_count,
+    voteAverage,
+    voteCount,
     length,
     languages,
     overview,
@@ -95,4 +98,23 @@ const formatMovieCastandCrew = (data) => {
   };
 };
 
-module.exports = { formatMovieData, formatMovieDetailData, formatMovieCastandCrew };
+const formatTopRatedMovie = (data) => {
+  const { id, title, backdrop_path, vote_average: voteAverage, overview } = data;
+
+  const heroBanner = imagePathGen(backdrop_path);
+
+  return {
+    id,
+    title,
+    heroBanner,
+    voteAverage,
+    overview,
+  };
+};
+
+module.exports = {
+  formatMovieData,
+  formatMovieDetailData,
+  formatMovieCastandCrew,
+  formatTopRatedMovie,
+};
