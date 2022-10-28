@@ -19,13 +19,11 @@ const formatMovieData = (data) => {
 
   const poster = imagePathGen(poster_path, THUMBNAIL_POSTER_WIDTH);
   // const year = release_date.slice(0, 4);
-  const genreNames = genreIds.map(
-    (genreId) => MOVIE_GENRES.find((elem) => elem.id === genreId).name
-  );
-  const genres = genreNames.join(' ');
+  const genreNames = genreIds.map((genreId) => MOVIE_GENRES.find((elem) => elem.id === genreId));
+  // const genres = genreNames.join(' ');
 
   return {
-    genres,
+    genreNames,
     resourceId,
     // popularity,
     poster,
