@@ -1,11 +1,17 @@
 const { StatusCodes } = require('http-status-codes');
-const { difference } = require('lodash');
+const { difference, isEmpty } = require('lodash');
 const Notification = require('../models/Notification');
 
-const getUnreadNotifications = async (req, res) => {
+const getNotifications = async (req, res) => {
   try {
     const { userId } = req;
-    const notifications = await Notification.find({ notifiedUserId: userId, viewed: false })
+    const { lastNotificationId, limit } = req.query;
+    const paginationCondition = lastNotificationId ? { _id: { $lt: lastNotificationId } } : {};
+    const notifications = await Notification.find({
+      $and: [{ notifiedUserId: userId }, paginationCondition],
+    })
+      .sort({ createdAt: -1 })
+      .limit(limit || 5)
       .populate({ path: 'triggerUserId', select: 'name' })
       .populate({ path: 'targetPostId', select: 'title' })
       .exec();
@@ -22,6 +28,7 @@ const readNotifications = async (req, res) => {
 
     // verify if all notifications are for the requesting user
     const notifications = await Notification.find({ _id: { $in: notificationIds } }).exec();
+    if (isEmpty(notifications)) return res.sendStatus(StatusCodes.NOT_FOUND);
     const notifiedUsers = notifications.map(({ notifiedUserId }) => notifiedUserId.toString());
     // the difference function will return an array of different elements
     // the notifiedUsers should all be the requesting userId, therefore the length should be 0
@@ -36,4 +43,4 @@ const readNotifications = async (req, res) => {
   }
 };
 
-module.exports = { getUnreadNotifications, readNotifications };
+module.exports = { getNotifications, readNotifications };

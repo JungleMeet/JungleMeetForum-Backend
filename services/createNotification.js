@@ -42,15 +42,17 @@ const createNotification = async ({ actionType, payload }) => {
       const { parentCommentId } = await Comment.findById(targetCommentId).exec();
       const { author: postAuthor, follower } = await Post.findById(targetPostId).exec();
 
-      // notify the post author
-      newNotifications.push({
-        notifiedUserId: postAuthor,
-        triggerUserId,
-        targetPostId,
-        targetCommentId,
-        action: 'commented',
-        useSecondPersonNarrative: true, // the post author will receive "someone commented on your post"
-      });
+      // notify the post author, if the author replies to its own post, no notification will be created
+      if (postAuthor.toString() !== triggerUserId.toString()) {
+        newNotifications.push({
+          notifiedUserId: postAuthor,
+          triggerUserId,
+          targetPostId,
+          targetCommentId,
+          action: 'commented',
+          useSecondPersonNarrative: true, // the post author will receive "someone commented on your post"
+        });
+      }
 
       // notify the post followers
       if (!isEmpty(follower)) {

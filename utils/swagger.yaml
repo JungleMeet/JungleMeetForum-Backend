@@ -181,6 +181,14 @@ components:
           items:
             type: string
           description: '0'
+        likeCount:
+          type: number
+          description: the number of likes
+          example: 3
+        isRootComment:
+          type: boolean
+          description: if true, this is a top level comment, directly replying to the post, it has no parent comment id
+          example: true
         createdAt:
           type: string
           description: the time of creating the user
@@ -189,6 +197,38 @@ components:
           type: string
           description: the time of updating the user
           example: 2022-09-28T03:08:57.470Z
+    Notification:
+      type: object
+      required:
+        - notifiedUserId
+        - action
+      properties:
+        notifiedUserId:
+          type: string
+          description: user id of the person to be notified
+          example: 6332e78436c51000c12a2da1
+        triggerUserId:
+          type: string
+          description: user id of the person who trigger this notification record
+          example: 6336a2ae5fdd822186b3996e
+        targetPostId:
+          type: string
+          description: if the notification is about a post, the post id
+          example: 63574a1b2aa43c45e5e4bba2
+        targetCommentId:
+          type: string
+          description: if the notification is about a comment, the comment id, a post id will also exist together with a comment id
+          example: 6332a4603e60205bb0908b28
+        action:
+          type: string
+          description: the type of action that trigger this notification
+          example: replied, published, mentioned, likedComment, likedPost, followed, commented
+        viewed:
+          type: boolean
+          description: whether the notification has been read
+        useSecondPersonNarrative:
+          type: boolean
+          description: whether the word 'you'/'your' should be used in making the sentence. if true, the user should receive "someone liked your post"
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -1019,3 +1059,62 @@ paths :
                   $ref: '#/components/schemas/Comment'
           '404':
             description: Not Found
+
+    /notifications:
+      get:
+        tags:
+          - notification
+        summary: get the latest notifications (can choose number of entries to return)
+        description: if provide lastNotificationId in query, will provide notifications after that id
+        operationId: getNotifications
+        security:
+          - cookieAuth: []
+        parameters:
+          - name: lastNotificationId
+            required: false
+            in: query
+            description: object id of the last notification from the previous page, if not provided, will return the latest 5 notifications
+            schema:
+              type: string
+          - name: limit
+            required: false
+            in: query
+            description: the number of notifications to be returned. if empty, the default value is 5
+            schema:
+              type: number
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Notification'
+          '400':
+            description: bad request
+      put:
+        tags:
+          - notification
+        summary: change the field viewed to true for multiple notifications
+        description: provide an array of notification ids. even there is only one id, it must be provided in the form of an array
+        operationId: readNotifications
+        security:
+          - cookieAuth: []
+        requestBody:
+            description: an array of object ids
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                    -notificationIds
+                  properties:
+                    notificationIds:
+                      type: array
+                      description: notification ids
+                      example: ["6359151c337f87906e8084a4"]
+        responses:
+          '200':
+            description: successful operation
+          '400':
+            description: bad request

@@ -5,6 +5,7 @@ const NotificationSchema = new mongoose.Schema(
     notifiedUserId: {
       type: mongoose.Types.ObjectId,
       ref: 'User',
+      required: true,
     },
     triggerUserId: {
       type: mongoose.Types.ObjectId,
@@ -29,6 +30,7 @@ const NotificationSchema = new mongoose.Schema(
         'followed',
         'commented',
       ],
+      required: true,
     },
     viewed: {
       type: Boolean,
