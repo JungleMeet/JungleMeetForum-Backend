@@ -103,7 +103,9 @@ const createNotification = async ({ actionType, payload }) => {
 
   await Notification.insertMany(newNotifications);
 
-  const notifiedUsers = newNotifications.map((notification) => notification.notifiedUserId);
+  const notifiedUsers = newNotifications.map((notification) =>
+    notification.notifiedUserId.toString()
+  );
   sendNotification(notifiedUsers);
 };
 
