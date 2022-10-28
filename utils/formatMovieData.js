@@ -22,9 +22,10 @@ const formatMovieData = (data) => {
   const genreNames = genreIds.map(
     (genreId) => MOVIE_GENRES.find((elem) => elem.id === genreId).name
   );
+  const genres = genreNames.join(' ');
 
   return {
-    genreNames,
+    genres,
     resourceId,
     // popularity,
     poster,

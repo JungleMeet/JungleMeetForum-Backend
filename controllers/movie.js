@@ -15,7 +15,7 @@ const {
 } = require('../api/axios');
 
 const listMoviesByTag = async (req, res) => {
-  const acceptedConditions = ['popular', 'top_rated', 'now_playing'];
+  const acceptedConditions = ['popular', 'top_rated', 'now_playing', 'upcoming'];
   const { tag } = req.query;
   if (!acceptedConditions.includes(tag))
     return res.status(StatusCodes.BAD_REQUEST).json({ message: 'query type is not supported' });
