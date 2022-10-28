@@ -138,6 +138,7 @@ const toggleFollowing = async (req, res) => {
     return res.status(StatusCodes.BAD_REQUEST).json(err);
   }
 };
+
 const userLogIn = async (req, res) => {
   const { email, password } = req.body;
   try {
