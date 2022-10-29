@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+const options = {
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+};
+
 const CommentSchema = new mongoose.Schema(
   {
     content: {
@@ -16,10 +22,13 @@ const CommentSchema = new mongoose.Schema(
     parentCommentId: { type: mongoose.Types.ObjectId, ref: 'Comment' },
     like: [{ type: mongoose.Types.ObjectId, ref: 'User', default: 0 }],
   },
-  { timestamps: true },
-  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  options
 );
 
 CommentSchema.virtual('likeCount').get(() => this.like.length);
+
+CommentSchema.virtual('isRootComment').get(function () {
+  return !this.parentCommentId;
+});
 
 module.exports = mongoose.model('Comment', CommentSchema);

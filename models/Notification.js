@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 
 const NotificationSchema = new mongoose.Schema(
   {
-    userId: {
+    notifiedUserId: {
       type: mongoose.Types.ObjectId,
       ref: 'User',
+      required: true,
     },
     triggerUserId: {
       type: mongoose.Types.ObjectId,
@@ -20,10 +21,25 @@ const NotificationSchema = new mongoose.Schema(
     },
     action: {
       type: String,
-      enum: ['replied', 'published', 'mentioned', 'liked', 'followed', 'commented'],
+      enum: [
+        'replied',
+        'published',
+        'mentioned',
+        'likedComment',
+        'likedPost',
+        'followed',
+        'commented',
+      ],
+      required: true,
     },
     viewed: {
       type: Boolean,
+      default: false,
+    },
+    // decide if the word 'your' should be used
+    useSecondPersonNarrative: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
