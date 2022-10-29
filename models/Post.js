@@ -15,7 +15,7 @@ const PostSchema = new mongoose.Schema(
     },
     bgImg: {
       type: String,
-      default: 'https://imagefromapi.s3.ap-southeast-2.amazonaws.com/bgPost.jpg'
+      default: 'https://imagefromapi.s3.ap-southeast-2.amazonaws.com/bgPost.jpg',
       // required: [true, 'Please provide background image'],
     },
     visible: {
