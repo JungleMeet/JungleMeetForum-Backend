@@ -5,6 +5,7 @@ const {
   getMovieDetails,
   getTopRatedMovies,
   getMovidTrailerbyId,
+  getMoviesByCondition,
 } = require('../controllers/movie');
 
 const movieRouter = Router();
@@ -14,5 +15,6 @@ movieRouter.get('/search', searchMovieName);
 movieRouter.get('/tops', getTopRatedMovies);
 movieRouter.get('/trailers/:resourceId', getMovidTrailerbyId);
 movieRouter.get('/details/:resourceId', getMovieDetails);
+movieRouter.get('/allMovies', getMoviesByCondition);
 
 module.exports = movieRouter;
