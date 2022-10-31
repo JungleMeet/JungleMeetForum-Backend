@@ -11,8 +11,8 @@ const searchMovieByName = async (name) => {
   return response.data;
 };
 
-const getMoviesByTag = async (condition) => {
-  const response = await tmdbRequest(`/movie/${condition}`);
+const getMoviesByTag = async (condition, page) => {
+  const response = await tmdbRequest(`/movie/${condition}?page=${page}`);
   return response.data;
 };
 
@@ -44,6 +44,13 @@ const getYoutubeLinkById = async (id) => {
   return youtubeLink;
 };
 
+const getMovieListByCondition = async (year, genre, sortBy, page) => {
+  const response = await tmdbRequest(
+    `/discover/movie?sort_by=${sortBy}&page=${page}&year=${year}&with_genres=${genre}`
+  );
+  return response.data;
+};
+
 module.exports = {
   searchMovieByName,
   getMoviesByTag,
@@ -52,4 +59,5 @@ module.exports = {
   getMoviesByTopRated,
   getVideoById,
   getYoutubeLinkById,
+  getMovieListByCondition,
 };

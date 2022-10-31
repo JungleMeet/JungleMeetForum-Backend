@@ -1122,7 +1122,7 @@ paths :
       get:
         tags:
           - movie
-        summary: list movies by tag
+        summary: list movies by tag and page number
         description: list movies by 'popular', 'top_rated' and 'now_playing'
         operationId: listMoviesByTag
         parameters:
@@ -1132,6 +1132,12 @@ paths :
               description: movie tag
               schema:
                 type: string
+            - name: page
+              required: false
+              in: query
+              description: movie list page number
+              schema:
+                type: number
         responses:
           '200':
             description: successful operation
@@ -1204,4 +1210,40 @@ paths :
             description: successful operation
           '400':
             description: must provide a valid movie id
-
+    /movies/allMovies:
+      get:
+        tags: 
+          - movie
+        summary: get movies by year, sortBy, genre and page
+        description: list movies by year, sortBy, genre and page
+        operationId: getMoviesByCondition
+        parameters:
+            - name: page
+              required: false
+              in: query
+              description: movie list page number
+              schema:
+                type: number
+            - name: genre
+              required: false
+              in: query
+              description: movie type
+              schema:
+                type: string
+            - name: year
+              required: false
+              in: query
+              description: movie release year
+              schema:
+                type: number
+            - name: sortBy
+              required: false
+              in: query
+              description: movie list sort method
+              schema:
+                type: string
+        responses:
+          '200':
+            description: successful operation
+          '400':
+            description: bad request
