@@ -36,6 +36,14 @@ const getVideoById = async (movieId) => {
   return response.data;
 };
 
+const getYoutubeLinkById = async (id) => {
+  const data = await getVideoById(id);
+  const youtubeId = data.results[0].key;
+  const youtubeLink = `https://www.youtube.com/embed/${youtubeId}`;
+
+  return youtubeLink;
+};
+
 module.exports = {
   searchMovieByName,
   getMoviesByTag,
@@ -43,4 +51,5 @@ module.exports = {
   getCastByMovieId,
   getMoviesByTopRated,
   getVideoById,
+  getYoutubeLinkById,
 };

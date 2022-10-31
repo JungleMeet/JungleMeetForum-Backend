@@ -12,6 +12,7 @@ const {
   getCastByMovieId,
   getMoviesByTopRated,
   getVideoById,
+  getYoutubeLinkById,
 } = require('../api/axios');
 
 const listMoviesByTag = async (req, res) => {
@@ -67,7 +68,15 @@ const getTopRatedMovies = async (req, res) => {
       processedResults.push(formatTopRatedMovie(filteredData[i]));
     }
 
-    return res.status(StatusCodes.OK).json(processedResults);
+    const result = await Promise.all(
+      processedResults.map(async ({ id, ...rest }) => ({
+        ...rest,
+        id,
+        youtubeLink: await getYoutubeLinkById(id),
+      }))
+    );
+
+    return res.status(StatusCodes.OK).json(result);
   } catch (err) {
     return res.json(err);
   }
@@ -81,8 +90,9 @@ const getMovidTrailerbyId = async (req, res) => {
   try {
     const data = await getVideoById(resourceId);
     const youtubeId = data.results[0].key;
+    const youtubeLink = `https://www.youtube.com/embed/${youtubeId}`;
 
-    return res.status(StatusCodes.OK).json(youtubeId);
+    return res.status(StatusCodes.OK).json(youtubeLink);
   } catch (err) {
     return res.json(err);
   }
