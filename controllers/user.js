@@ -157,8 +157,7 @@ const userLogIn = async (req, res) => {
         algorithm: 'HS256',
         expiresIn: process.env.JWT_EXPIRE_TIME,
       });
-      res.cookie('token', token);
-      return res.status(StatusCodes.OK).json({ message: 'Successfully logged in' });
+      return res.status(StatusCodes.OK).json({ token, userName: user.name, userRole: user.role });
     }
     return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Wrong password, try again' });
   } catch (err) {
