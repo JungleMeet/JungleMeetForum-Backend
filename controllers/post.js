@@ -1,6 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
 const Post = require('../models/Post');
 const createNotification = require('../services/createNotification');
+const { discussionListData } = require('../utils/formatDiscussionData');
 
 const createPost = async (req, res) => {
   const { title, content, hashtag, bgImg } = req.body;
@@ -57,17 +58,38 @@ const patchPost = async (req, res) => {
 
 const getPosts = async (req, res) => {
   try {
-    const { displayNumber } = req.query;
-    if (req.query.sortBy === 'views') {
-      const top10Posts = (await Post.find().sort({ viewNumber: 'desc' })).slice(0, displayNumber);
-      return res.status(StatusCodes.OK).json(top10Posts);
+    const { nPerPage, pageNumber, sortBy } = req.query;
+    if (sortBy === 'views') {
+      const matchedPosts = await Post.find({
+        visible: true,
+      })
+        .sort({ viewNumber: 'desc' })
+        .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
+        .limit(nPerPage);
+      const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
+      const p = await Post.findOne().populate('commentCount');
+      console.log(p);
+      return res.status(StatusCodes.OK).json(matchPostsRightFormat);
     }
-    if (req.query.sortBy === 'createdAt') {
-      const top10Posts = (await Post.find().sort({ createdAt: 'desc' })).slice(0, displayNumber);
-      return res.status(StatusCodes.OK).json(top10Posts);
+    if (sortBy === 'createdAt') {
+      const matchedPosts = await Post.find({
+        visible: true,
+      })
+        .sort({ createdAt: 'desc' })
+        .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
+        .limit(nPerPage);
+      const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
+
+      return res.status(StatusCodes.OK).json(matchPostsRightFormat);
     }
-    const allPosts = (await Post.find()).slice(0, displayNumber);
-    return res.status(StatusCodes.OK).json(allPosts);
+    const matchedPosts = await Post.find({
+      visible: true,
+    })
+      .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
+      .limit(nPerPage);
+    const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
+
+    return res.status(StatusCodes.OK).json(matchPostsRightFormat);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
