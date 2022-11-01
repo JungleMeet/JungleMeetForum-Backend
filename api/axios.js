@@ -6,8 +6,8 @@ const tmdbRequest = axios.create({
   params: { api_key: process.env.TMDB_KEY, language: 'en-US' },
 });
 
-const searchMovieByName = async (name) => {
-  const response = await tmdbRequest(`/search/movie?query=${name}`);
+const searchMovieByName = async (name, page = 1) => {
+  const response = await tmdbRequest(`/search/movie?query=${name}&page=${page}`);
   return response.data;
 };
 
