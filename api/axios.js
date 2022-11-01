@@ -46,9 +46,8 @@ const getYoutubeLinkById = async (id) => {
     const youtubeLink = `https://www.youtube.com/embed/${youtubeId}`;
 
     return youtubeLink;
-  } 
-    return 'video is not available';
-  
+  }
+  return 'video is not available';
 };
 
 const getMovieListByCondition = async (year, genre, sortBy, page) => {
@@ -67,5 +66,4 @@ module.exports = {
   getVideoById,
   getYoutubeLinkById,
   getMovieListByCondition,
-  // getYoutubeLinkByTagSearchId,
 };
