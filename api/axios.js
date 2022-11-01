@@ -38,10 +38,17 @@ const getVideoById = async (movieId) => {
 
 const getYoutubeLinkById = async (id) => {
   const data = await getVideoById(id);
-  const youtubeId = data.results[0].key;
-  const youtubeLink = `https://www.youtube.com/embed/${youtubeId}`;
 
-  return youtubeLink;
+  if (data.results.length > 0) {
+    const filteredData = data.results.filter((i) => i.type === 'Trailer');
+
+    const youtubeId = filteredData[0].key;
+    const youtubeLink = `https://www.youtube.com/embed/${youtubeId}`;
+
+    return youtubeLink;
+  } 
+    return 'video is not available';
+  
 };
 
 const getMovieListByCondition = async (year, genre, sortBy, page) => {
@@ -60,4 +67,5 @@ module.exports = {
   getVideoById,
   getYoutubeLinkById,
   getMovieListByCondition,
+  // getYoutubeLinkByTagSearchId,
 };
