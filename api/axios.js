@@ -36,6 +36,21 @@ const getVideoById = async (movieId) => {
   return response.data;
 };
 
+const getYoutubeLinkById = async (id) => {
+  const data = await getVideoById(id);
+
+  if (data.results.length > 0) {
+    const filteredData = data.results.filter((i) => i.type === 'Trailer');
+
+    const youtubeId = filteredData[0].key;
+    const youtubeLink = `https://www.youtube.com/embed/${youtubeId}`;
+
+    return youtubeLink;
+  } 
+    return 'video is not available';
+  
+};
+
 const getMovieListByCondition = async (year, genre, sortBy, page) => {
   const response = await tmdbRequest(
     `/discover/movie?sort_by=${sortBy}&page=${page}&year=${year}&with_genres=${genre}`
@@ -50,5 +65,7 @@ module.exports = {
   getCastByMovieId,
   getMoviesByTopRated,
   getVideoById,
+  getYoutubeLinkById,
   getMovieListByCondition,
+  // getYoutubeLinkByTagSearchId,
 };
