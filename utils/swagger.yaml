@@ -535,9 +535,28 @@ paths :
       get:
         tags:
           - post
-        summary: get all posts
-        description: get all posts
+        summary: get posts by condition
+        description: get posts by pageNumber, nPerPage and sortBy
         operationId: getPosts
+        parameters:
+            - name: pageNumber
+              required: false
+              in: query
+              description: page number
+              schema:
+                type: number
+            - name: nPerPage
+              required: false
+              in: query
+              description: the number of posts per page
+              schema:
+                type: number
+            - name: sortBy
+              required: false
+              in: query
+              description: sort method
+              schema:
+                type: string
         responses:
           '200':
             description: successful operation
