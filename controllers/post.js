@@ -62,34 +62,42 @@ const getPosts = async (req, res) => {
     if (sortBy === 'views') {
       const matchedPosts = await Post.find({
         visible: true,
+        postType: 'userPost',
       })
         .sort({ viewNumber: 'desc' })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
-        .limit(nPerPage);
+        .limit(nPerPage)
+        .populate('commentCount')
+        .populate({ path: 'author', select: 'name' });
       const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
-      const p = await Post.findOne().populate('commentCount');
-      console.log(p);
-      return res.status(StatusCodes.OK).json(matchPostsRightFormat);
+      const length = await Post.find({ visible: true, postType: 'userPost' }).count();
+      return res.status(StatusCodes.OK).json({ length, data: matchPostsRightFormat });
     }
     if (sortBy === 'createdAt') {
       const matchedPosts = await Post.find({
         visible: true,
+        postType: 'userPost',
       })
         .sort({ createdAt: 'desc' })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
-        .limit(nPerPage);
+        .limit(nPerPage)
+        .populate('commentCount')
+        .populate({ path: 'author', select: 'name' });
       const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
-
-      return res.status(StatusCodes.OK).json(matchPostsRightFormat);
+      const length = await Post.find({ visible: true, postType: 'userPost' }).count();
+      return res.status(StatusCodes.OK).json({ length, data: matchPostsRightFormat });
     }
     const matchedPosts = await Post.find({
       visible: true,
+      postType: 'userPost',
     })
       .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
-      .limit(nPerPage);
+      .limit(nPerPage)
+      .populate('commentCount')
+      .populate({ path: 'author', select: 'name' });
     const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
-
-    return res.status(StatusCodes.OK).json(matchPostsRightFormat);
+    const length = await Post.find({ visible: true, postType: 'userPost' }).count();
+    return res.status(StatusCodes.OK).json({ length, data: matchPostsRightFormat });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
