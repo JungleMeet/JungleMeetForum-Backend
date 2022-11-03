@@ -65,7 +65,7 @@ const getPosts = async (req, res) => {
         postType: 'userPost',
       })
         .sort({ viewNumber: 'desc' })
-        .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
+        .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
         .limit(nPerPage)
         .populate('commentCount')
         .populate({ path: 'author', select: 'name' });
@@ -79,7 +79,7 @@ const getPosts = async (req, res) => {
         postType: 'userPost',
       })
         .sort({ createdAt: 'desc' })
-        .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
+        .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
         .limit(nPerPage)
         .populate('commentCount')
         .populate({ path: 'author', select: 'name' });
@@ -91,7 +91,7 @@ const getPosts = async (req, res) => {
       visible: true,
       postType: 'userPost',
     })
-      .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
+      .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
       .limit(nPerPage)
       .populate('commentCount')
       .populate({ path: 'author', select: 'name' });
