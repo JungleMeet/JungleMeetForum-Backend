@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+const options = {
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+};
 const PostSchema = new mongoose.Schema(
   {
     title: {
@@ -44,7 +49,14 @@ const PostSchema = new mongoose.Schema(
     ],
     follower: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
   },
-  { timestamps: true }
+  options
 );
+
+PostSchema.virtual('commentCount', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'postId',
+  count: true, // Set `count: true` on the virtual
+});
 
 module.exports = mongoose.model('Post', PostSchema);

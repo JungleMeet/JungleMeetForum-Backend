@@ -1,6 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
 const Post = require('../models/Post');
 const createNotification = require('../services/createNotification');
+const { discussionListData } = require('../utils/formatDiscussionData');
 
 const createPost = async (req, res) => {
   const { title, content, hashtag, bgImg } = req.body;
@@ -57,17 +58,33 @@ const patchPost = async (req, res) => {
 
 const getPosts = async (req, res) => {
   try {
-    const { displayNumber } = req.query;
-    if (req.query.sortBy === 'views') {
-      const top10Posts = (await Post.find().sort({ viewNumber: 'desc' })).slice(0, displayNumber);
-      return res.status(StatusCodes.OK).json(top10Posts);
+    const { nPerPage, pageNumber, sortBy } = req.query;
+    const sortByOptions = sortBy === 'views' ? { viewNumber: 'desc' } : { createdAt: 'desc' };
+    if (sortBy) {
+      const matchedPosts = await Post.find({
+        visible: true,
+        postType: 'userPost',
+      })
+        .sort(sortByOptions)
+        .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
+        .limit(nPerPage)
+        .populate('commentCount')
+        .populate({ path: 'author', select: 'name' });
+      const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
+      const length = await Post.find({ visible: true, postType: 'userPost' }).count();
+      return res.status(StatusCodes.OK).json({ length, data: matchPostsRightFormat });
     }
-    if (req.query.sortBy === 'createdAt') {
-      const top10Posts = (await Post.find().sort({ createdAt: 'desc' })).slice(0, displayNumber);
-      return res.status(StatusCodes.OK).json(top10Posts);
-    }
-    const allPosts = (await Post.find()).slice(0, displayNumber);
-    return res.status(StatusCodes.OK).json(allPosts);
+    const matchedPosts = await Post.find({
+      visible: true,
+      postType: 'userPost',
+    })
+      .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
+      .limit(nPerPage)
+      .populate('commentCount')
+      .populate({ path: 'author', select: 'name' });
+    const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
+    const length = await Post.find({ visible: true, postType: 'userPost' }).count();
+    return res.status(StatusCodes.OK).json({ length, data: matchPostsRightFormat });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }

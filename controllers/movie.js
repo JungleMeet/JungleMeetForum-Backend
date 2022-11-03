@@ -13,7 +13,6 @@ const {
   getCastByMovieId,
   getMoviesByTopRated,
   getVideoById,
-  getYoutubeLinkById,
   getMovieListByCondition,
 } = require('../api/axios');
 
@@ -29,15 +28,7 @@ const listMoviesByTag = async (req, res) => {
     processedResults.push(formatMovieData(results[i]));
   }
 
-  const resultsWithYoutubeLink = await Promise.all(
-    processedResults.map(async ({ resourceId, ...rest }) => ({
-      ...rest,
-      resourceId,
-      youtubeLink: await getYoutubeLinkById(resourceId),
-    }))
-  );
-
-  return res.status(StatusCodes.OK).json(resultsWithYoutubeLink);
+  return res.status(StatusCodes.OK).json(processedResults);
 };
 
 const searchMovieName = async (req, res) => {
@@ -82,15 +73,7 @@ const getTopRatedMovies = async (req, res) => {
       processedResults.push(formatTopRatedMovie(results[i]));
     }
 
-    const resultsWithYoutubeLink = await Promise.all(
-      processedResults.map(async ({ id, ...rest }) => ({
-        ...rest,
-        id,
-        youtubeLink: await getYoutubeLinkById(id),
-      }))
-    );
-
-    return res.status(StatusCodes.OK).json(resultsWithYoutubeLink);
+    return res.status(StatusCodes.OK).json(processedResults);
   } catch (err) {
     return res.json(err);
   }
@@ -102,8 +85,10 @@ const getMovidTrailerbyId = async (req, res) => {
     return res.status(StatusCodes.BAD_REQUEST).json({ message: 'must provide a valid movie id' });
 
   try {
-    const data = await getVideoById(resourceId);
-    const youtubeId = data.results[0].key;
+    const { results } = await getVideoById(resourceId);
+    const filteredData = results.filter((i) => i.type === 'Trailer');
+
+    const youtubeId = filteredData[0].key;
     const youtubeLink = `https://www.youtube.com/embed/${youtubeId}`;
 
     return res.status(StatusCodes.OK).json(youtubeLink);

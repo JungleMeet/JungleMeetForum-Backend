@@ -1,0 +1,26 @@
+{
+	  "executionRoleArn": "arn:aws:iam::209665464430:role/ecs-task-execution-role",
+	  "containerDefinitions": [
+	    {
+	      "portMappings": [
+	        {
+	          "hostPort": 3000,
+	          "protocol": "tcp",
+	          "containerPort": 3000
+	        }
+	      ],     
+	      "cpu": 0,
+	      "image": "209665464430.dkr.ecr.ap-southeast-2.amazonaws.com/testapp:v_16",
+	      "essential": true,
+	      "name": "MyTestApp"
+	    }
+	  ],
+	  "memory": "512",
+	  "taskRoleArn": "arn:aws:iam::209665464430:role/allow-ecs-access",
+	  "family": "main-app",
+	  "requiresCompatibilities": [
+	    "FARGATE"
+	  ],
+	  "networkMode": "awsvpc",
+	  "cpu": "256"
+	}

@@ -26,6 +26,7 @@ const UserSchema = new mongoose.Schema(
     },
     bgImg: {
       type: String,
+      default: 'https://imagefromapi.s3.ap-southeast-2.amazonaws.com/profile_background.jpg',
     },
     role: {
       type: String,
