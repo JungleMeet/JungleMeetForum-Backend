@@ -531,6 +531,7 @@ paths :
                   $ref: '#/components/schemas/User'
           '400':
             description: Bad request
+    
     /posts:
       get:
         tags:
@@ -1107,7 +1108,7 @@ paths :
                 schema:
                   type: object
                   required:
-                    -notificationIds
+                    - notificationIds
                   properties:
                     notificationIds:
                       type: array
