@@ -3,6 +3,8 @@ exports.THUMBNAIL_POSTER_WIDTH = 194;
 exports.MOVIEDETAIL_POSTER_WIDTH = 299;
 exports.CASTS_PROFILE_WIDTH = 195;
 exports.SEARCH_RESULT_POSTER_WIDTH = 77;
+exports.FALLBACK_POSTER =
+  'https://imagefromapi.s3.ap-southeast-2.amazonaws.com/poster_fallback.jpg';
 exports.MOVIE_GENRES = [
   {
     id: 28,
