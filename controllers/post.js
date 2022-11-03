@@ -69,7 +69,7 @@ const getPosts = async (req, res) => {
         .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
         .limit(nPerPage)
         .populate('commentCount')
-        .populate({ path: 'author', select: 'name' });
+        .populate({ path: 'author', select: 'name avatar' });
       const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
       const length = await Post.find({ visible: true, postType: 'userPost' }).count();
       return res.status(StatusCodes.OK).json({ length, data: matchPostsRightFormat });
