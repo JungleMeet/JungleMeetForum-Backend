@@ -32,6 +32,29 @@ const getComments = async (req, res) => {
       const comments = await Comment.find({ postId });
       return res.status(StatusCodes.OK).json(comments);
     }
+
+    if (req.query.sortBy === 'createdAt') {
+      const topComments = (await Comment.find().sort({ createdAt: 'desc' })).slice(0, postId);
+      return res.status(StatusCodes.OK).json(topComments);
+    }
+    if (req.query.sortBy === 'like') {
+      const topLikes = await Comment.aggregate([
+        {
+          $project: {
+            like: 1,
+            content: 1,
+            visible: 1,
+            author: 1,
+            mentionedUserId: 1,
+            postId: 1,
+            parentCommentId: 1,
+            length: { $size: '$like' },
+          },
+        },
+        { $sort: { length: -1 } },
+      ]);
+      return res.status(StatusCodes.OK).json(topLikes);
+    }
     const comments = await Comment.find();
     return res.status(StatusCodes.OK).json(comments);
   } catch (err) {
