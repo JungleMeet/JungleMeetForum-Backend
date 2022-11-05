@@ -4,6 +4,7 @@ const {
   formatMovieDetailData,
   formatMovieCastandCrew,
   formatTopRatedMovie,
+  formatMovieDataForSearch,
 } = require('../utils/formatMovieData');
 const {
   getMoviesByTag,
@@ -32,13 +33,18 @@ const listMoviesByTag = async (req, res) => {
 
 const searchMovieName = async (req, res) => {
   try {
-    const { name } = req.query;
+    const { name, page } = req.query;
     if (!name)
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: 'must provide a key word for searching' });
-    const result = await searchMovieByName(name);
-    return res.json(result);
+    const { results } = await searchMovieByName(name, page);
+    const filterResults = results.filter((entry) => entry.original_language === 'en');
+    const processedResults = [];
+    for (let i = 0; i < filterResults.length; i += 1) {
+      processedResults.push(formatMovieDataForSearch(filterResults[i]));
+    }
+    return res.json(processedResults);
   } catch (error) {
     return res.json(error);
   }
