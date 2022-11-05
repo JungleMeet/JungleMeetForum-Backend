@@ -1,5 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const Post = require('../models/Post');
+const { convertHtmlFormat } = require('../utils/convertHtmlEntities');
 const createNotification = require('../services/createNotification');
 const { discussionListData } = require('../utils/formatDiscussionData');
 
@@ -72,7 +73,10 @@ const getPosts = async (req, res) => {
         .populate({ path: 'author', select: 'name' });
       const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
       const length = await Post.find({ visible: true, postType: 'userPost' }).count();
-      return res.status(StatusCodes.OK).json({ length, data: matchPostsRightFormat });
+
+      const convertHtmlContentPosts = convertHtmlFormat(matchPostsRightFormat);
+
+      return res.status(StatusCodes.OK).json({ length, data: convertHtmlContentPosts });
     }
     const matchedPosts = await Post.find({
       visible: true,
@@ -84,7 +88,10 @@ const getPosts = async (req, res) => {
       .populate({ path: 'author', select: 'name' });
     const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
     const length = await Post.find({ visible: true, postType: 'userPost' }).count();
-    return res.status(StatusCodes.OK).json({ length, data: matchPostsRightFormat });
+
+    const convertHtmlContentPosts = convertHtmlFormat(matchPostsRightFormat);
+
+    return res.status(StatusCodes.OK).json({ length, data: convertHtmlContentPosts });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
