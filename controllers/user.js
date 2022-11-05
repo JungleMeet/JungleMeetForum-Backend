@@ -5,10 +5,10 @@ const User = require('../models/User');
 const createNotification = require('../services/createNotification');
 
 const getUserById = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.params;
 
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
 
     return res.status(StatusCodes.OK).json(user);
   } catch (err) {
@@ -168,6 +168,66 @@ const userLogIn = async (req, res) => {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
+
+const getUserProfile = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const followersList = [];
+    const followingsList = [];
+    const followingPostsList = [];
+
+    const [userAndFollower, userAndFollowing, userAndFollowingPost] = await Promise.all([
+      User.findById(userId).populate('follower').exec(),
+      User.findById(userId).populate('following').exec(),
+      User.findById(userId).populate('followingPost').exec(),
+    ]).then((result) => result);
+
+    const follower =
+      userAndFollower.follower.length > 4
+        ? userAndFollower.follower
+        : userAndFollower.follower.slice(0, 4);
+    follower.forEach((eachFollower) => {
+      const followerList = [];
+      followerList.push(eachFollower.name);
+      followerList.push(eachFollower.role);
+      followerList.push(eachFollower.bgImg);
+      followersList.push(followerList);
+    });
+
+    const following =
+      userAndFollowing.following.length > 4
+        ? userAndFollowing.following
+        : userAndFollowing.following.slice(0, 4);
+    following.forEach((eachFollowing) => {
+      const followingList = [];
+      followingList.push(eachFollowing.name);
+      followingList.push(eachFollowing.role);
+      followingList.push(eachFollowing.bgImg);
+      followingsList.push(followingList);
+    });
+
+    const followingPost =
+      userAndFollowingPost.followingPost.length > 3
+        ? userAndFollowingPost.followingPost
+        : userAndFollowingPost.followingPost.slice(0, 3);
+    followingPost.forEach((eachFollowingPost) => {
+      const followingPostList = [];
+      followingPostList.push(eachFollowingPost.title);
+      followingPostsList.push(followingPostList);
+    });
+    return res.status(StatusCodes.OK).json({
+      userName: userAndFollower.name,
+      userImg: userAndFollower.bgImg,
+      userRole: userAndFollower.role,
+      followersList,
+      followingsList,
+      followingPostsList,
+    });
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
 module.exports = {
   getUserById,
   createUser,
@@ -177,4 +237,5 @@ module.exports = {
   patchUser,
   userLogIn,
   toggleFollowing,
+  getUserProfile,
 };

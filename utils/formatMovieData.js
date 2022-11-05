@@ -3,35 +3,74 @@ const {
   MOVIEDETAIL_POSTER_WIDTH,
   CASTS_PROFILE_WIDTH,
   MOVIE_GENRES,
+  SEARCH_RESULT_POSTER_WIDTH,
 } = require('../constants/constants');
 const imagePathGen = require('./imagePathGen');
 
-const formatMovieData = (data) => {
+const formatMovieDataGeneral = (data, imageSize) => {
   const {
     genre_ids: genreIds,
     id: resourceId,
-    // popularity,
     poster_path,
-    // release_date,
+    release_date,
     title,
     vote_average: voteAverage,
+    overview,
   } = data;
 
-  const poster = imagePathGen(poster_path, THUMBNAIL_POSTER_WIDTH);
-  // const year = release_date.slice(0, 4);
+  const poster = imagePathGen(poster_path, imageSize);
+  const year = release_date.slice(0, 4);
   const genreNames = genreIds.map((genreId) => MOVIE_GENRES.find((elem) => elem.id === genreId));
   // const genres = genreNames.join(' ');
 
   return {
     genreNames,
     resourceId,
-    // popularity,
     poster,
-    // year,
     title,
     voteAverage,
+    year,
+    overview,
   };
 };
+
+const formatMovieData = (data) => {
+  const result = formatMovieDataGeneral(data, THUMBNAIL_POSTER_WIDTH);
+  const { genreNames, resourceId, poster, title, voteAverage } = result;
+  return { genreNames, resourceId, poster, title, voteAverage };
+};
+
+const formatMovieDataForSearch = (data) => {
+  const result = formatMovieDataGeneral(data, SEARCH_RESULT_POSTER_WIDTH);
+  return result;
+};
+
+// const formatMovieData = (data) => {
+//   const {
+//     genre_ids: genreIds,
+//     id: resourceId,
+//     // popularity,
+//     poster_path,
+//     // release_date,
+//     title,
+//     vote_average: voteAverage,
+//   } = data;
+
+//   const poster = imagePathGen(poster_path, THUMBNAIL_POSTER_WIDTH);
+//   // const year = release_date.slice(0, 4);
+//   const genreNames = genreIds.map((genreId) => MOVIE_GENRES.find((elem) => elem.id === genreId));
+//   // const genres = genreNames.join(' ');
+
+//   return {
+//     genreNames,
+//     resourceId,
+//     // popularity,
+//     poster,
+//     // year,
+//     title,
+//     voteAverage,
+//   };
+// };
 
 const formatMovieDetailData = (data) => {
   const {
@@ -117,4 +156,5 @@ module.exports = {
   formatMovieDetailData,
   formatMovieCastandCrew,
   formatTopRatedMovie,
+  formatMovieDataForSearch,
 };
