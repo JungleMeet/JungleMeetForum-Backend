@@ -1,5 +1,6 @@
 const discussionListData = (data) => {
-  const { _id, title, content, createdAt, bgImg, author, like, viewNumber, commentCount } = data;
+  const { _id, title, content, createdAt, bgImg, hashtag, author, like, viewNumber, commentCount } =
+    data;
   const date = new Date(createdAt);
 
   const year = date.getFullYear();
@@ -17,6 +18,7 @@ const discussionListData = (data) => {
     title,
     content,
     releaseDateRightFormat,
+    hashtag,
     bgImg,
     author,
     likeCount,
