@@ -27,6 +27,12 @@ const discussionListData = (data) => {
   };
 };
 
+const processPostSearchResult = (post) => {
+  const { content, bgImg, releaseDateRightFormat, ...rest } = discussionListData(post);
+  return { ...rest, createdAt: releaseDateRightFormat };
+};
+
 module.exports = {
   discussionListData,
+  processPostSearchResult,
 };
