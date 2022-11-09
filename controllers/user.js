@@ -228,6 +228,22 @@ const getUserProfile = async (req, res) => {
   }
 };
 
+const verifyToken = async (req, res) => {
+  const bearerHeader = req.headers.authorization;
+  console.log(bearerHeader);
+  if (!bearerHeader) return res.status(401).json({ message: 'no token is presented' });
+  const bearer = bearerHeader.split(' ');
+  const token = bearer[1];
+  // verify() is a fake function, replace it with a real jwt function
+  const userId = jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
+    if (err) {
+      return res.status(401).json({ message: 'invalid token' });
+    }
+    return payload.userId;
+  });
+  return res.status(StatusCodes.OK).json({ userId });
+};
+
 module.exports = {
   getUserById,
   createUser,
@@ -238,4 +254,5 @@ module.exports = {
   userLogIn,
   toggleFollowing,
   getUserProfile,
+  verifyToken,
 };
