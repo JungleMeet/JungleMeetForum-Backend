@@ -11,10 +11,12 @@ const {
   userLogIn,
   toggleFollowing,
   getUserProfile,
+  verifyToken,
 } = require('../controllers/user');
 
 const userRouter = Router();
 
+userRouter.get('/verify', verifyToken);
 userRouter.get('/:userId', getUserById);
 userRouter.post('/', createUser);
 userRouter.get('/', getAllUsers);
