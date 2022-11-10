@@ -15,6 +15,7 @@ const {
   getVideoById,
   getMovieListByCondition,
 } = require('../api/axios');
+const Post = require('../models/Post');
 
 const listMoviesByTag = async (req, res) => {
   const acceptedConditions = ['popular', 'top_rated', 'now_playing', 'upcoming'];
@@ -52,10 +53,14 @@ const searchMovieName = async (req, res) => {
 
 const getMovieDetails = async (req, res) => {
   try {
-    const { resourceId } = req.params;
-    if (!resourceId)
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'must provide a valid movie id' });
-    const result = await Promise.all([getMovieById(resourceId), getCastByMovieId(resourceId)]);
+    const { postId } = req.params;
+    if (!postId)
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: 'must provide a valid post id' });
+    const post = await Post.findById(postId);
+    const result = await Promise.all([
+      getMovieById(post.resourceId),
+      getCastByMovieId(post.resourceId),
+    ]);
     const details = formatMovieDetailData(result[0]);
     const castsAndCrews = formatMovieCastandCrew(result[1]);
     const allMovieDetails = { ...details, ...castsAndCrews };
