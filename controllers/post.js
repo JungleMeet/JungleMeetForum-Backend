@@ -164,9 +164,17 @@ const createMoviePost = async (req, res) => {
 
   try {
     if (resourceId) {
-      const post = new Post({ resourceId, postType: 'moviePost' });
-      const result = await post.save();
-      return res.status(StatusCodes.OK).json(result);
+      const post = await Post.findOneAndUpdate(
+        { resourceId },
+        {
+          $setOnInsert: { resourceId, postType: 'moviePost' },
+        },
+        {
+          returnOriginal: false,
+          upsert: true,
+        }
+      );
+      return res.status(StatusCodes.OK).json(post);
     }
     return res.status(StatusCodes.BAD_REQUEST).json({ message: 'resourceId cannot be empty!' });
   } catch (err) {
