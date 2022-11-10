@@ -225,8 +225,7 @@ const unlikePost = async (req, res) => {
 };
 
 const searchPostByKeyword = async (req, res) => {
-  const ENTRIES_PER_PAGE = 20;
-  const { keyword, page } = req.query;
+  const { keyword, page, limit } = req.query;
   if (!keyword) return res.status(StatusCodes.OK).json([]);
 
   try {
@@ -235,8 +234,8 @@ const searchPostByKeyword = async (req, res) => {
       { score: { $meta: 'textScore' } }
     )
       .sort({ score: { $meta: 'textScore' } })
-      .skip(page > 0 ? (page - 1) * ENTRIES_PER_PAGE : 0)
-      .limit(ENTRIES_PER_PAGE)
+      .skip(page > 0 ? (page - 1) * limit : 0)
+      .limit(limit)
       .select('title author hashtag createdAt like viewNumber')
       .populate({ path: 'author', select: 'name avatar' })
       .populate('commentCount')
