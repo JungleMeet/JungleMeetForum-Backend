@@ -1,6 +1,8 @@
 const { StatusCodes } = require('http-status-codes');
+const mongoose = require('mongoose');
 const Comment = require('../models/Comment');
 const createNotification = require('../services/createNotification');
+// const {formatCommentListData} =require ('../utils/formatCommentData');
 
 const createComment = async (req, res) => {
   const { content, author, postId, parentCommentId } = req.body;
@@ -18,7 +20,6 @@ const createComment = async (req, res) => {
         },
       });
     }
-
     return res.status(StatusCodes.OK).json(ret);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
@@ -27,36 +28,216 @@ const createComment = async (req, res) => {
 
 const getComments = async (req, res) => {
   try {
-    const { postId } = req.query;
+    const { postId, nPerPage, pageNumber } = req.query;
+    const nPerPageNumber = parseInt(nPerPage, 10);
+    const id = mongoose.Types.ObjectId(postId);
     if (postId) {
-      const comments = await Comment.find({ postId });
-      return res.status(StatusCodes.OK).json(comments);
-    }
-
-    if (req.query.sortBy === 'createdAt') {
-      const topComments = (await Comment.find().sort({ createdAt: 'desc' })).slice(0, postId);
-      return res.status(StatusCodes.OK).json(topComments);
-    }
-    if (req.query.sortBy === 'like') {
-      const topLikes = await Comment.aggregate([
-        {
-          $project: {
-            like: 1,
-            content: 1,
-            visible: 1,
-            author: 1,
-            mentionedUserId: 1,
-            postId: 1,
-            parentCommentId: 1,
-            length: { $size: '$like' },
+      // const comments = await Comment.find({ postId });
+      if (req.query.sortBy === 'createdAt') {
+        const topComments = await Comment.aggregate([
+          {
+            $match: {
+              parentCommentId: { $eq: undefined },
+              postId: id,
+            },
           },
-        },
-        { $sort: { length: -1 } },
-      ]);
-      return res.status(StatusCodes.OK).json(topLikes);
+          {
+            $graphLookup: {
+              from: 'comments',
+              startWith: '$_id',
+              connectFromField: '_id',
+              connectToField: 'parentCommentId',
+              depthField: 'level',
+              as: 'children',
+            },
+          },
+          {
+            $unwind: {
+              path: '$children',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $sort: {
+              // "_id": -1,
+              'children.level': -1,
+              'children._id': -1,
+            },
+          },
+          {
+            $addFields: {
+              'children.author': {
+                $toObjectId: '$children.author',
+                // $toObjectId: "$children.author"
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'children.author',
+              foreignField: '_id',
+              pipeline: [
+                {
+                  $project: {
+                    name: 1,
+                    avatar: 1,
+                  },
+                },
+              ],
+              as: 'children.author',
+            },
+          },
+          {
+            $unwind: {
+              path: '$children.author',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $group: {
+              _id: '$_id',
+              parentCommentId: {
+                $first: '$parentCommentId',
+              },
+              content: {
+                $first: '$content',
+              },
+              createdAt: {
+                $first: '$createdAt',
+              },
+              author: {
+                $first: '$author',
+              },
+              children: {
+                $push: '$children',
+              },
+            },
+          },
+
+          {
+            $addFields: {
+              children: {
+                $reduce: {
+                  input: '$children',
+                  initialValue: {
+                    level: -1,
+                    presentChild: [],
+                    prevChild: [],
+                  },
+                  in: {
+                    $let: {
+                      vars: {
+                        prev: {
+                          $cond: [
+                            {
+                              $eq: ['$$value.level', '$$this.level'],
+                            },
+                            '$$value.prevChild',
+                            '$$value.presentChild',
+                          ],
+                        },
+                        current: {
+                          $cond: [
+                            {
+                              $eq: ['$$value.level', '$$this.level'],
+                            },
+                            '$$value.presentChild',
+                            [],
+                          ],
+                        },
+                      },
+                      in: {
+                        level: '$$this.level',
+                        prevChild: '$$prev',
+                        presentChild: {
+                          $concatArrays: [
+                            '$$current',
+                            [
+                              {
+                                $mergeObjects: [
+                                  '$$this',
+                                  {
+                                    children: {
+                                      $filter: {
+                                        input: '$$prev',
+                                        as: 'e',
+                                        cond: {
+                                          $eq: ['$$e.parentCommentId', '$$this._id'],
+                                        },
+                                      },
+                                    },
+                                  },
+                                ],
+                              },
+                            ],
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          {
+            $addFields: {
+              children: '$children.presentChild',
+            },
+          },
+          {
+            $sort: { _id: -1 },
+          },
+          {
+            $skip: pageNumber > 0 ? pageNumber * nPerPageNumber : 0,
+          },
+          {
+            $limit: nPerPageNumber,
+          },
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'author',
+              foreignField: '_id',
+              pipeline: [
+                {
+                  $project: {
+                    name: 1,
+                    avatar: 1,
+                  },
+                },
+              ],
+              as: 'author',
+            },
+          },
+        ]).exec();
+        // const formatComments = formatCommentListData(topComments);
+        return res.status(StatusCodes.OK).json(topComments);
+      }
+      // if (req.query.sortBy === 'like') {
+      //   const topLikes = await Comment.aggregate([
+      //     {
+      //       $match: { postId: id, parentCommentId: undefined, visible: true }
+      //     },
+      //     {
+      //       $project: {
+      //         like: 1,
+      //         content: 1,
+      //         visible: 1,
+      //         author: 1,
+      //         mentionedUserId: 1,
+      //         postId: 1,
+      //         parentCommentId: 1,
+      //         isRootComment: 1,
+      //         length: { $size: '$like' },
+      //       },
+      //     },
+      //     { $sort: { length: -1 } },
+      //   ]).exec();
+      //   return res.status(StatusCodes.OK).json(topLikes);
+      // }
     }
-    const comments = await Comment.find();
-    return res.status(StatusCodes.OK).json(comments);
+    return res.status(StatusCodes.BAD_REQUEST).json({ message: 'Must provide a post ID' });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
