@@ -157,11 +157,12 @@ const userLogIn = async (req, res) => {
         algorithm: 'HS256',
         expiresIn: process.env.JWT_EXPIRE_TIME,
       });
-      const user_info = {
+      const userInfo = {
+        userId: user._id,
         userName: user.name,
         userRole: user.role,
       };
-      return res.status(StatusCodes.OK).json({ token, user_info });
+      return res.status(StatusCodes.OK).json({ token, userInfo });
     }
     return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Wrong password, try again' });
   } catch (err) {
@@ -187,10 +188,10 @@ const getUserProfile = async (req, res) => {
         ? userAndFollower.follower
         : userAndFollower.follower.slice(0, 4);
     follower.forEach((eachFollower) => {
-      const followerList = [];
-      followerList.push(eachFollower.name);
-      followerList.push(eachFollower.role);
-      followerList.push(eachFollower.bgImg);
+      const followerList = {};
+      followerList.name = eachFollower.name;
+      followerList.role = eachFollower.role;
+      followerList.avatar = eachFollower.avatar;
       followersList.push(followerList);
     });
 
@@ -199,10 +200,10 @@ const getUserProfile = async (req, res) => {
         ? userAndFollowing.following
         : userAndFollowing.following.slice(0, 4);
     following.forEach((eachFollowing) => {
-      const followingList = [];
-      followingList.push(eachFollowing.name);
-      followingList.push(eachFollowing.role);
-      followingList.push(eachFollowing.bgImg);
+      const followingList = {};
+      followingList.name = eachFollowing.name;
+      followingList.role = eachFollowing.role;
+      followingList.avatar = eachFollowing.avatar;
       followingsList.push(followingList);
     });
 
@@ -211,14 +212,15 @@ const getUserProfile = async (req, res) => {
         ? userAndFollowingPost.followingPost
         : userAndFollowingPost.followingPost.slice(0, 3);
     followingPost.forEach((eachFollowingPost) => {
-      const followingPostList = [];
-      followingPostList.push(eachFollowingPost.title);
+      const followingPostList = {};
+      followingPostList.title = eachFollowingPost.title;
       followingPostsList.push(followingPostList);
     });
     return res.status(StatusCodes.OK).json({
       userName: userAndFollower.name,
-      userImg: userAndFollower.bgImg,
+      userAvatar: userAndFollower.avatar,
       userRole: userAndFollower.role,
+      userBgImg: userAndFollower.bgImg,
       followersList,
       followingsList,
       followingPostsList,
