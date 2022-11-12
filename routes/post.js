@@ -13,12 +13,14 @@ const {
   getPostById,
   createMoviePost,
   patchPost,
+  searchPostByKeyword,
 } = require('../controllers/post');
 
 const postRouter = Router();
 postRouter.get('/', getPosts);
 postRouter.get('/:postId', getPostById);
 postRouter.post('/movie', createMoviePost);
+postRouter.get('/search/all', searchPostByKeyword);
 // endpoints before this line is open to everyone
 postRouter.use(auth);
 // endpoints after this line require valid token to access
