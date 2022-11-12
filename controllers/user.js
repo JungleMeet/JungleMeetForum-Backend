@@ -191,7 +191,7 @@ const getUserProfile = async (req, res) => {
       const followerList = {};
       followerList.name = eachFollower.name;
       followerList.role = eachFollower.role;
-      followerList.bgImg = eachFollower.bgImg;
+      followerList.avatar = eachFollower.avatar;
       followersList.push(followerList);
     });
 
@@ -203,7 +203,7 @@ const getUserProfile = async (req, res) => {
       const followingList = {};
       followingList.name = eachFollowing.name;
       followingList.role = eachFollowing.role;
-      followingList.bgImg = eachFollowing.bgImg;
+      followingList.avatar = eachFollowing.avatar;
       followingsList.push(followingList);
     });
 
@@ -218,8 +218,9 @@ const getUserProfile = async (req, res) => {
     });
     return res.status(StatusCodes.OK).json({
       userName: userAndFollower.name,
-      userImg: userAndFollower.bgImg,
+      userAvatar: userAndFollower.avatar,
       userRole: userAndFollower.role,
+      userBgImg: userAndFollower.bgImg,
       followersList,
       followingsList,
       followingPostsList,
