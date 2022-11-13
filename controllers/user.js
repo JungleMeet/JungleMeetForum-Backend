@@ -21,19 +21,21 @@ const createUser = async (req, res) => {
   const { name, password, email, avatar, bgImg } = req.body;
 
   try {
+    const emailExist = await User.findOne({ email });
+    if (emailExist) {
+      return res.status(StatusCodes.CONFLICT).json({ message: 'Email already existed' });
+    }
+
+    const nameExist = await User.findOne({ name: { $regex: `^${ name }$`, $options: 'i' } });
+    if (nameExist) {
+      return res.status(StatusCodes.CONFLICT).json({ message: 'Name already existed' });
+    }
+
     const user = new User({ name, password, email, avatar, bgImg });
     const ret = await user.save();
 
     return res.status(StatusCodes.OK).json(ret);
   } catch (err) {
-    if (err.code === 11000) {
-      if (Object.keys(err.keyValue).includes('name')) {
-        return res.status(StatusCodes.CONFLICT).json({ message: 'Name existed' });
-      }
-      if (Object.keys(err.keyValue).includes('email')) {
-        return res.status(StatusCodes.CONFLICT).json({ message: 'Email registered' });
-      }
-    }
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
