@@ -2,6 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Email = require('../models/Email');
 const createNotification = require('../services/createNotification');
 
 const getUserById = async (req, res) => {
@@ -64,6 +65,31 @@ const resetPassword = async (req, res) => {
         .status(StatusCodes.UNAUTHORIZED)
         .json({ message: 'Password should be 6 characters at least, try again' });
     }
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
+const emailResetPassword = async (req, res) => {
+  const { email, newPwd } = req.body;
+  const { code } = req.query;
+  // console.log(code)
+  try {
+    const user = await User.findOne({ email });
+    // const result = await Email.findOne({email,code});
+    if (user) {
+      const result = await Email.findOne({ email, code });
+      if (result) {
+        await user.updateOne({ $set: { password: newPwd } }, { new: true, runValidators: true });
+        return res.status(StatusCodes.OK).json({ message: 'Password changed successfully!' });
+      }
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: 'Reset password already expired' });
+    }
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: 'No account with that email has been found' });
+  } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
@@ -255,4 +281,5 @@ module.exports = {
   toggleFollowing,
   getUserProfile,
   verifyToken,
+  emailResetPassword,
 };
