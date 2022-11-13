@@ -14,7 +14,7 @@ movieRouter.get('/list', listMoviesByTag);
 movieRouter.get('/search', searchMovieName);
 movieRouter.get('/tops', getTopRatedMovies);
 movieRouter.get('/trailers/:resourceId', getMovidTrailerbyId);
-movieRouter.get('/details/:resourceId', getMovieDetails);
+movieRouter.get('/details/:postId', getMovieDetails);
 movieRouter.get('/allMovies', getMoviesByCondition);
 
 module.exports = movieRouter;

@@ -11,14 +11,18 @@ const {
   userLogIn,
   toggleFollowing,
   getUserProfile,
+  verifyToken,
+  emailResetPassword,
 } = require('../controllers/user');
 
 const userRouter = Router();
 
+userRouter.get('/verify', verifyToken);
 userRouter.get('/:userId', getUserById);
 userRouter.post('/', createUser);
 userRouter.get('/', getAllUsers);
 userRouter.post('/login', userLogIn);
+userRouter.patch('/email', emailResetPassword);
 userRouter.get('/:userId/profile', getUserProfile);
 // endpoints before this line is open to everyone
 userRouter.use(auth);

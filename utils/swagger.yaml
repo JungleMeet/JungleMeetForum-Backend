@@ -580,6 +580,7 @@ paths :
                       items:
                         $ref: '#/components/schemas/Post'
                       description: array of postId
+    
     /posts:
       get:
         tags:
@@ -953,7 +954,34 @@ paths :
         responses:
           '200': 
             description: successful operation
-    
+    /posts/search/all:
+      get:
+        tags:
+          - post
+        summary: search post by keyword
+        description: search {keyword} in both title and content
+        operationId: searchPostByKeyword
+        parameters:
+          - name: keyword
+            required: true
+            in: query
+            description: keyword to search
+            schema:
+              type: string
+          - name: page
+            required: false
+            in: query
+            description: page number of search results, if the number is over its range, an empty array will be returned
+            schema:
+              type: string
+        responses:
+          '200':
+            description: return search results, if no record is found, return empty array
+          '400':
+            description: bad request, should not happen
+
+
+
     /comments:
       get:
         tags:
