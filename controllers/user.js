@@ -1,5 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Email = require('../models/Email');
@@ -26,7 +27,7 @@ const createUser = async (req, res) => {
       return res.status(StatusCodes.CONFLICT).json({ message: 'Email already existed' });
     }
 
-    const nameExist = await User.findOne({ name: { $regex: `^${ name }$`, $options: 'i' } });
+    const nameExist = await User.findOne({ name: { $regex: `^${name}$`, $options: 'i' } });
     if (nameExist) {
       return res.status(StatusCodes.CONFLICT).json({ message: 'Name already existed' });
     }
@@ -179,7 +180,8 @@ const userLogIn = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (user.password === password) {
+    const result = await bcrypt.compare(password, user.password);
+    if (result) {
       const data = { userId: user._id };
       const token = jwt.sign(data, process.env.JWT_SECRET, {
         algorithm: 'HS256',
