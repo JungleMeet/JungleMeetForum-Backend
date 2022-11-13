@@ -1,10 +1,10 @@
 const { StatusCodes } = require('http-status-codes');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Email = require('../models/Email');
 const createNotification = require('../services/createNotification');
-
 const getUserById = async (req, res) => {
   const { userId } = req.params;
 
@@ -177,7 +177,8 @@ const userLogIn = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (user.password === password) {
+    const result = await bcrypt.compare(password, user.password);
+    if (result) {
       const data = { userId: user._id };
       const token = jwt.sign(data, process.env.JWT_SECRET, {
         algorithm: 'HS256',
