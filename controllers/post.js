@@ -2,7 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const Post = require('../models/Post');
 const { convertHtmlFormat } = require('../utils/convertHtmlEntities');
 const createNotification = require('../services/createNotification');
-const { discussionListData } = require('../utils/formatDiscussionData');
+const { discussionListData, processPostSearchResult } = require('../utils/formatDiscussionData');
 
 const createPost = async (req, res) => {
   const { title, content, hashtag, bgImg } = req.body;
@@ -232,6 +232,30 @@ const unlikePost = async (req, res) => {
   }
 };
 
+const searchPostByKeyword = async (req, res) => {
+  const { keyword, page, limit } = req.query;
+  if (!keyword) return res.status(StatusCodes.OK).json([]);
+
+  try {
+    const result = await Post.find(
+      { $text: { $search: keyword, $language: 'en' } },
+      { score: { $meta: 'textScore' } }
+    )
+      .sort({ score: { $meta: 'textScore' } })
+      .skip(page > 0 ? (page - 1) * limit : 0)
+      .limit(limit)
+      .select('title author hashtag createdAt like viewNumber')
+      .populate({ path: 'author', select: 'name avatar' })
+      .populate('commentCount')
+      .exec();
+
+    const processedResults = result.map((post) => processPostSearchResult(post));
+    return res.status(StatusCodes.OK).json(processedResults);
+  } catch (error) {
+    return res.status(StatusCodes.BAD_REQUEST).json(error);
+  }
+};
+
 module.exports = {
   createPost,
   patchPost,
@@ -244,4 +268,5 @@ module.exports = {
   checkLike,
   getAllLikes,
   unlikePost,
+  searchPostByKeyword,
 };
