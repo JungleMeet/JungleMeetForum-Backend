@@ -35,6 +35,7 @@ const getComments = async (req, res) => {
       visible: true,
       postType: 'userPost',
       parentCommentId: { $eq: undefined },
+      postId,
     }).count();
     if (postId) {
       // const comments = await Comment.find({ postId });
