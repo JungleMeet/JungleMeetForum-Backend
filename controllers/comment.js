@@ -31,6 +31,11 @@ const getComments = async (req, res) => {
     const { postId, nPerPage, pageNumber } = req.query;
     const nPerPageNumber = parseInt(nPerPage, 10);
     const id = mongoose.Types.ObjectId(postId);
+    const length = await Comment.find({
+      visible: true,
+      postType: 'userPost',
+      parentCommentId: { $eq: undefined },
+    }).count();
     if (postId) {
       // const comments = await Comment.find({ postId });
       if (req.query.sortBy === 'createdAt') {
@@ -64,14 +69,14 @@ const getComments = async (req, res) => {
               'children._id': -1,
             },
           },
-          {
-            $addFields: {
-              'children.author': {
-                $toObjectId: '$children.author',
-                // $toObjectId: "$children.author"
-              },
-            },
-          },
+          // {
+          //   $addFields: {
+          //     'children.author': {
+          //       $toObjectId: '$children.author',
+          //       // $toObjectId: "$children.author"
+          //     },
+          //   },
+          // },
           {
             $lookup: {
               from: 'users',
@@ -226,7 +231,7 @@ const getComments = async (req, res) => {
           },
         ]).exec();
         // const formatComments = formatCommentListData(topComments);
-        return res.status(StatusCodes.OK).json(topComments);
+        return res.status(StatusCodes.OK).json({ length, topComments });
       }
       // if (req.query.sortBy === 'like') {
       //   const topLikes = await Comment.aggregate([
