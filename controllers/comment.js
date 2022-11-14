@@ -195,6 +195,14 @@ const getComments = async (req, res) => {
             $limit: nPerPageNumber,
           },
           {
+            $addFields: {
+              author: {
+                $toObjectId: '$author',
+                // $toObjectId: "$children.author"
+              },
+            },
+          },
+          {
             $lookup: {
               from: 'users',
               localField: 'author',
@@ -208,6 +216,12 @@ const getComments = async (req, res) => {
                 },
               ],
               as: 'author',
+            },
+          },
+          {
+            $unwind: {
+              path: '$author',
+              preserveNullAndEmptyArrays: true,
             },
           },
         ]).exec();
