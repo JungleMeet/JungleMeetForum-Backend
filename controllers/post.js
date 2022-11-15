@@ -59,8 +59,26 @@ const patchPost = async (req, res) => {
 
 const getPosts = async (req, res) => {
   try {
-    const { nPerPage, pageNumber, sortBy } = req.query;
+    const { nPerPage, pageNumber, sortBy, userId } = req.query;
     const sortByOptions = sortBy === 'views' ? { viewNumber: 'desc' } : { createdAt: 'desc' };
+
+    if (userId) {
+      const matchedPosts = await Post.find({
+        visible: true,
+        author: userId,
+      })
+        .sort(sortByOptions)
+        .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
+        .limit(nPerPage)
+        .populate('commentCount')
+        .populate({ path: 'author', select: 'name avatar' });
+      const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
+      const convertHtmlContentPosts = convertHtmlFormat(matchPostsRightFormat);
+      return res
+        .status(StatusCodes.OK)
+        .json({ length: matchedPosts.length, data: convertHtmlContentPosts });
+    }
+
     if (sortBy) {
       const matchedPosts = await Post.find({
         visible: true,
@@ -73,11 +91,10 @@ const getPosts = async (req, res) => {
         .populate({ path: 'author', select: 'name avatar' });
       const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
       const length = await Post.find({ visible: true, postType: 'userPost' }).count();
-
       const convertHtmlContentPosts = convertHtmlFormat(matchPostsRightFormat);
-
       return res.status(StatusCodes.OK).json({ length, data: convertHtmlContentPosts });
     }
+
     const matchedPosts = await Post.find({
       visible: true,
       postType: 'userPost',
