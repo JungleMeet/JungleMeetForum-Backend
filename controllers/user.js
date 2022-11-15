@@ -208,9 +208,9 @@ const getUserProfile = async (req, res) => {
     });
 
     const followingPost =
-      userAndFollowingPost.followingPost.length > 3
+      userAndFollowingPost.followingPost.length > 4
         ? userAndFollowingPost.followingPost
-        : userAndFollowingPost.followingPost.slice(0, 3);
+        : userAndFollowingPost.followingPost.slice(0, 4);
     followingPost.forEach((eachFollowingPost) => {
       const followingPostList = {};
       followingPostList.title = eachFollowingPost.title;
