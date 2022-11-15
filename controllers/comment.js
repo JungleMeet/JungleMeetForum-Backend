@@ -5,7 +5,8 @@ const createNotification = require('../services/createNotification');
 // const {formatCommentListData} =require ('../utils/formatCommentData');
 
 const createComment = async (req, res) => {
-  const { content, author, postId, parentCommentId } = req.body;
+  const { content, postId, parentCommentId } = req.body;
+  const { userId: author } = req;
 
   try {
     const comment = new Comment({ content, author, postId, parentCommentId });
