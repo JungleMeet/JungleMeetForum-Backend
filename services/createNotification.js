@@ -7,7 +7,7 @@ const Post = require('../models/Post');
 const sendNotification = (notifiedUsers) => {
   // placeholder function
   console.log('notifiedUsers', notifiedUsers);
-  global.io.to(notifiedUsers).emit('message', 'for your eyes only');
+  global.io.to('6372e50d088a8c0b61f59419').emit('message', 'for your eyes only');
   console.log('success');
 };
 // global.io.sockets.emit('message', 'new message');
