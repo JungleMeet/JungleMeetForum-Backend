@@ -4,9 +4,13 @@ const User = require('../models/User');
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 
-const sendNotification = () => {
+const sendNotification = (notifiedUsers) => {
   // placeholder function
+  console.log('notifiedUsers', notifiedUsers);
+  global.io.to(notifiedUsers).emit('message', 'for your eyes only');
+  console.log('success');
 };
+// global.io.sockets.emit('message', 'new message');
 
 const createNotification = async ({ actionType, payload }) => {
   const { notifiedUserId, triggerUserId, targetPostId, targetCommentId } = payload;

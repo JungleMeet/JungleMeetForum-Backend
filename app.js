@@ -17,9 +17,9 @@ const v1Router = require('./routes');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
+global.io = new Server(server, {
   cors: {
-    origin: ['localhost:3000'],
+    origin: ['localhost:3001'],
     method: 'GET,PUT,POST',
   },
 });
@@ -42,11 +42,14 @@ app.get('/health-check', (request, response) => response.status(200).send({ mess
 const swaggerDoc = yaml.load('./utils/swagger.yaml');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
-io.on('connection', (socket) => {
+global.io.on('connection', (socket) => {
   console.log('a user connected');
-  socket.on('roomsatu', (data) => {
-    io.emit('kirim', data);
-  });
+  socket.emit('kirim', socket.handshake.query);
+  // eslint-disable-next-line no-param-reassign
+  socket.id = socket.handshake.query.userId;
+  console.log(socket.id);
+
+  socket.on('message', (data) => console.log(data));
 });
 
 // TODO: error handler
