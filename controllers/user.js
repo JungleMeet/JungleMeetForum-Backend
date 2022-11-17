@@ -222,6 +222,7 @@ const getUserProfile = async (req, res) => {
       followerList.name = eachFollower.name;
       followerList.role = eachFollower.role;
       followerList.avatar = eachFollower.avatar;
+      followerList.userId = eachFollower.userId;
       followersList.push(followerList);
     });
 
@@ -234,6 +235,7 @@ const getUserProfile = async (req, res) => {
       followingList.name = eachFollowing.name;
       followingList.role = eachFollowing.role;
       followingList.avatar = eachFollowing.avatar;
+      followingList.userId = eachFollowing.userId;
       followingsList.push(followingList);
     });
 
@@ -244,6 +246,7 @@ const getUserProfile = async (req, res) => {
     followingPost.forEach((eachFollowingPost) => {
       const followingPostList = {};
       followingPostList.title = eachFollowingPost.title;
+      followingPostList.postId = eachFollowingPost.postId;
       followingPostsList.push(followingPostList);
     });
     return res.status(StatusCodes.OK).json({
