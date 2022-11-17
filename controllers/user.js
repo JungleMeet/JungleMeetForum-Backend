@@ -158,6 +158,7 @@ const userLogIn = async (req, res) => {
         expiresIn: process.env.JWT_EXPIRE_TIME,
       });
       const user_info = {
+        userId: user._id,
         userName: user.name,
         userRole: user.role,
       };
@@ -191,6 +192,7 @@ const getUserProfile = async (req, res) => {
       followerList.push(eachFollower.name);
       followerList.push(eachFollower.role);
       followerList.push(eachFollower.bgImg);
+      followerList.push(eachFollower.userId);
       followersList.push(followerList);
     });
 
@@ -203,6 +205,7 @@ const getUserProfile = async (req, res) => {
       followingList.push(eachFollowing.name);
       followingList.push(eachFollowing.role);
       followingList.push(eachFollowing.bgImg);
+      followingList.push(eachFollowing.userId);
       followingsList.push(followingList);
     });
 
