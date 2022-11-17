@@ -10,19 +10,20 @@ const cookieParser = require('cookie-parser');
 const yaml = require('yamljs');
 const http = require('http');
 const { Server } = require('socket.io');
-
 const connectDB = require('./db/connect');
-
 const v1Router = require('./routes');
 
 const app = express();
 const server = http.createServer(app);
+
 global.io = new Server(server, {
   cors: {
     origin: ['localhost:3001'],
     method: 'GET,PUT,POST',
   },
 });
+
+global.onlineUsers = new Map();
 
 app.use(express.json());
 // extra security package
@@ -45,11 +46,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 global.io.on('connection', (socket) => {
   console.log('a user connected');
   socket.emit('kirim', socket.handshake.query);
-  // eslint-disable-next-line no-param-reassign
-  socket.id = socket.handshake.query.userId;
+  global.onlineUsers.set(socket.handshake.query.userId, socket.id);
   console.log(socket.id);
-
-  socket.on('message', (data) => console.log(data));
 });
 
 // TODO: error handler

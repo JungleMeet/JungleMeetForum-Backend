@@ -6,11 +6,12 @@ const Post = require('../models/Post');
 
 const sendNotification = (notifiedUsers) => {
   // placeholder function
-  console.log('notifiedUsers', notifiedUsers);
-  global.io.to('6372e50d088a8c0b61f59419').emit('message', 'for your eyes only');
+  // console.log('notifiedUsers', notifiedUsers);
+  const notifyArray = notifiedUsers.map((notifiedUser) => global.onlineUsers.get(notifiedUser));
+  console.log('notifyArray', notifyArray);
+  global.io.to(notifyArray).emit('message', 'hello');
   console.log('success');
 };
-// global.io.sockets.emit('message', 'new message');
 
 const createNotification = async ({ actionType, payload }) => {
   const { notifiedUserId, triggerUserId, targetPostId, targetCommentId } = payload;
@@ -89,6 +90,16 @@ const createNotification = async ({ actionType, payload }) => {
     // mention is a bit hard
 
     // like post
+    case 'likePost': {
+      newNotifications.push({
+        notifiedUserId,
+        triggerUserId,
+        targetPostId,
+        action: 'likedPost',
+        useSecondPersonNarrative: true,
+      });
+      break;
+    }
 
     // like comment
     case 'likeComment': {
@@ -110,6 +121,7 @@ const createNotification = async ({ actionType, payload }) => {
   const notifiedUsers = newNotifications.map((notification) =>
     notification.notifiedUserId.toString()
   );
+
   sendNotification(notifiedUsers);
 };
 

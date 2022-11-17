@@ -5,18 +5,20 @@ const Notification = require('../models/Notification');
 const getNotifications = async (req, res) => {
   try {
     const { userId } = req;
-    const { lastNotificationId, limit } = req.query;
-    const paginationCondition = lastNotificationId ? { _id: { $lt: lastNotificationId } } : {};
-    const notifications = await Notification.find({
-      $and: [{ notifiedUserId: userId }, paginationCondition],
-    })
-      .sort({ createdAt: -1 })
+    const { pageNumber, limit } = req.query;
+
+    // const paginationCondition = lastNotificationId ? { _id: { $lt: lastNotificationId } } : {};
+    const lengthOfUnread = await Notification.count({ notifiedUserId: userId, viewed: false });
+    const notifications = await Notification.find({ notifiedUserId: userId })
+      .sort({ viewed: 1, createdAt: -1 })
+      .skip(pageNumber > 0 ? pageNumber * limit : 0)
       .limit(limit || 5)
-      .populate({ path: 'triggerUserId', select: 'name' })
+      .populate({ path: 'triggerUserId', select: 'name avatar' })
       .populate({ path: 'targetPostId', select: 'title' })
       .exec();
-    res.status(StatusCodes.OK).json(notifications);
+    res.status(StatusCodes.OK).json({ lengthOfUnread, notifications });
   } catch (e) {
+    console.log(e);
     res.status(StatusCodes.BAD_REQUEST).json(e);
   }
 };
@@ -43,4 +45,24 @@ const readNotifications = async (req, res) => {
   }
 };
 
-module.exports = { getNotifications, readNotifications };
+const readSingleNotifications = async (req, res) => {
+  const { userId } = req;
+  const { notificationId } = req.body;
+  try {
+    const notification = await Notification.findOne({ _id: notificationId });
+    if (notification) {
+      if (userId === notification.notifiedUserId.toString()) {
+        console.log('yes');
+        notification.viewed = true;
+        await notification.save();
+        return res.sendStatus(StatusCodes.OK);
+      }
+    }
+    return res.sendStatus(StatusCodes.NOT_FOUND);
+  } catch (e) {
+    console.log(e);
+    return res.status(StatusCodes.BAD_REQUEST).json(e);
+  }
+};
+
+module.exports = { getNotifications, readNotifications, readSingleNotifications };

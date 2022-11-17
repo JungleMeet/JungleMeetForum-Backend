@@ -1015,20 +1015,19 @@ paths :
                 type: object
                 required:
                   - content
-                  - author
                   - postId
                 properties:
                   content:
                     type: string
                     description: content of the comment
                     example: I like your post!
-                  author:
-                    type: string
-                    description: author ID of the comment
-                    example: afdgbf4557
                   postId:
                     type: string
                     description: ID of the post
+                    example: aht123456
+                  parentCommentId: 
+                    type: string
+                    description: ID of the parent comment
                     example: aht123456
         responses:
           '200':
