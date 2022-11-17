@@ -6,16 +6,16 @@ const createNotification = require('../services/createNotification');
 
 const createComment = async (req, res) => {
   const { content, postId, parentCommentId } = req.body;
-  const { userId } = req;
+  const { userId: author } = req;
 
   try {
-    const comment = new Comment({ content, author: userId, postId, parentCommentId });
+    const comment = new Comment({ content, author, postId, parentCommentId });
     const ret = await comment.save();
     if (ret.isRootComment) {
       createNotification({
         actionType: 'comment',
         payload: {
-          triggerUserId: userId,
+          triggerUserId: author,
           targetPostId: postId,
           targetCommentId: ret._id,
         },
@@ -24,7 +24,7 @@ const createComment = async (req, res) => {
       createNotification({
         actionType: 'comment',
         payload: {
-          triggerUserId: userId,
+          triggerUserId: author,
           targetPostId: postId,
           targetCommentId: ret._id,
         },
