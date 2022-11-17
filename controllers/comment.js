@@ -11,25 +11,14 @@ const createComment = async (req, res) => {
   try {
     const comment = new Comment({ content, author, postId, parentCommentId });
     const ret = await comment.save();
-    if (ret.isRootComment) {
-      createNotification({
-        actionType: 'comment',
-        payload: {
-          triggerUserId: author,
-          targetPostId: postId,
-          targetCommentId: ret._id,
-        },
-      });
-    } else {
-      createNotification({
-        actionType: 'comment',
-        payload: {
-          triggerUserId: author,
-          targetPostId: postId,
-          targetCommentId: ret._id,
-        },
-      });
-    }
+    createNotification({
+      actionType: 'comment',
+      payload: {
+        triggerUserId: author,
+        targetPostId: postId,
+        targetCommentId: ret._id,
+      },
+    });
     return res.status(StatusCodes.OK).json(ret);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
