@@ -4,8 +4,13 @@ const User = require('../models/User');
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 
-const sendNotification = () => {
+const sendNotification = (notifiedUsers) => {
   // placeholder function
+  // console.log('notifiedUsers', notifiedUsers);
+  const notifyArray = notifiedUsers.map((notifiedUser) => global.onlineUsers.get(notifiedUser));
+  console.log('notifyArray', notifyArray);
+  global.io.to(notifyArray).emit('message', 'hello');
+  console.log('success');
 };
 
 const createNotification = async ({ actionType, payload }) => {
@@ -85,6 +90,16 @@ const createNotification = async ({ actionType, payload }) => {
     // mention is a bit hard
 
     // like post
+    case 'likePost': {
+      newNotifications.push({
+        notifiedUserId,
+        triggerUserId,
+        targetPostId,
+        action: 'likedPost',
+        useSecondPersonNarrative: true,
+      });
+      break;
+    }
 
     // like comment
     case 'likeComment': {
@@ -106,6 +121,7 @@ const createNotification = async ({ actionType, payload }) => {
   const notifiedUsers = newNotifications.map((notification) =>
     notification.notifiedUserId.toString()
   );
+
   sendNotification(notifiedUsers);
 };
 
