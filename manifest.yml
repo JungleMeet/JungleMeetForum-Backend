@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: junglemeet
+  name: junglemeet
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: junglemeet
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: junglemeet
+    spec:
+      containers:
+      - image: 026376606405.dkr.ecr.us-east-1.amazonaws.com/jm_backend:latest
+        name: junglemeet
+        imagePullPolicy: Always
+        resources: {}
+        ports:
+          - containerPort: 3000 
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: junglemeet
+  labels:
+    run: junglemeet
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+  selector:
+    app: junglemeet
+  type: NodePort
