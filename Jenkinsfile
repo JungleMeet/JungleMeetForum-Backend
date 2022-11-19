@@ -43,28 +43,7 @@ pipeline {
                 }
             }
         }
-        
-//         stage('Sonarqube') {
-//             environment {
-//                 scannerHome = tool 'Sonarqube_scanner'
-//             }
-//             steps {
-//                 withSonarQubeEnv('sonarqube_7.9.6') {
-//                    // sh "${scannerHome}/bin/sonar-scanner"
-//                    sh '''
-//                    sonar-scanner \
-//                       -Dsonar.projectKey=junglemeet_backend \
-//                       -Dsonar.sources=. \
-//                       -Dsonar.host.url=http://54.206.106.18:9000 \
-//                       -Dsonar.login=c693fbe9fdddeefafc46cb658cf2b28d4702231f
-//                 '''
-//                 }
-                
-//                 timeout(time: 10, unit: 'MINUTES') {
-//                     waitForQualityGate abortPipeline: true
-//                 }
-//             }
-//         }
+
 
     // Building Docker images
         stage('Building image') {
