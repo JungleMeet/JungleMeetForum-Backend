@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: junglemeet-backend
+  #namespace: junglemeet-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: junglemeet-backend
+  template:
+    metadata:
+      labels:
+        app: junglemeet-backend
+    spec:
+      containers:
+      - name: junglemeet-backend
+        image: 209665464430.dkr.ecr.ap-southeast-2.amazonaws.com/myapp:latest # specify your ECR repository
+        ports:
+        - containerPort: 3000 
+        resources:
+            limits:
+              cpu: 1500m
+            requests:
+              cpu: 1000m
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: junglemeet-backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: junglemeet-backend
+  minReplicas: 1 
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: junglemeet-backend-service
+  labels:
+    app: junglemeet-backend
+spec:
+  selector:
+    app: junglemeet-backend
+  ports:
+    - protocol: TCP
+      port: 3000
