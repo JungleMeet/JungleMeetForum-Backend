@@ -14,7 +14,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide password'],
       minlength: [6, 'Password must be at least 6 characters'],
-      maxlength: 50,
     },
     email: {
       type: String,
@@ -47,6 +46,19 @@ UserSchema.pre('save', async function (next) {
     const salt = await bcrypt.genSalt(10);
     const hashedPwd = await bcrypt.hash(this.password, salt);
     this.password = hashedPwd;
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+UserSchema.pre('updateOne', async function (next) {
+  try {
+    const salt = await bcrypt.genSalt(10);
+    if (this.getUpdate().$set.password) {
+      const hashed = await bcrypt.hash(this.getUpdate().$set.password, salt);
+      this._update.password = hashed;
+    }
     next();
   } catch (error) {
     next(error);

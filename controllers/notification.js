@@ -8,6 +8,7 @@ const getNotifications = async (req, res) => {
     const { pageNumber, limit } = req.query;
 
     // const paginationCondition = lastNotificationId ? { _id: { $lt: lastNotificationId } } : {};
+    const length = await Notification.count({ notifiedUserId: userId });
     const lengthOfUnread = await Notification.count({ notifiedUserId: userId, viewed: false });
     const notifications = await Notification.find({ notifiedUserId: userId })
       .sort({ viewed: 1, createdAt: -1 })
@@ -16,7 +17,7 @@ const getNotifications = async (req, res) => {
       .populate({ path: 'triggerUserId', select: 'name avatar' })
       .populate({ path: 'targetPostId', select: 'title' })
       .exec();
-    res.status(StatusCodes.OK).json({ lengthOfUnread, notifications });
+    res.status(StatusCodes.OK).json({ length, lengthOfUnread, notifications });
   } catch (e) {
     console.log(e);
     res.status(StatusCodes.BAD_REQUEST).json(e);
