@@ -16,6 +16,7 @@ const getNotifications = async (req, res) => {
       .limit(limit || 5)
       .populate({ path: 'triggerUserId', select: 'name avatar' })
       .populate({ path: 'targetPostId', select: 'title' })
+      .populate({ path: 'targetCommentId', select: 'content' })
       .exec();
     res.status(StatusCodes.OK).json({ length, lengthOfUnread, notifications });
   } catch (e) {
