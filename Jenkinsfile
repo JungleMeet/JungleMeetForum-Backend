@@ -2,11 +2,13 @@ pipeline {
 	    agent any
 	    
 	    environment {
-	            AWS_CRED 		= "awsCredentials"
-	            IMAGE_TAG 		= "209665464430.dkr.ecr.ap-southeast-2.amazonaws.com/myapp:v_$BUILD_NUMBER" 
-	            oldImage_TAG 	= "209665464430.dkr.ecr.ap-southeast-2.amazonaws.com/myapp:latest"
-		    Mongo_URL 		= "${env.MongoDB_Connect}"
-		    TMDB_KEY 		= "${env.TMDB}"
+	            AWS_CRED = "awsCredentials"
+	            IMAGE_TAG = "209665464430.dkr.ecr.ap-southeast-2.amazonaws.com/myapp:v_$BUILD_NUMBER" 
+	            oldImage_TAG = "209665464430.dkr.ecr.ap-southeast-2.amazonaws.com/myapp:latest"
+		    Mongo_URL = "${env.MongoDB_Connect}"
+		    TMDB_KEY = "${env.TMDB}"
+		    JWT_SECRET = "${env.JWT_SECRET}"
+		    JWT_EXPIRE_TIME = "${env.JWT_EXPIRE_TIME}"
 	        }
 	    stages{
 		
@@ -42,7 +44,7 @@ pipeline {
 	        
 	        stage('docker build & tag'){
 	            steps {
-			sh 'docker build --build-arg mongoConnect=$Mongo_URL --build-arg tmDB=$TMDB_KEY -t junglemeet/myapp . ' 
+			sh 'docker build --build-arg mongoConnect=$Mongo_URL --build-arg tmDB=$TMDB_KEY --build-arg JWT_SECRET=$JWT_SECRET --build-arg JWT_EXPIRE_TIME=$JWT_EXPIRE_TIME -t junglemeet/myapp . ' 
 	                sh 'docker tag junglemeet/myapp 209665464430.dkr.ecr.ap-southeast-2.amazonaws.com/myapp:v_$BUILD_NUMBER'
 	                   
 	                }
