@@ -191,6 +191,7 @@ const userLogIn = async (req, res) => {
         userId: user._id,
         userName: user.name,
         userRole: user.role,
+        avatar: user.avatar,
       };
       return res.status(StatusCodes.OK).json({ token, userInfo });
     }
