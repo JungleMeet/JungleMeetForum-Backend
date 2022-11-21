@@ -222,7 +222,7 @@ const getUserProfile = async (req, res) => {
       followerList.name = eachFollower.name;
       followerList.role = eachFollower.role;
       followerList.avatar = eachFollower.avatar;
-      followerList.userId = eachFollower.userId;
+      followerList.userId = eachFollower._id;
       followersList.push(followerList);
     });
 
@@ -235,7 +235,7 @@ const getUserProfile = async (req, res) => {
       followingList.name = eachFollowing.name;
       followingList.role = eachFollowing.role;
       followingList.avatar = eachFollowing.avatar;
-      followingList.userId = eachFollowing.userId;
+      followingList.userId = eachFollowing._id;
       followingsList.push(followingList);
     });
 
