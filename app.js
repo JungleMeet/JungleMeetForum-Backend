@@ -18,7 +18,11 @@ const server = http.createServer(app);
 
 global.io = new Server(server, {
   cors: {
-    origin: ['localhost:3001'],
+    origin: [
+      process.env.NEXT_PUBLIC_SERVER
+        ? process.env.NEXT_PUBLIC_SERVER
+        : process.env.NEXT_PUBLIC_SERVER_ADD,
+    ],
     method: 'GET,PUT,POST',
   },
 });
