@@ -18,6 +18,10 @@ const PostSchema = new mongoose.Schema(
     hashtag: {
       type: String,
     },
+    hashtags: {
+      type: mongoose.Types.ObjectId,
+      ref: 'Hashtag',
+    },
     bgImg: {
       type: String,
       default: 'https://imagefromapi.s3.ap-southeast-2.amazonaws.com/bgPost.jpg',
