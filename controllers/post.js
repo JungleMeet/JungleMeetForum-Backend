@@ -66,6 +66,7 @@ const getPosts = async (req, res) => {
       const matchedPosts = await Post.find({
         visible: true,
         author: userId,
+        postType: 'userPost',
       })
         .sort(sortByOptions)
         .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
@@ -200,7 +201,8 @@ const createMoviePost = async (req, res) => {
 };
 
 const checkLike = async (req, res) => {
-  const { postId, userId } = req.params;
+  const { postId } = req.params;
+  const { userId } = req;
   try {
     const post = await Post.findOne({ _id: postId, like: { $eq: userId } });
     if (post) {
@@ -222,28 +224,61 @@ const getAllLikes = async (req, res) => {
   }
 };
 
-const likePost = async (req, res) => {
+const toggleLikePost = async (req, res) => {
   const { postId } = req.params;
-  const { userId } = req.body;
+  const { userId } = req;
 
   try {
     const post = await Post.findById(postId);
-    await post.updateOne({ $push: { like: userId } }, { new: true, runValidators: true });
-    return res.status(StatusCodes.OK).json({ message: 'Liked' });
+    const userLikedThis = post.like.includes(userId);
+    if (userLikedThis) {
+      post.like.pull(userId);
+    } else {
+      post.like.push(userId);
+    }
+    await post.save();
+    // await post.updateOne({ $push: { like: userId } }, { new: true, runValidators: true });
+    if (!userLikedThis) {
+      createNotification({
+        actionType: 'likePost',
+        payload: {
+          notifiedUserId: post.author,
+          triggerUserId: userId,
+          targetPostId: postId,
+        },
+      });
+    }
+    return res.status(StatusCodes.OK).json({
+      postId,
+      like: post.like,
+      userId,
+      userLikedThis: !userLikedThis,
+    });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
 };
 
-// Make sure to use with checkLike in front end to ensure the existence
-const unlikePost = async (req, res) => {
+const toggleFollowPost = async (req, res) => {
   const { postId } = req.params;
-  const { userId } = req.body;
+  const { userId } = req;
 
   try {
     const post = await Post.findById(postId);
-    await post.updateOne({ $pull: { like: userId } }, { new: true, runValidators: true });
-    return res.status(StatusCodes.OK).json({ message: 'Unliked' });
+    const userFollowedThis = post.follower.includes(userId);
+    if (userFollowedThis) {
+      post.follower.pull(userId);
+    } else {
+      post.follower.push(userId);
+    }
+    await post.save();
+    // await post.updateOne({ $push: { like: userId } }, { new: true, runValidators: true });
+    return res.status(StatusCodes.OK).json({
+      postId,
+      follower: post.follower,
+      userId,
+      userFollowedThis: !userFollowedThis,
+    });
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
   }
@@ -281,9 +316,9 @@ module.exports = {
   getPostById,
   deletePost,
   createMoviePost,
-  likePost,
+  toggleLikePost,
   checkLike,
   getAllLikes,
-  unlikePost,
+  toggleFollowPost,
   searchPostByKeyword,
 };

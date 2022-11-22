@@ -57,12 +57,14 @@ const resetPassword = async (req, res) => {
 
   try {
     const user = await User.findById(id);
-    if (user.password === oldPassword) {
+    const result = await bcrypt.compare(oldPassword, user.password);
+    if (result) {
       await user.updateOne({ $set: { password: newPassword } }, { new: true, runValidators: true });
       return res.status(StatusCodes.OK).json({ message: 'Password changed successfully!' });
     }
     return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Wrong password, try again' });
   } catch (err) {
+    console.log(err);
     if (err instanceof mongoose.Error.ValidationError) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
@@ -191,6 +193,7 @@ const userLogIn = async (req, res) => {
         userId: user._id,
         userName: user.name,
         userRole: user.role,
+        avatar: user.avatar,
       };
       return res.status(StatusCodes.OK).json({ token, userInfo });
     }

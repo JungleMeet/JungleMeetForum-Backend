@@ -2,6 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const mongoose = require('mongoose');
 const Comment = require('../models/Comment');
 const createNotification = require('../services/createNotification');
+const { htmlEntities } = require('../utils/convertHtmlEntities');
 // const {formatCommentListData} =require ('../utils/formatCommentData');
 
 const createComment = async (req, res) => {
@@ -10,17 +11,16 @@ const createComment = async (req, res) => {
 
   try {
     const comment = new Comment({ content, author, postId, parentCommentId });
+    comment.content = htmlEntities(comment.content);
     const ret = await comment.save();
-    if (ret.isRootComment) {
-      createNotification({
-        actionType: 'comment',
-        payload: {
-          triggerUserId: author,
-          targetPostId: postId,
-          targetCommentId: ret._id,
-        },
-      });
-    }
+    createNotification({
+      actionType: 'comment',
+      payload: {
+        triggerUserId: author,
+        targetPostId: postId,
+        targetCommentId: ret._id,
+      },
+    });
     return res.status(StatusCodes.OK).json(ret);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
@@ -104,6 +104,9 @@ const getComments = async (req, res) => {
           {
             $group: {
               _id: '$_id',
+              postId: {
+                $first: '$postId',
+              },
               parentCommentId: {
                 $first: '$parentCommentId',
               },

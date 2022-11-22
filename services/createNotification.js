@@ -4,8 +4,13 @@ const User = require('../models/User');
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 
-const sendNotification = () => {
+const sendNotification = (notifiedUsers) => {
   // placeholder function
+  // console.log('notifiedUsers', notifiedUsers);
+  const notifyArray = notifiedUsers.map((notifiedUser) => global.onlineUsers.get(notifiedUser));
+  console.log('notifyArray', notifyArray);
+  global.io.to(notifyArray).emit('message', 'hello');
+  console.log('success');
 };
 
 const createNotification = async ({ actionType, payload }) => {
@@ -40,18 +45,22 @@ const createNotification = async ({ actionType, payload }) => {
 
     case 'comment': {
       const { parentCommentId } = await Comment.findById(targetCommentId).exec();
-      const { author: postAuthor, follower } = await Post.findById(targetPostId).exec();
+      const { author, follower } = await Post.findById(targetPostId).exec();
 
-      // notify the post author, if the author replies to its own post, no notification will be created
-      if (postAuthor.toString() !== triggerUserId.toString()) {
-        newNotifications.push({
-          notifiedUserId: postAuthor,
-          triggerUserId,
-          targetPostId,
-          targetCommentId,
-          action: 'commented',
-          useSecondPersonNarrative: true, // the post author will receive "someone commented on your post"
-        });
+      // movie posts do not have authors. we will only notify user post authors
+      // if the author replies to its own post, no notification will be created
+      if (author) {
+        const postAuthor = author;
+        if (postAuthor.toString() !== triggerUserId.toString()) {
+          newNotifications.push({
+            notifiedUserId: postAuthor,
+            triggerUserId,
+            targetPostId,
+            targetCommentId,
+            action: 'commented',
+            useSecondPersonNarrative: true, // the post author will receive "someone commented on your post"
+          });
+        }
       }
 
       // notify the post followers
@@ -70,14 +79,17 @@ const createNotification = async ({ actionType, payload }) => {
       // notify the parent comment author (if any)
       if (parentCommentId) {
         const { author: parentCommentAuthor } = await Comment.findById(parentCommentId).exec();
-        newNotifications.push({
-          notifiedUserId: parentCommentAuthor,
-          triggerUserId,
-          targetPostId,
-          targetCommentId,
-          action: 'replied',
-          useSecondPersonNarrative: true, // the post author will receive "someone replied to your comment"
-        });
+        // only send notification when you reply to other people's comments
+        if (parentCommentAuthor !== triggerUserId) {
+          newNotifications.push({
+            notifiedUserId: parentCommentAuthor,
+            triggerUserId,
+            targetPostId,
+            targetCommentId,
+            action: 'replied',
+            useSecondPersonNarrative: true, // the post author will receive "someone replied to your comment"
+          });
+        }
       }
       break;
     }
@@ -85,6 +97,16 @@ const createNotification = async ({ actionType, payload }) => {
     // mention is a bit hard
 
     // like post
+    case 'likePost': {
+      newNotifications.push({
+        notifiedUserId,
+        triggerUserId,
+        targetPostId,
+        action: 'likedPost',
+        useSecondPersonNarrative: true,
+      });
+      break;
+    }
 
     // like comment
     case 'likeComment': {
@@ -106,6 +128,7 @@ const createNotification = async ({ actionType, payload }) => {
   const notifiedUsers = newNotifications.map((notification) =>
     notification.notifiedUserId.toString()
   );
+
   sendNotification(notifiedUsers);
 };
 

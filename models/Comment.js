@@ -26,7 +26,10 @@ const CommentSchema = new mongoose.Schema(
 );
 
 CommentSchema.virtual('likeCount').get(function () {
-  return this.like.length;
+  if (this.like) {
+    return this.like.length;
+  }
+  return 0;
 });
 
 CommentSchema.virtual('isRootComment').get(function () {

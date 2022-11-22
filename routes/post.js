@@ -5,10 +5,10 @@ const {
   createPost,
   updatePost,
   getPosts,
-  likePost,
+  toggleLikePost,
   checkLike,
   getAllLikes,
-  unlikePost,
+  toggleFollowPost,
   deletePost,
   getPostById,
   createMoviePost,
@@ -31,10 +31,10 @@ postRouter.post('/post', createPost);
 postRouter.patch('/admin/:postId', adminGuard, deletePost);
 postRouter.put('/:postId', updatePost);
 
-postRouter.patch('/like/:postId', auth, likePost);
-postRouter.patch('/unlike/:postId', auth, unlikePost);
+postRouter.patch('/like/:postId', toggleLikePost);
+postRouter.patch('/follow/:postId', toggleFollowPost);
 
-postRouter.get('/:postId/likes/', auth, getAllLikes);
+postRouter.get('/:postId/likes/', getAllLikes);
 postRouter.get('/:postId/likes/:userId', auth, checkLike);
 
 module.exports = postRouter;

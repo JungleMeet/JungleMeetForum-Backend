@@ -106,7 +106,8 @@ const getMoviesByCondition = async (req, res) => {
   const { year, genre, sortBy, page } = req.query;
   try {
     const { results } = await getMovieListByCondition(year, genre, sortBy, page);
-    const movies = results.map((result) => formatMovieData(result));
+    const filterResults = results.filter((filter) => filter.poster_path !== null);
+    const movies = filterResults.map((result) => formatMovieData(result));
     return res.status(StatusCodes.OK).json(movies);
   } catch (err) {
     return res.json(err);
