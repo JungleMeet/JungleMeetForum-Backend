@@ -11,7 +11,6 @@ const sendEmail = async (req, res) => {
   const subject = 'Reset password';
   // const httpTransport = 'http://';
   const baseUrl = req.headers.origin;
-  console.log('baseUrl', baseUrl);
   const message = 'Please click the link to reset your new password:';
 
   const transporter = nodemailer.createTransport({
@@ -26,7 +25,7 @@ const sendEmail = async (req, res) => {
     const user = await User.findOne({ email: to });
     // console.log(user);
     if (user) {
-      const code = generateUniqueString(10);
+      const code = await generateUniqueString();
       const email = new Email({ email: to, code });
       const ret = await email.save();
       console.log(ret);

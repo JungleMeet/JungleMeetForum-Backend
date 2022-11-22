@@ -1,6 +1,12 @@
-const generateUniqueString = (len) =>
-  Math.random()
-    .toString(36)
-    .substring(2, len + 2);
+const bcrypt = require('bcrypt');
 
-module.exports = generateUniqueString;
+const hashCode = async (string) => {
+  const salt = await bcrypt.genSalt(10);
+  const hashedCode = await bcrypt.hash(string, salt);
+  return hashedCode;
+};
+const generateString = () => {
+  const originalString = Math.random().toString();
+  return hashCode(originalString);
+};
+module.exports = generateString;
