@@ -9,6 +9,7 @@ pipeline {
 		    TMDB_KEY = "${env.TMDB}"
 		    JWT_SECRET = "${env.JWT_SECRET}"
 		    JWT_EXPIRE_TIME = "${env.JWT_EXPIRE_TIME}"
+		    NEXT_PUBLIC_SERVER = "${env.NEXT_PUBLIC_SERVER_Frontend}"
 	        }
 	    stages{
 		
@@ -44,7 +45,7 @@ pipeline {
 	        
 	        stage('docker build & tag'){
 	            steps {
-			sh 'docker build --build-arg mongoConnect=$Mongo_URL --build-arg tmDB=$TMDB_KEY --build-arg JWT_SECRET=$JWT_SECRET --build-arg JWT_EXPIRE_TIME=$JWT_EXPIRE_TIME -t junglemeet/myapp . ' 
+			sh 'docker build --build-arg mongoConnect=$Mongo_URL --build-arg tmDB=$TMDB_KEY --build-arg JWT_SECRET=$JWT_SECRET --build-arg JWT_EXPIRE_TIME=$JWT_EXPIRE_TIME --build-arg NEXT_PUBLIC_SERVER=$NEXT_PUBLIC_SERVER -t junglemeet/myapp . ' 
 	                sh 'docker tag junglemeet/myapp 209665464430.dkr.ecr.ap-southeast-2.amazonaws.com/myapp:v_$BUILD_NUMBER'
 	                   
 	                }
@@ -61,7 +62,6 @@ pipeline {
 	            steps{  
 	                script {
 	                    sh "sed -i -e 's#${oldImage_TAG}#${IMAGE_TAG}#' ./deployment.yaml"
-	                    //sh "jq -r '.containerDefinitions[0].image |= [\\\"$IMAGE_TAG\\\"]' td_ecs.json > new_td-ecs.json"
 	                  
 	                }
 	            }

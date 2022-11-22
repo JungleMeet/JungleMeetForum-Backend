@@ -11,6 +11,7 @@ const sendEmail = async (req, res) => {
   const subject = 'Reset password';
   // const httpTransport = 'http://';
   const baseUrl = req.headers.origin;
+  console.log('baseUrl', baseUrl);
   const message = 'Please click the link to reset your new password:';
 
   const transporter = nodemailer.createTransport({
@@ -34,7 +35,7 @@ const sendEmail = async (req, res) => {
         to, // list of receivers
         subject, // Subject line
         text: message, // plain text body
-        html: `<p>Please click the link to reset your new password:<a href='${baseUrl}/resetPassword/?code=${code}'>${baseUrl}/resetPassword/</a></p>
+        html: `<p>Please click the link to reset your new password:<a href='${baseUrl}/resetPassword?code=${code}'>${baseUrl}/resetPassword/</a></p>
                 <p>Please note that this link will expire within 1 hour</p>`, // html body
       };
       console.log(mailOptions);
