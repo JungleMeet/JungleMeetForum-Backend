@@ -26,7 +26,7 @@ const sendEmail = async (req, res) => {
     const user = await User.findOne({ email: to });
     // console.log(user);
     if (user) {
-      const code = generateUniqueString(10);
+      const code = await generateUniqueString();
       const email = new Email({ email: to, code });
       const ret = await email.save();
       console.log(ret);
