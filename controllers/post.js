@@ -3,6 +3,7 @@ const Post = require('../models/Post');
 const { convertHtmlFormat } = require('../utils/convertHtmlEntities');
 const createNotification = require('../services/createNotification');
 const { discussionListData, processPostSearchResult } = require('../utils/formatDiscussionData');
+const { htmlEntities } = require('../utils/convertHtmlEntities');
 
 const createPost = async (req, res) => {
   const { title, content, hashtag, bgImg } = req.body;
@@ -153,7 +154,7 @@ const getPostById = async (req, res) => {
       },
       { runValidator: true, useFindAndModify: true, new: true }
     );
-
+    post.content = htmlEntities(post.content);
     return res.status(StatusCodes.OK).json(post);
   } catch (err) {
     return res.status(StatusCodes.NOT_FOUND).json(err);
