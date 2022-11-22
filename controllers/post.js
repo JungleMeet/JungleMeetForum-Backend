@@ -5,12 +5,12 @@ const createNotification = require('../services/createNotification');
 const { discussionListData, processPostSearchResult } = require('../utils/formatDiscussionData');
 
 const createPost = async (req, res) => {
-  const { title, content, hashtag, bgImg } = req.body;
+  const { title, content, hashtag, hashtags, bgImg } = req.body;
   const { userId } = req;
 
   try {
     if (title && content) {
-      const post = new Post({ title, author: userId, content, hashtag, bgImg });
+      const post = new Post({ title, author: userId, content, hashtag, hashtags, bgImg });
       const result = await post.save();
       createNotification({
         actionType: 'createPost',
@@ -37,11 +37,11 @@ const patchPost = async (req, res) => {
   const { userId } = req;
 
   try {
-    const { title, content, hashtag, bgImg } = req.body;
+    const { title, content, hashtag, hashtags, bgImg } = req.body;
     if (title && content) {
       const post = await Post.findOneAndUpdate(
         { _id: postId, author: userId },
-        { title, content, hashtag, bgImg },
+        { title, content, hashtag, hashtags, bgImg },
         { runValidators: true, new: true }
       );
       if (post) {
@@ -116,7 +116,7 @@ const getPosts = async (req, res) => {
 
 const updatePost = async (req, res) => {
   const { postId } = req.params;
-  const { title, content, hashtag, bgImg } = req.body;
+  const { title, content, hashtag, hashtags, bgImg } = req.body;
   const { userId } = req;
 
   if (!title || !content) {
@@ -128,7 +128,7 @@ const updatePost = async (req, res) => {
   try {
     const updatedPost = await Post.findOneAndUpdate(
       { _id: postId, author: userId },
-      { $set: { title, content, hashtag, bgImg } },
+      { $set: { title, content, hashtag, hashtags, bgImg } },
       { runValidator: true, new: true }
     );
 
