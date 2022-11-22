@@ -77,10 +77,8 @@ const resetPassword = async (req, res) => {
 const emailResetPassword = async (req, res) => {
   const { email, newPwd } = req.body;
   const { code } = req.query;
-  // console.log(code)
   try {
     const user = await User.findOne({ email });
-    // const result = await Email.findOne({email,code});
     if (user) {
       const result = await Email.findOne({ email, code });
       if (result) {

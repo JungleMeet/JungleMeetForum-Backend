@@ -80,7 +80,7 @@ const createNotification = async ({ actionType, payload }) => {
       if (parentCommentId) {
         const { author: parentCommentAuthor } = await Comment.findById(parentCommentId).exec();
         // only send notification when you reply to other people's comments
-        if (parentCommentAuthor !== triggerUserId) {
+        if (parentCommentAuthor.toString() !== triggerUserId.toString()) {
           newNotifications.push({
             notifiedUserId: parentCommentAuthor,
             triggerUserId,
