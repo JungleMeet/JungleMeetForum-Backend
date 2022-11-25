@@ -108,7 +108,7 @@ const updateUser = async (req, res) => {
       { _id: userId },
       {
         name: name || oldUser.name,
-        email: email || oldUser.name,
+        email: email || oldUser.email,
         avatar: avatar || oldUser.avatar,
         bgImg: bgImg || oldUser.bgImg,
       },
