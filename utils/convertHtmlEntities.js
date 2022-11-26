@@ -1,5 +1,5 @@
 function htmlEntities(str) {
-  return String(str).replace(/&lt;/g, '<');
+  return String(str).replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 }
 
 function convertHtmlFormat(arr) {
