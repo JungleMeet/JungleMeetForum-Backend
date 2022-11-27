@@ -14,13 +14,16 @@ const formatMovieDataGeneral = (data, imageSize) => {
     poster_path,
     release_date,
     title,
-    vote_average: voteAverage,
+    vote_average,
     overview,
   } = data;
 
   const poster = imagePathGen(poster_path, imageSize);
   const year = release_date.slice(0, 4);
-  const genreNames = genreIds.map((genreId) => MOVIE_GENRES.find((elem) => elem.id === genreId));
+  const voteAverage = vote_average === 0 ? '--' : vote_average;
+  const genreNames = genreIds
+    .slice(0, 2)
+    .map((genreId) => MOVIE_GENRES.find((elem) => elem.id === genreId));
   // const genres = genreNames.join(' ');
 
   return {
