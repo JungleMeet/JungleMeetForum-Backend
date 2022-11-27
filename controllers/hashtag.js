@@ -1,5 +1,8 @@
 const { StatusCodes } = require('http-status-codes');
 const Hashtag = require('../models/Hashtag');
+const Post = require('../models/Post');
+const { convertHtmlFormat } = require('../utils/convertHtmlEntities');
+const { discussionListData } = require('../utils/formatDiscussionData');
 
 const searchHashtagbyName = async (req, res) => {
   try {
@@ -41,4 +44,26 @@ const createHashtag = async (req, res) => {
   }
 };
 
-module.exports = { searchHashtagbyName, createHashtag };
+const getPostByHashTagId = async (req, res) => {
+  try {
+    const { HashtagId } = req.params;
+
+    if (HashtagId) {
+      const matchedPosts = await Post.find({
+        hashtags: HashtagId,
+        ref: 'Hashtag',
+      });
+
+      const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
+      const convertHtmlContentPosts = convertHtmlFormat(matchPostsRightFormat);
+      return res.status(StatusCodes.OK).json({ convertHtmlContentPosts });
+    }
+    const length = await Post.find({ visible: true, postType: 'userPost' }).count();
+
+    return res.status(StatusCodes.OK).json({ length });
+  } catch (err) {
+    return res.status(StatusCodes.NOT_FOUND).json(err);
+  }
+};
+
+module.exports = { searchHashtagbyName, createHashtag, getPostByHashTagId };
