@@ -73,7 +73,8 @@ const getPosts = async (req, res) => {
         .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
         .limit(nPerPage)
         .populate('commentCount')
-        .populate({ path: 'author', select: 'name avatar' });
+        .populate({ path: 'author', select: 'name avatar' })
+        .populate({ path: 'hashtags', select: 'category' });
       const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
       const convertHtmlContentPosts = convertHtmlFormat(matchPostsRightFormat);
       return res
@@ -90,7 +91,8 @@ const getPosts = async (req, res) => {
         .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
         .limit(nPerPage)
         .populate('commentCount')
-        .populate({ path: 'author', select: 'name avatar' });
+        .populate({ path: 'author', select: 'name avatar' })
+        .populate({ path: 'hashtags', select: 'category' });
       const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
       const length = await Post.find({ visible: true, postType: 'userPost' }).count();
       const convertHtmlContentPosts = convertHtmlFormat(matchPostsRightFormat);
@@ -104,7 +106,8 @@ const getPosts = async (req, res) => {
       .skip(pageNumber > 0 ? pageNumber * nPerPage : 0)
       .limit(nPerPage)
       .populate('commentCount ')
-      .populate({ path: 'author', select: 'name avatar' });
+      .populate({ path: 'author', select: 'name avatar' })
+      .populate({ path: 'hashtags', select: 'category' });
     const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
     const length = await Post.find({ visible: true, postType: 'userPost' }).count();
 
@@ -153,7 +156,7 @@ const getPostById = async (req, res) => {
         $inc: { viewCount: 1 },
       },
       { runValidator: true, useFindAndModify: true, new: true }
-    );
+    ).populate({ path: 'hashtags', select: 'category' });
     post.content = htmlEntities(post.content);
     return res.status(StatusCodes.OK).json(post);
   } catch (err) {
