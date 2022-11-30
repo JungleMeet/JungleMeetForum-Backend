@@ -21,7 +21,7 @@ const createPost = async (req, res) => {
         },
       });
       if (result) {
-        return res.status(StatusCodes.OK).json(result);
+        return res.status(StatusCodes.OK).json({ result, _id: post._id });
       }
       return res.status(StatusCodes.NOT_FOUND).json({ message: 'Result not found' });
     }
