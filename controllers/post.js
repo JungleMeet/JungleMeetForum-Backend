@@ -95,6 +95,7 @@ const getPosts = async (req, res) => {
         .populate({ path: 'hashtags', select: 'category' });
       const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
       const length = await Post.find({ visible: true, postType: 'userPost' }).count();
+
       const convertHtmlContentPosts = convertHtmlFormat(matchPostsRightFormat);
       return res.status(StatusCodes.OK).json({ length, data: convertHtmlContentPosts });
     }
