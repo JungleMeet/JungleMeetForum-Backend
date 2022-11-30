@@ -153,7 +153,7 @@ const getPostById = async (req, res) => {
     const post = await Post.findByIdAndUpdate(
       { _id: postId },
       {
-        $inc: { viewCount: 1 },
+        $inc: { viewNumber: 1 },
       },
       { runValidator: true, useFindAndModify: true, new: true }
     ).populate({ path: 'hashtags', select: 'category' });
