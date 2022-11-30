@@ -95,6 +95,7 @@ const getPosts = async (req, res) => {
         .populate({ path: 'hashtags', select: 'category' });
       const matchPostsRightFormat = matchedPosts.map((post) => discussionListData(post));
       const length = await Post.find({ visible: true, postType: 'userPost' }).count();
+
       const convertHtmlContentPosts = convertHtmlFormat(matchPostsRightFormat);
       return res.status(StatusCodes.OK).json({ length, data: convertHtmlContentPosts });
     }
@@ -153,7 +154,7 @@ const getPostById = async (req, res) => {
     const post = await Post.findByIdAndUpdate(
       { _id: postId },
       {
-        $inc: { viewCount: 1 },
+        $inc: { viewNumber: 1 },
       },
       { runValidator: true, useFindAndModify: true, new: true }
     ).populate({ path: 'hashtags', select: 'category' });
